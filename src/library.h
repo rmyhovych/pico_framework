@@ -1,0 +1,6 @@
+#ifndef PICOFRAMEWORK_LIBRARY_H
+#define PICOFRAMEWORK_LIBRARY_H
+
+void hello();
+
+#endif //PICOFRAMEWORK_LIBRARY_H
