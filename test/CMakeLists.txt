@@ -7,6 +7,6 @@ set(TEST_FILES
 
 add_executable(TEST ${TEST_FILES})
 
-target_include_directories(TEST ./)
+target_include_directories(TEST PUBLIC ./)
 
 target_link_libraries(TEST PICOFRAMEWORK)
