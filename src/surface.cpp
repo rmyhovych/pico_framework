@@ -7,12 +7,11 @@
 #include <exception>
 #include <algorithm>
 
-/*----------------------------------------------------------------------------------------------------------*/
 Surface::Surface(VkInstance instance) :
 		instance_(instance),
-		handle_(VK_NULL_HANDLE),
-
 		windowManagerPtr_(nullptr),
+
+		handle_(VK_NULL_HANDLE),
 		format_(VK_FORMAT_UNDEFINED)
 {
 	if (instance == VK_NULL_HANDLE)
@@ -21,9 +20,7 @@ Surface::Surface(VkInstance instance) :
 	}
 }
 
-
-/*----------------------------------------------------------------------------------------------------------*/
-void Surface::init(VkFormat format, IWindowManager* windowManagerPtr)
+void Surface::init(VkFormat format, AbsWindowManager* windowManagerPtr)
 {
 	if (windowManagerPtr_ != nullptr)
 	{
@@ -40,8 +37,16 @@ void Surface::init(VkFormat format, IWindowManager* windowManagerPtr)
 	format_ = format;
 }
 
+void Surface::destroy()
+{
+	windowManagerPtr_ = nullptr;
+	if (handle_ != VK_NULL_HANDLE)
+	{
+		vkDestroySurfaceKHR(instance_, handle_, nullptr);
+		handle_ = VK_NULL_HANDLE;
+	}
+}
 
-/*----------------------------------------------------------------------------------------------------------*/
 Surface::Properties Surface::getProperties(VkPhysicalDevice physicalDevice) const
 {
 	Surface::Properties properties{};
@@ -77,8 +82,6 @@ Surface::Properties Surface::getProperties(VkPhysicalDevice physicalDevice) cons
 	return properties;
 }
 
-
-/*----------------------------------------------------------------------------------------------------------*/
 VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
 {
 	for (const VkSurfaceFormatKHR &format : surfaceFormats)
@@ -92,8 +95,6 @@ VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceForma
 	return surfaceFormats[0];
 }
 
-
-/*----------------------------------------------------------------------------------------------------------*/
 VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes)
 {
 	for (const VkPresentModeKHR &presentMode : presentModes)
@@ -108,8 +109,6 @@ VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> 
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-
-/*----------------------------------------------------------------------------------------------------------*/
 VkExtent2D Surface::chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabilities, VkExtent2D windowExtent)
 {
 	if (swapChainCapabilities.currentExtent.width != UINT32_MAX)

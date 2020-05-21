@@ -7,9 +7,32 @@
 #include <vector>
 
 
-/*----------------------------------------------------------------------------------------------------------*/
-Instance::Instance() :
-		instance_(VK_NULL_HANDLE)
+Instance::Instance(AbsWindowManager* windowManagerPtr) :
+		instance_(createInstance(windowManagerPtr)),
+		windowManagerPtr_(windowManagerPtr),
+
+		surface_(instance_)
+{
+}
+
+Instance::~Instance()
+{
+	surface_.destroy();
+
+	vkDestroyInstance(instance_, nullptr);
+}
+
+void Instance::createSurface(VkFormat format)
+{
+	surface_.init(format, windowManagerPtr_);
+}
+
+void Instance::createDevice()
+{
+	// TODO
+}
+
+VkInstance Instance::createInstance(AbsWindowManager* windowManagerPtr)
 {
 	VkApplicationInfo appInfo = {};
 
@@ -25,10 +48,7 @@ Instance::Instance() :
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 
-	uint32_t glfwExtentionCount = 0;
-	const char** glfwExtentions = nullptr;//glfwGetRequiredInstanceExtensions(&glfwExtentionCount);
-
-	std::vector<const char*> requiredExtensions(glfwExtentions, glfwExtentions + glfwExtentionCount);
+	std::vector<const char*> requiredExtensions = windowManagerPtr->getRequiredInstanceExtensions();
 
 	instanceCreateInfo.enabledLayerCount = 0;
 	instanceCreateInfo.ppEnabledLayerNames = nullptr;
@@ -36,27 +56,12 @@ Instance::Instance() :
 	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
 	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
-	if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance_) != VK_SUCCESS)
+	VkInstance instance;
+	if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance) != VK_SUCCESS)
 	{
 		throw std::exception("Failed to initialize instance.");
 	}
-}
 
-/*----------------------------------------------------------------------------------------------------------*/
-Instance::~Instance()
-{
-
-}
-
-/*----------------------------------------------------------------------------------------------------------*/
-void Instance::createSurface(VkSurfaceKHR surfaceHandle)
-{
-
-}
-
-/*----------------------------------------------------------------------------------------------------------*/
-void Instance::createDevice()
-{
-
+	return instance;
 }
 

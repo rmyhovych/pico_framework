@@ -7,7 +7,13 @@ set(PICOFRAMEWORK_FILES
 
 		surface.h
 		surface.cpp
-		device.cpp device.h window/i_window_manager.h window/glfw_window_manager.cpp window/glfw_window_manager.h)
+		device.cpp
+		device.h
+		window/abs_window_manager.h
+		window/glfw_window_manager.cpp
+		window/glfw_window_manager.h
+		window/abs_window_manager.cpp
+		)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

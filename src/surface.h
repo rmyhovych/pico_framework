@@ -9,7 +9,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-#include "window/i_window_manager.h"
+#include "window/abs_window_manager.h"
 
 class Surface
 {
@@ -24,7 +24,8 @@ public:
 
 	explicit Surface(VkInstance instance);
 
-	void init(VkFormat format, IWindowManager* windowManagerPtr);
+	void init(VkFormat format, AbsWindowManager* windowManagerPtr);
+	void destroy();
 
 	Surface::Properties getProperties(VkPhysicalDevice physicalDevice) const;
 
@@ -38,9 +39,9 @@ private:
 
 private:
 	VkInstance instance_;
-	VkSurfaceKHR handle_;
+	AbsWindowManager* windowManagerPtr_;
 
-	IWindowManager* windowManagerPtr_;
+	VkSurfaceKHR handle_;
 	VkFormat format_;
 };
 

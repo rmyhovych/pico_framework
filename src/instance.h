@@ -10,19 +10,25 @@
 
 #include "surface.h"
 #include "device.h"
+#include "window/abs_window_manager.h"
 
 class Instance
 {
 public:
-	Instance();
+	Instance(AbsWindowManager* windowManagerPtr);
+
 	~Instance();
 
-	void createSurface(VkSurfaceKHR surfaceHandle);
+	void createSurface(VkFormat imageFormat);
 
 	void createDevice();
 
 private:
+	static VkInstance createInstance(AbsWindowManager* windowManagerPtr);
+
+private:
 	VkInstance instance_;
+	AbsWindowManager* windowManagerPtr_;
 
 	Surface surface_;
 	Device device_;
