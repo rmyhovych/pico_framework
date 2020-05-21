@@ -15,11 +15,11 @@ class Instance
 {
 public:
 	Instance();
+	~Instance();
 
-	Instance(uint32_t width, uint32_t height);
+	void createSurface(VkSurfaceKHR surfaceHandle);
 
-private:
-	VkInstance createInstance() const;
+	void createDevice();
 
 private:
 	VkInstance instance_;

@@ -9,19 +9,7 @@
 
 /*----------------------------------------------------------------------------------------------------------*/
 Instance::Instance() :
-		Instance(0, 0)
-{
-}
-
-/*----------------------------------------------------------------------------------------------------------*/
-Instance::Instance(uint32_t width, uint32_t height) :
 		instance_(VK_NULL_HANDLE)
-{
-	instance_ = createInstance();
-}
-
-/*----------------------------------------------------------------------------------------------------------*/
-VkInstance Instance::createInstance() const
 {
 	VkApplicationInfo appInfo = {};
 
@@ -48,11 +36,27 @@ VkInstance Instance::createInstance() const
 	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
 	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
-	VkInstance instance;
-	if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance) != VK_SUCCESS)
+	if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance_) != VK_SUCCESS)
 	{
 		throw std::exception("Failed to initialize instance.");
 	}
-
-	return instance;
 }
+
+/*----------------------------------------------------------------------------------------------------------*/
+Instance::~Instance()
+{
+
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+void Instance::createSurface(VkSurfaceKHR surfaceHandle)
+{
+
+}
+
+/*----------------------------------------------------------------------------------------------------------*/
+void Instance::createDevice()
+{
+
+}
+
