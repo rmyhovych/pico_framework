@@ -11,23 +11,27 @@
 
 #include "window/abs_window_manager.h"
 
+struct SwapchainConfigurations
+{
+	VkPresentModeKHR presentMode;
+	VkSurfaceFormatKHR surfaceFormat;
+	VkExtent2D extent;
+	VkSurfaceCapabilitiesKHR surfaceCapabilities;
+};
+
 class Surface
 {
 public:
 	struct Properties
 	{
-		VkPresentModeKHR presentMode;
-		VkSurfaceFormatKHR surfaceFormat;
-		VkExtent2D extent;
-		VkSurfaceCapabilitiesKHR surfaceCapabilities;
+		VkFormat format;
 	};
 
-	explicit Surface(VkInstance instance);
+	explicit Surface(Surface::Properties properties, VkInstance instance, AbsWindowManager* windowManagerPtr);
 
-	void init(VkFormat format, AbsWindowManager* windowManagerPtr);
 	void destroy();
 
-	Surface::Properties getProperties(VkPhysicalDevice physicalDevice) const;
+	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice) const;
 
 private:
 	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
@@ -38,11 +42,12 @@ private:
 
 
 private:
+	Surface::Properties properties_;
+
 	VkInstance instance_;
 	AbsWindowManager* windowManagerPtr_;
 
 	VkSurfaceKHR handle_;
-	VkFormat format_;
 };
 
 

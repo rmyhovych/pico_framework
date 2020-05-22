@@ -13,8 +13,7 @@ int main()
 
 	GLFWWindowManager windowManager(800, 600);
 
-	Instance instance(&windowManager);
-	instance.createSurface(VK_FORMAT_R8G8B8A8_UNORM);
+	Instance instance(&windowManager, Surface::Properties{VK_FORMAT_R8G8B8A8_UNORM});
 
 	return 0;
 }

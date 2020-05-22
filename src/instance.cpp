@@ -7,11 +7,11 @@
 #include <vector>
 
 
-Instance::Instance(AbsWindowManager* windowManagerPtr) :
+Instance::Instance(AbsWindowManager* windowManagerPtr, Surface::Properties surfaceProperties) :
 		instance_(createInstance(windowManagerPtr)),
 		windowManagerPtr_(windowManagerPtr),
 
-		surface_(instance_)
+		surface_(surfaceProperties, instance_, windowManagerPtr)
 {
 }
 
@@ -22,15 +22,6 @@ Instance::~Instance()
 	vkDestroyInstance(instance_, nullptr);
 }
 
-void Instance::createSurface(VkFormat format)
-{
-	surface_.init(format, windowManagerPtr_);
-}
-
-void Instance::createDevice()
-{
-	// TODO
-}
 
 VkInstance Instance::createInstance(AbsWindowManager* windowManagerPtr)
 {

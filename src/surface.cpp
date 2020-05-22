@@ -7,24 +7,16 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(VkInstance instance) :
+Surface::Surface(Surface::Properties properties, VkInstance instance, AbsWindowManager* windowManagerPtr) :
+		properties_(properties),
 		instance_(instance),
-		windowManagerPtr_(nullptr),
+		windowManagerPtr_(windowManagerPtr),
 
-		handle_(VK_NULL_HANDLE),
-		format_(VK_FORMAT_UNDEFINED)
+		handle_(VK_NULL_HANDLE)
 {
 	if (instance == VK_NULL_HANDLE)
 	{
 		throw std::exception("Can't construct surface with NULL instance handle!");
-	}
-}
-
-void Surface::init(VkFormat format, AbsWindowManager* windowManagerPtr)
-{
-	if (windowManagerPtr_ != nullptr)
-	{
-		throw std::exception("Can't init Surface again!");
 	}
 	if (windowManagerPtr == nullptr)
 	{
@@ -33,9 +25,8 @@ void Surface::init(VkFormat format, AbsWindowManager* windowManagerPtr)
 
 	windowManagerPtr_ = windowManagerPtr;
 	handle_ = windowManagerPtr_->createSurfaceHandle(instance_);
-
-	format_ = format;
 }
+
 
 void Surface::destroy()
 {
@@ -47,10 +38,10 @@ void Surface::destroy()
 	}
 }
 
-Surface::Properties Surface::getProperties(VkPhysicalDevice physicalDevice) const
+SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice physicalDevice) const
 {
-	Surface::Properties properties{};
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, handle_, &properties.surfaceCapabilities);
+	SwapchainConfigurations configurations{};
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, handle_, &configurations.surfaceCapabilities);
 
 
 	std::vector<VkSurfaceFormatKHR> swapChainFormats;
@@ -61,7 +52,7 @@ Surface::Properties Surface::getProperties(VkPhysicalDevice physicalDevice) cons
 		swapChainFormats.resize(nSurfaceFormats);
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, handle_, &nSurfaceFormats, swapChainFormats.data());
 	}
-	properties.surfaceFormat = chooseSurfaceFormat(swapChainFormats);
+	configurations.surfaceFormat = chooseSurfaceFormat(swapChainFormats);
 
 
 	std::vector<VkPresentModeKHR> presentModes;
@@ -72,21 +63,21 @@ Surface::Properties Surface::getProperties(VkPhysicalDevice physicalDevice) cons
 		presentModes.resize(nPresentModes);
 		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, handle_, &nPresentModes, presentModes.data());
 	}
-	properties.presentMode = choosePresentMode(presentModes);
+	configurations.presentMode = choosePresentMode(presentModes);
 
 
 	VkExtent2D windowExtent = windowManagerPtr_->getWindowSize();
-	properties.extent = chooseExtent(properties.surfaceCapabilities, windowExtent);
+	configurations.extent = chooseExtent(configurations.surfaceCapabilities, windowExtent);
 
 
-	return properties;
+	return configurations;
 }
 
 VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
 {
 	for (const VkSurfaceFormatKHR &format : surfaceFormats)
 	{
-		if (format.format == format_ && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+		if (format.format == properties_.format && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 		{
 			return format;
 		}

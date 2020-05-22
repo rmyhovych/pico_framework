@@ -15,13 +15,9 @@
 class Instance
 {
 public:
-	Instance(AbsWindowManager* windowManagerPtr);
+	Instance(AbsWindowManager* windowManagerPtr, Surface::Properties surfaceProperties);
 
 	~Instance();
-
-	void createSurface(VkFormat imageFormat);
-
-	void createDevice();
 
 private:
 	static VkInstance createInstance(AbsWindowManager* windowManagerPtr);
