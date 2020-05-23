@@ -27,11 +27,13 @@ public:
 		VkFormat format;
 	};
 
-	explicit Surface(Surface::Properties properties, VkInstance instance, AbsWindowManager* windowManagerPtr);
+	explicit Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* windowManagerPtr);
 
 	void destroy();
 
 	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice) const;
+
+	VkSurfaceKHR getHandle() const;
 
 private:
 	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
@@ -42,12 +44,12 @@ private:
 
 
 private:
-	Surface::Properties properties_;
+	VkSurfaceKHR handle_;
 
 	VkInstance instance_;
 	AbsWindowManager* windowManagerPtr_;
 
-	VkSurfaceKHR handle_;
+	VkFormat format_;
 };
 
 

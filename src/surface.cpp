@@ -7,12 +7,11 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(Surface::Properties properties, VkInstance instance, AbsWindowManager* windowManagerPtr) :
-		properties_(properties),
+Surface::Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* windowManagerPtr) :
+		handle_(VK_NULL_HANDLE),
 		instance_(instance),
 		windowManagerPtr_(windowManagerPtr),
-
-		handle_(VK_NULL_HANDLE)
+		format_(properties.format)
 {
 	if (instance == VK_NULL_HANDLE)
 	{
@@ -73,11 +72,17 @@ SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice phy
 	return configurations;
 }
 
+VkSurfaceKHR Surface::getHandle() const
+{
+	return handle_;
+}
+
+
 VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
 {
 	for (const VkSurfaceFormatKHR &format : surfaceFormats)
 	{
-		if (format.format == properties_.format && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+		if (format.format == format_ && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 		{
 			return format;
 		}

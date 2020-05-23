@@ -7,23 +7,25 @@
 #include <vector>
 
 
-Instance::Instance(AbsWindowManager* windowManagerPtr, Surface::Properties surfaceProperties) :
-		instance_(createInstance(windowManagerPtr)),
+Instance::Instance(AbsWindowManager* windowManagerPtr, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties) :
+		handle_(createInstanceHandle(windowManagerPtr)),
 		windowManagerPtr_(windowManagerPtr),
 
-		surface_(surfaceProperties, instance_, windowManagerPtr)
+		surface_(surfaceProperties, handle_, windowManagerPtr),
+		device_(deviceProperties, handle_, surface_)
 {
 }
 
 Instance::~Instance()
 {
+	device_.destroy();
 	surface_.destroy();
 
-	vkDestroyInstance(instance_, nullptr);
+	vkDestroyInstance(handle_, nullptr);
 }
 
 
-VkInstance Instance::createInstance(AbsWindowManager* windowManagerPtr)
+VkInstance Instance::createInstanceHandle(AbsWindowManager* windowManagerPtr)
 {
 	VkApplicationInfo appInfo = {};
 

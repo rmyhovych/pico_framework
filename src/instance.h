@@ -15,15 +15,15 @@
 class Instance
 {
 public:
-	Instance(AbsWindowManager* windowManagerPtr, Surface::Properties surfaceProperties);
+	Instance(AbsWindowManager* windowManagerPtr, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties);
 
 	~Instance();
 
 private:
-	static VkInstance createInstance(AbsWindowManager* windowManagerPtr);
+	static VkInstance createInstanceHandle(AbsWindowManager* windowManagerPtr);
 
 private:
-	VkInstance instance_;
+	VkInstance handle_;
 	AbsWindowManager* windowManagerPtr_;
 
 	Surface surface_;

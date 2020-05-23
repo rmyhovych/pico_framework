@@ -5,10 +5,54 @@
 #ifndef PICOFRAMEWORK_DEVICE_H
 #define PICOFRAMEWORK_DEVICE_H
 
+#include <vulkan/vulkan.h>
+#include <vector>
 
+#include "surface.h"
+
+struct QueueFamilyIndexes
+{
+	uint32_t graphical;
+	uint32_t present;
+};
+
+// TODO: separate queue management from device
 class Device
 {
-	// TODO
+public:
+	struct Properties
+	{
+		VkPhysicalDeviceType type;
+		std::vector<const char*> extensions;
+	};
+
+	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
+
+	void destroy();
+
+private:
+	static bool isSuitable(VkPhysicalDevice physicalDevice, const Surface &surface, const std::vector<const char*> &extensions);
+
+	static QueueFamilyIndexes getQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface& surface);
+
+	static bool getQueueGraphicsFamilyIndex(VkPhysicalDevice physicalDevice, uint32_t* index);
+
+	static bool getQueuePresentFamilyIndex(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle, uint32_t* index, uint32_t priorityIndex);
+
+	static VkDevice createLogicalDevice(VkPhysicalDevice physicalDevice, const QueueFamilyIndexes &familyIndexes, const std::vector<const char*> &extensions);
+
+
+	static void setQueueCreateInfo(VkDeviceQueueCreateInfo &queueCreateInfo, uint32_t index, float priority);
+
+private:
+	VkInstance instance_;
+
+	VkPhysicalDevice physicalDevice_;
+	VkDevice logicalDevice_;
+
+	QueueFamilyIndexes queueFamilyIndexes_;
+	VkQueue queueGraphics_;
+	VkQueue queuePresent_;
 };
 
 
