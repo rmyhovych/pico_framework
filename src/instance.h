@@ -11,6 +11,7 @@
 #include "surface.h"
 #include "device.h"
 #include "window/abs_window_manager.h"
+#include "renderer.h"
 
 class Instance
 {
@@ -18,6 +19,8 @@ public:
 	Instance(AbsWindowManager* windowManagerPtr, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties);
 
 	~Instance();
+
+	Renderer* getRenderer();
 
 private:
 	static VkInstance createInstanceHandle(AbsWindowManager* windowManagerPtr);
@@ -28,6 +31,8 @@ private:
 
 	Surface surface_;
 	Device device_;
+
+	Renderer* renderer_;
 };
 
 

@@ -13,7 +13,7 @@ set(PICOFRAMEWORK_FILES
 		window/glfw_window_manager.cpp
 		window/glfw_window_manager.h
 		window/abs_window_manager.cpp
-		)
+		renderer.cpp renderer.h swapchain.cpp swapchain.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

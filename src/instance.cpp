@@ -18,10 +18,26 @@ Instance::Instance(AbsWindowManager* windowManagerPtr, const Surface::Properties
 
 Instance::~Instance()
 {
+	if (renderer_ != nullptr)
+	{
+		delete renderer_;
+	}
+
 	device_.destroy();
 	surface_.destroy();
 
 	vkDestroyInstance(handle_, nullptr);
+}
+
+
+Renderer* Instance::getRenderer()
+{
+	if (renderer_ == nullptr)
+	{
+		renderer_ = new Renderer(handle_, &surface_, &device_);
+	}
+
+	return renderer_;
 }
 
 
@@ -57,4 +73,3 @@ VkInstance Instance::createInstanceHandle(AbsWindowManager* windowManagerPtr)
 
 	return instance;
 }
-
