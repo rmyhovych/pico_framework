@@ -7,29 +7,29 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* windowManagerPtr) :
+Surface::Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* pWindowManager) :
 		handle_(VK_NULL_HANDLE),
 		instance_(instance),
-		windowManagerPtr_(windowManagerPtr),
+		pWindowManager_(pWindowManager),
 		format_(properties.format)
 {
 	if (instance == VK_NULL_HANDLE)
 	{
 		throw std::exception("Can't construct surface with NULL instance handle!");
 	}
-	if (windowManagerPtr == nullptr)
+	if (pWindowManager == nullptr)
 	{
 		throw std::exception("Can't init Surface with NULL window manager!");
 	}
 
-	windowManagerPtr_ = windowManagerPtr;
-	handle_ = windowManagerPtr_->createSurfaceHandle(instance_);
+	pWindowManager_ = pWindowManager;
+	handle_ = pWindowManager_->createSurfaceHandle(instance_);
 }
 
 
 void Surface::destroy()
 {
-	windowManagerPtr_ = nullptr;
+	pWindowManager_ = nullptr;
 	if (handle_ != VK_NULL_HANDLE)
 	{
 		vkDestroySurfaceKHR(instance_, handle_, nullptr);
@@ -65,7 +65,7 @@ SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice phy
 	configurations.presentMode = choosePresentMode(presentModes);
 
 
-	VkExtent2D windowExtent = windowManagerPtr_->getWindowSize();
+	VkExtent2D windowExtent = pWindowManager_->getWindowSize();
 	configurations.extent = chooseExtent(configurations.surfaceCapabilities, windowExtent);
 
 

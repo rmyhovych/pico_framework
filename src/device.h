@@ -28,12 +28,16 @@ public:
 
 	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
 
+	VkDevice getHandle() const;
+
+	const QueueFamilyIndexes& getQueueFamilyIndexes() const;
+
 	void destroy();
 
 private:
 	static bool isSuitable(VkPhysicalDevice physicalDevice, const Surface &surface, const std::vector<const char*> &extensions);
 
-	static QueueFamilyIndexes getQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface& surface);
+	static QueueFamilyIndexes getAvailableQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface &surface);
 
 	static bool getQueueGraphicsFamilyIndex(VkPhysicalDevice physicalDevice, uint32_t* index);
 

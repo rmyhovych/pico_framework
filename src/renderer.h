@@ -15,18 +15,19 @@
 class Renderer
 {
 public:
-	Renderer(VkInstance instance, Surface* surfacePtr, Device* devicePtr);
+	Renderer(VkInstance instance, Surface* pSurface, Device* pDevice);
+
 	~Renderer();
 
 	void draw();
 
-	Swapchain* createSwapchain();
+	Swapchain* createSwapchain(const Swapchain::Properties &swapchainProperties);
 
 private:
 	VkInstance instance_;
 
-	Surface* surfacePtr_;
-	Device* devicePtr_;
+	Surface* pSurface_;
+	Device* pDevice_;
 
 	std::vector<Swapchain*> swapchains_;
 };

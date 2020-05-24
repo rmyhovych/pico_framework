@@ -7,11 +7,11 @@
 #include <vector>
 
 
-Instance::Instance(AbsWindowManager* windowManagerPtr, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties) :
-		handle_(createInstanceHandle(windowManagerPtr)),
-		windowManagerPtr_(windowManagerPtr),
+Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties) :
+		handle_(createInstanceHandle(pWindowManager)),
+		pWindowManager_(pWindowManager),
 
-		surface_(surfaceProperties, handle_, windowManagerPtr),
+		surface_(surfaceProperties, handle_, pWindowManager),
 		device_(deviceProperties, handle_, surface_)
 {
 }
@@ -41,7 +41,7 @@ Renderer* Instance::getRenderer()
 }
 
 
-VkInstance Instance::createInstanceHandle(AbsWindowManager* windowManagerPtr)
+VkInstance Instance::createInstanceHandle(AbsWindowManager* pWindowManager)
 {
 	VkApplicationInfo appInfo = {};
 
@@ -57,7 +57,7 @@ VkInstance Instance::createInstanceHandle(AbsWindowManager* windowManagerPtr)
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instanceCreateInfo.pApplicationInfo = &appInfo;
 
-	std::vector<const char*> requiredExtensions = windowManagerPtr->getRequiredInstanceExtensions();
+	std::vector<const char*> requiredExtensions = pWindowManager->getRequiredInstanceExtensions();
 
 	instanceCreateInfo.enabledLayerCount = 0;
 	instanceCreateInfo.ppEnabledLayerNames = nullptr;

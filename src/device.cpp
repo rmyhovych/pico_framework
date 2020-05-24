@@ -49,13 +49,25 @@ Device::Device(const Device::Properties &properties, VkInstance instance, const 
 	}
 
 	// Device
-	queueFamilyIndexes_ = getQueueFamilyIndexes(physicalDevice_, surface);
+	queueFamilyIndexes_ = getAvailableQueueFamilyIndexes(physicalDevice_, surface);
 	logicalDevice_ = createLogicalDevice(physicalDevice_, queueFamilyIndexes_, properties.extensions);
 
 	// Queues
 	vkGetDeviceQueue(logicalDevice_, queueFamilyIndexes_.graphical, 0, &queueGraphics_);
 	vkGetDeviceQueue(logicalDevice_, queueFamilyIndexes_.present, 0, &queuePresent_);
 }
+
+VkDevice Device::getHandle() const
+{
+	return logicalDevice_;
+}
+
+const QueueFamilyIndexes &Device::getQueueFamilyIndexes() const
+{
+	return queueFamilyIndexes_;
+}
+
+
 
 void Device::destroy()
 {
@@ -96,7 +108,7 @@ bool Device::isSuitable(VkPhysicalDevice physicalDevice, const Surface &surface,
 }
 
 
-QueueFamilyIndexes Device::getQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface &surface)
+QueueFamilyIndexes Device::getAvailableQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface &surface)
 {
 	QueueFamilyIndexes familyIndexes = {0, 0};
 	if (!getQueueGraphicsFamilyIndex(physicalDevice, &familyIndexes.graphical))

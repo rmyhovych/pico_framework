@@ -27,7 +27,7 @@ public:
 		VkFormat format;
 	};
 
-	explicit Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* windowManagerPtr);
+	explicit Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* pWindowManager);
 
 	void destroy();
 
@@ -47,7 +47,7 @@ private:
 	VkSurfaceKHR handle_;
 
 	VkInstance instance_;
-	AbsWindowManager* windowManagerPtr_;
+	AbsWindowManager* pWindowManager_;
 
 	VkFormat format_;
 };

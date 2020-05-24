@@ -4,10 +4,10 @@
 
 #include "renderer.h"
 
-Renderer::Renderer(VkInstance instance, Surface* surfacePtr, Device* devicePtr) :
+Renderer::Renderer(VkInstance instance, Surface* pSurface, Device* pDevice) :
 		instance_(instance),
-		surfacePtr_(surfacePtr),
-		devicePtr_(devicePtr),
+		pSurface_(pSurface),
+		pDevice_(pDevice),
 
 		swapchains_(0)
 {
@@ -28,9 +28,9 @@ void Renderer::draw()
 	// TODO: Manage rendering of swapchains / resizing / synchronization
 }
 
-Swapchain* Renderer::createSwapchain()
+Swapchain* Renderer::createSwapchain(const Swapchain::Properties &swapchainProperties)
 {
-	Swapchain* newSwapchain = new Swapchain();
+	Swapchain* newSwapchain = new Swapchain(swapchainProperties, pSurface_->getHandle(), pDevice_);
 
 	swapchains_.push_back(newSwapchain);
 	return newSwapchain;

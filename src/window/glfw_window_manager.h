@@ -24,7 +24,7 @@ public:
 	VkSurfaceKHR createSurfaceHandle(VkInstance instance) override;
 
 private:
-	GLFWwindow* windowPtr_;
+	GLFWwindow* pWindow_;
 };
 
 

@@ -13,18 +13,18 @@ void framebufferResizeCallback(GLFWwindow* window, int width, int height)
 
 
 GLFWWindowManager::GLFWWindowManager(uint32_t width, uint32_t height) :
-		windowPtr_(nullptr)
+		pWindow_(nullptr)
 {
 	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-	windowPtr_ = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
-	glfwSetWindowUserPointer(windowPtr_, this);
-	glfwSetFramebufferSizeCallback(windowPtr_, framebufferResizeCallback);
+	pWindow_ = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
+	glfwSetWindowUserPointer(pWindow_, this);
+	glfwSetFramebufferSizeCallback(pWindow_, framebufferResizeCallback);
 
-	if (windowPtr_ == nullptr)
+	if (pWindow_ == nullptr)
 	{
 		glfwTerminate();
 		throw std::exception("Failed to create GLFW window!");
@@ -33,7 +33,7 @@ GLFWWindowManager::GLFWWindowManager(uint32_t width, uint32_t height) :
 
 GLFWWindowManager::~GLFWWindowManager()
 {
-	glfwDestroyWindow(windowPtr_);
+	glfwDestroyWindow(pWindow_);
 	glfwTerminate();
 }
 
@@ -49,7 +49,7 @@ std::vector<const char*> GLFWWindowManager::getRequiredInstanceExtensions() cons
 VkExtent2D GLFWWindowManager::getWindowSize()
 {
 	int width, height;
-	glfwGetFramebufferSize(windowPtr_, &width, &height);
+	glfwGetFramebufferSize(pWindow_, &width, &height);
 
 	return VkExtent2D{static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 }
@@ -57,7 +57,7 @@ VkExtent2D GLFWWindowManager::getWindowSize()
 VkSurfaceKHR GLFWWindowManager::createSurfaceHandle(VkInstance instance)
 {
 	VkSurfaceKHR surfaceHandle;
-	if (glfwCreateWindowSurface(instance, windowPtr_, nullptr, &surfaceHandle) != VK_SUCCESS)
+	if (glfwCreateWindowSurface(instance, pWindow_, nullptr, &surfaceHandle) != VK_SUCCESS)
 	{
 		throw std::exception("Failed to create window surface!");
 	}
