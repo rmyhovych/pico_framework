@@ -28,14 +28,17 @@ public:
 private:
 	void destroy();
 
+	static VkSwapchainKHR createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle);
+
 private:
 	VkSurfaceKHR surfaceHandle_;
 	Device* pDevice_;
 
 	VkSwapchainKHR handle_;
+	std::vector<VkImage> images_;
+	std::vector<VkImageView> imageViews_;
 
 	bool isDepth_;
-
 
 	std::vector<Pipeline*> pipelines_;
 };

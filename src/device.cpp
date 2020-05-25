@@ -62,6 +62,12 @@ VkDevice Device::getHandle() const
 	return logicalDevice_;
 }
 
+VkPhysicalDevice Device::getPhysiacalDevice() const
+{
+	return physicalDevice_;
+}
+
+
 const QueueFamilyIndexes &Device::getQueueFamilyIndexes() const
 {
 	return queueFamilyIndexes_;
@@ -218,10 +224,7 @@ VkDevice Device::createLogicalDevice(VkPhysicalDevice physicalDevice, const Queu
 	deviceCreateInfo.ppEnabledLayerNames = nullptr;
 
 	VkDevice device;
-	if (vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device) != VK_SUCCESS)
-	{
-		throw std::exception("Failed to create device.");
-	}
+	CALL_VK(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device))
 
 	return device;
 }

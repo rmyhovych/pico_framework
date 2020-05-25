@@ -6,7 +6,7 @@
 #define PICOFRAMEWORK_INSTANCE_H
 
 #include <cstdint>
-#include <vulkan/vulkan.h>
+#include <pfvk.h>
 
 #include "surface.h"
 #include "device.h"

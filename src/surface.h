@@ -6,7 +6,7 @@
 #define PICOFRAMEWORK_SURFACE_H
 
 #include <cstdint>
-#include <vulkan/vulkan.h>
+#include <pfvk.h>
 #include <vector>
 
 #include "window/abs_window_manager.h"

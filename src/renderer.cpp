@@ -31,6 +31,7 @@ void Renderer::draw()
 Swapchain* Renderer::createSwapchain(const Swapchain::Properties &swapchainProperties)
 {
 	Swapchain* newSwapchain = new Swapchain(swapchainProperties, pSurface_->getHandle(), pDevice_);
+	newSwapchain->init(pSurface_->getSwapchainConfigurations(pDevice_->getPhysiacalDevice()));
 
 	swapchains_.push_back(newSwapchain);
 	return newSwapchain;

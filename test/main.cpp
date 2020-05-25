@@ -21,6 +21,8 @@ int main()
 	deviceProperties.extensions = std::vector<const char*>({VK_KHR_SWAPCHAIN_EXTENSION_NAME});
 
 	Instance instance(&windowManager, surfaceProperties, deviceProperties);
+	Renderer* pRenderer = instance.getRenderer();
+	pRenderer->createSwapchain(Swapchain::Properties{true});
 
 	return 0;
 }

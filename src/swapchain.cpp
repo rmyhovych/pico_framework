@@ -3,6 +3,7 @@
 //
 
 #include "swapchain.h"
+#include "image_factory.h"
 
 Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice) :
 		surfaceHandle_(surfaceHandle),
@@ -24,6 +25,26 @@ Swapchain::~Swapchain()
 
 void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 {
+	handle_ = createHandle(swapchainConfigurations, pDevice_, surfaceHandle_);
+
+	ImageFactory imageFactory(pDevice_->getHandle());
+	imageFactory.createImages(images_, handle_);
+}
+
+void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
+{
+	destroy();
+	init(swapchainConfigurations);
+}
+
+void Swapchain::destroy()
+{
+	vkDestroySwapchainKHR(pDevice_->getHandle(), handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
+}
+
+VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle)
+{
 	// minImageCount + 1 to avoid waiting
 	uint32_t nImages = swapchainConfigurations.surfaceCapabilities.minImageCount + 1;
 
@@ -35,7 +56,7 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 
 	VkSwapchainCreateInfoKHR createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surfaceHandle_;
+	createInfo.surface = surfaceHandle;
 	createInfo.minImageCount = nImages;
 	createInfo.imageFormat = swapchainConfigurations.surfaceFormat.format;
 	createInfo.imageColorSpace = swapchainConfigurations.surfaceFormat.colorSpace;
@@ -43,7 +64,7 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	const QueueFamilyIndexes& deviceQueueFamilyIndexes = pDevice_->getQueueFamilyIndexes();
+	const QueueFamilyIndexes& deviceQueueFamilyIndexes = pDevice->getQueueFamilyIndexes();
 	if (deviceQueueFamilyIndexes.graphical != deviceQueueFamilyIndexes.present)
 	{
 		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -63,20 +84,8 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = nullptr;
 
-	if (vkCreateSwapchainKHR(pDevice_->getHandle(), &createInfo, nullptr, &handle_) != VK_SUCCESS)
-	{
-		throw std::exception("Failed to create swapchain.");
-	}
-}
+	VkSwapchainKHR swapchainHandle;
+	CALL_VK(vkCreateSwapchainKHR(pDevice->getHandle(), &createInfo, nullptr, &swapchainHandle))
 
-void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
-{
-	destroy();
-	init(swapchainConfigurations);
-}
-
-void Swapchain::destroy()
-{
-	vkDestroySwapchainKHR(pDevice_->getHandle(), handle_, nullptr);
-	handle_ = VK_NULL_HANDLE;
+	return swapchainHandle;
 }

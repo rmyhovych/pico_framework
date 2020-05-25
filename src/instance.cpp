@@ -12,7 +12,9 @@ Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties& 
 		pWindowManager_(pWindowManager),
 
 		surface_(surfaceProperties, handle_, pWindowManager),
-		device_(deviceProperties, handle_, surface_)
+		device_(deviceProperties, handle_, surface_),
+
+		renderer_(nullptr)
 {
 }
 
@@ -66,10 +68,7 @@ VkInstance Instance::createInstanceHandle(AbsWindowManager* pWindowManager)
 	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
 	VkInstance instance;
-	if (vkCreateInstance(&instanceCreateInfo, nullptr, &instance) != VK_SUCCESS)
-	{
-		throw std::exception("Failed to initialize instance.");
-	}
+	CALL_VK(vkCreateInstance(&instanceCreateInfo, nullptr, &instance))
 
 	return instance;
 }

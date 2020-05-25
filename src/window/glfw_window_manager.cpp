@@ -57,10 +57,7 @@ VkExtent2D GLFWWindowManager::getWindowSize()
 VkSurfaceKHR GLFWWindowManager::createSurfaceHandle(VkInstance instance)
 {
 	VkSurfaceKHR surfaceHandle;
-	if (glfwCreateWindowSurface(instance, pWindow_, nullptr, &surfaceHandle) != VK_SUCCESS)
-	{
-		throw std::exception("Failed to create window surface!");
-	}
+	CALL_VK(glfwCreateWindowSurface(instance, pWindow_, nullptr, &surfaceHandle))
 
 	return surfaceHandle;
 }

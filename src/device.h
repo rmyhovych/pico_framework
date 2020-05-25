@@ -5,7 +5,7 @@
 #ifndef PICOFRAMEWORK_DEVICE_H
 #define PICOFRAMEWORK_DEVICE_H
 
-#include <vulkan/vulkan.h>
+#include <pfvk.h>
 #include <vector>
 
 #include "surface.h"
@@ -29,6 +29,7 @@ public:
 	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
 
 	VkDevice getHandle() const;
+	VkPhysicalDevice getPhysiacalDevice() const;
 
 	const QueueFamilyIndexes& getQueueFamilyIndexes() const;
 
