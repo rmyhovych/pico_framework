@@ -7,18 +7,23 @@
 
 #include <vector>
 #include <pfvk.h>
+#include "device.h"
 
 class ImageFactory
 {
 public:
-	ImageFactory(VkDevice deviceHandle);
+	explicit ImageFactory(const Device* pDevice);
 
 	void createImages(std::vector<VkImage>& destination, VkSwapchainKHR swapchainHandle);
 
 	void createImageViews(std::vector<VkImageView>& destination, const std::vector<VkImage>& images, VkFormat format, VkImageAspectFlags aspectFlags);
 
+	VkFormat getSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags);
+
+	VkFormat getDepthFormat();
+
 private:
-	VkDevice deviceHandle_;
+	const Device* pDevice_;
 };
 
 

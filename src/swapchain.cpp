@@ -27,8 +27,9 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 {
 	handle_ = createHandle(swapchainConfigurations, pDevice_, surfaceHandle_);
 
-	ImageFactory imageFactory(pDevice_->getHandle());
+	ImageFactory imageFactory(pDevice_);
 	imageFactory.createImages(images_, handle_);
+	imageFactory.createImageViews(imageViews_, images_, swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
@@ -39,7 +40,15 @@ void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
 
 void Swapchain::destroy()
 {
-	vkDestroySwapchainKHR(pDevice_->getHandle(), handle_, nullptr);
+	VkDevice deviceHandle = pDevice_->getHandle();
+
+	for (VkImageView imageView : imageViews_)
+	{
+		vkDestroyImageView(deviceHandle, imageView, nullptr);
+	}
+	imageViews_.clear();
+
+	vkDestroySwapchainKHR(deviceHandle, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
 
