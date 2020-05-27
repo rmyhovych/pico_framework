@@ -4,6 +4,7 @@
 
 #include "swapchain.h"
 #include "image_factory.h"
+#include "render_pass_builder.h"
 
 Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice) :
 		surfaceHandle_(surfaceHandle),
@@ -30,6 +31,12 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 	ImageFactory imageFactory(pDevice_);
 	imageFactory.createImages(images_, handle_);
 	imageFactory.createImageViews(imageViews_, images_, swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
+
+	RenderPassBuilder renderPassBuilder(pDevice_->getHandle());
+	renderPassBuilder.pushBackColor(swapchainConfigurations.surfaceFormat.format);
+	VkFormat depthFormat = imageFactory.getDepthFormat();
+	renderPassBuilder.pushBackDepth(depthFormat);
+	renderPass_ = renderPassBuilder.build();
 }
 
 void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)

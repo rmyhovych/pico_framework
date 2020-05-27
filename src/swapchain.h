@@ -30,8 +30,6 @@ private:
 
 	static VkSwapchainKHR createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle);
 
-	static VkRenderPass createRenderPass(VkFormat format, bool )
-
 private:
 	VkSurfaceKHR surfaceHandle_;
 	Device* pDevice_;
@@ -40,6 +38,9 @@ private:
 
 	std::vector<VkImage> images_;
 	std::vector<VkImageView> imageViews_;
+
+	VkImage depthImage_;
+	VkImageView depthImageView_;
 
 	VkRenderPass renderPass_;
 	std::vector<VkFramebuffer> framebuffers_;
