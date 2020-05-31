@@ -3,6 +3,7 @@
 //
 
 #include <cstdio>
+#include <allocator/buddy_tree.h>
 
 #include "instance.h"
 #include "window/glfw_window_manager.h"
@@ -11,6 +12,7 @@ int main()
 {
 	printf("Hello, World!");
 
+	/*
 	GLFWWindowManager windowManager(800, 600);
 
 	Surface::Properties surfaceProperties{};
@@ -23,6 +25,12 @@ int main()
 	Instance instance(&windowManager, surfaceProperties, deviceProperties);
 	Renderer* pRenderer = instance.getRenderer();
 	pRenderer->createSwapchain(Swapchain::Properties{true});
+
+	*/
+
+	BuddyTree tree(3, 256);
+	int offset = tree.findFreeOffset(100);
+
 
 	return 0;
 }

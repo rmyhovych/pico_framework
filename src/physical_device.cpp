@@ -7,7 +7,7 @@
 
 PhysicalDevice::PhysicalDevice(VkInstance instanceHandle, VkSurfaceKHR surfaceHandle, VkPhysicalDeviceType deviceType, const std::vector<const char*> &neededExtensions) :
 		handle_(VK_NULL_HANDLE),
-		queueFamilyIndexes_({0,0})
+		queueFamilyIndexes_({0, 0})
 {
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(instanceHandle, &deviceCount, nullptr);
@@ -94,9 +94,30 @@ VkDevice PhysicalDevice::createLogicalDevice(const std::vector<const char*> &ext
 	return device;
 }
 
-const QueueFamilyIndexes& PhysicalDevice::getQueueFamilyIndexes() const
+const QueueFamilyIndexes &PhysicalDevice::getQueueFamilyIndexes() const
 {
 	return queueFamilyIndexes_;
+}
+
+
+VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const
+{
+	for (VkFormat format : candidates)
+	{
+		VkFormatProperties properties;
+		vkGetPhysicalDeviceFormatProperties(handle_, format, &properties);
+
+		if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & featureFlags) == featureFlags)
+		{
+			return format;
+		}
+		else if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & featureFlags) == featureFlags)
+		{
+			return format;
+		}
+
+		throw std::exception("Failed to find supported format.");
+	}
 }
 
 

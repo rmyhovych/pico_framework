@@ -37,6 +37,8 @@ RenderPassBuilder &RenderPassBuilder::pushBackColor(VkFormat format)
 	VkAttachmentReference& attachmentReference = colorAttachments_.back();
 	attachmentReference.attachment = attachmentDescriptions_.size() - 1;
 	attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+	return *this;
 }
 
 RenderPassBuilder &RenderPassBuilder::pushBackDepth(VkFormat format)
@@ -62,6 +64,8 @@ RenderPassBuilder &RenderPassBuilder::pushBackDepth(VkFormat format)
 	depthAttachment_.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
 	subpass_.pDepthStencilAttachment = &depthAttachment_;
+
+	return *this;
 }
 
 

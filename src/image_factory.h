@@ -14,13 +14,9 @@ class ImageFactory
 public:
 	explicit ImageFactory(const Device* pDevice);
 
-	void createImages(std::vector<VkImage>& destination, VkSwapchainKHR swapchainHandle);
+	void createImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle);
 
-	void createImageViews(std::vector<VkImageView>& destination, const std::vector<VkImage>& images, VkFormat format, VkImageAspectFlags aspectFlags);
-
-	VkFormat getSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags);
-
-	VkFormat getDepthFormat();
+	void createImageViews(std::vector<VkImageView> &destination, const std::vector<VkImage> &images, VkFormat format, VkImageAspectFlags aspectFlags);
 
 private:
 	const Device* pDevice_;

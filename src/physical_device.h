@@ -25,6 +25,8 @@ public:
 
 	const QueueFamilyIndexes &getQueueFamilyIndexes() const;
 
+	VkFormat getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
+
 private:
 	static bool isDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle, const std::vector<const char*> &extensions);
 

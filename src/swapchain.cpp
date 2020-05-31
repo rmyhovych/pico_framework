@@ -27,13 +27,21 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 {
 	handle_ = createHandle(swapchainConfigurations, pDevice_, surfaceHandle_);
 
+	const PhysicalDevice &physicalDevice = pDevice_->getPhysicalDevice();
+
 	ImageFactory imageFactory(pDevice_);
 	imageFactory.createImages(images_, handle_);
 	imageFactory.createImageViews(imageViews_, images_, swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
 
 	RenderPassBuilder renderPassBuilder(pDevice_->getHandle());
 	renderPassBuilder.pushBackColor(swapchainConfigurations.surfaceFormat.format);
-	VkFormat depthFormat = imageFactory.getDepthFormat();
+
+	VkFormat depthFormat = physicalDevice.getSupportedFormat(
+			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+	);
+
 	renderPassBuilder.pushBackDepth(depthFormat);
 	renderPass_ = renderPassBuilder.build();
 }
