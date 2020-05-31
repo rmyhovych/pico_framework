@@ -28,9 +28,12 @@ int main()
 
 	*/
 
-	BuddyTree tree(3, 256);
+	BuddyTree tree(256, 3);
 	int offset = tree.findFreeOffset(100);
-
+	int offset2 = tree.findFreeOffset(400);
+	int offset3 = tree.findFreeOffset(200);
+	int offset4 = tree.findFreeOffset(200);
+	int offset5 = tree.findFreeOffset(400);
 
 	return 0;
 }

@@ -7,41 +7,22 @@
 
 #include <vector>
 
-class BuddyNode
+struct BuddyNode
 {
-public:
-	explicit BuddyNode(int offset);
+	bool isTaken = false;
+	int rowPosition = 0;
 
-	~BuddyNode();
-
-	BuddyNode* addChild();
-
-	BuddyNode* addChild(BuddyNode* child);
-
-	bool isTaken() const;
-
-	void setTaken(bool taken);
-
-	int getRowPosition() const ;
-
-	int size() const;
-
-	BuddyNode* operator[](int index);
-
-private:
-	bool taken_;
-	int rowPosition_;
-
-	std::vector<BuddyNode*> children_;
+	BuddyNode* left = nullptr;
+	BuddyNode* right = nullptr;
 };
 
-
-/**---------------------------------------------------------------------------------------------------------------------*/
 
 class BuddyTree
 {
 public:
-	BuddyTree(int startingOrder, int pageSize);
+	BuddyTree(int pageSize, int startingOrder);
+
+	~BuddyTree();
 
 	void addOrder();
 
@@ -52,11 +33,15 @@ private:
 
 	BuddyNode* getFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder);
 
+	BuddyNode* addNewNode();
+
 private:
-	BuddyNode* root_;
+	const int PAGE_SIZE_;
 	int rootOrder_;
 
-	const int PAGE_SIZE_;
+	BuddyNode* root_;
+
+	std::vector<BuddyNode*> nodes_;
 };
 
 
