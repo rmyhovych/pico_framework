@@ -28,8 +28,10 @@ public:
 
 	int findFreeOffset(int size);
 
+	int size() const;
+
 private:
-	int getNodeSize(int nodeOrder);
+	int getNodeSize(int nodeOrder) const;
 
 	BuddyNode* getFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder);
 

@@ -52,7 +52,13 @@ int BuddyTree::findFreeOffset(int size)
 	return freeNode->rowPosition * getNodeSize(neededOrder);
 }
 
-int BuddyTree::getNodeSize(int nodeOrder)
+int BuddyTree::size() const
+{
+	return getNodeSize(rootOrder_);
+}
+
+
+int BuddyTree::getNodeSize(int nodeOrder) const
 {
 	return (nodeOrder + 1) * PAGE_SIZE_;
 }

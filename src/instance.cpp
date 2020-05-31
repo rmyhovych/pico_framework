@@ -72,3 +72,8 @@ VkInstance Instance::createInstanceHandle(AbsWindowManager* pWindowManager)
 
 	return instance;
 }
+
+Device* Instance::getDevice()
+{
+	return &device_;
+}

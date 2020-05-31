@@ -22,6 +22,8 @@ public:
 
 	Renderer* getRenderer();
 
+	Device* getDevice();
+
 private:
 	static VkInstance createInstanceHandle(AbsWindowManager* pWindowManager);
 
