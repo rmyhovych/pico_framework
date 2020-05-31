@@ -7,12 +7,11 @@
 #include "render_pass_builder.h"
 
 Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice) :
+		properties_(properties),
 		surfaceHandle_(surfaceHandle),
 		pDevice_(pDevice),
 
-		handle_(VK_NULL_HANDLE),
-
-		isDepth_(properties.isDepth)
+		handle_(VK_NULL_HANDLE)
 {
 }
 
@@ -59,7 +58,7 @@ void Swapchain::destroy()
 	handle_ = VK_NULL_HANDLE;
 }
 
-VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle)
+VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle)
 {
 	// minImageCount + 1 to avoid waiting
 	uint32_t nImages = swapchainConfigurations.surfaceCapabilities.minImageCount + 1;
@@ -80,12 +79,12 @@ VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations& swapchainC
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	const QueueFamilyIndexes& deviceQueueFamilyIndexes = pDevice->getQueueFamilyIndexes();
+	const QueueFamilyIndexes &deviceQueueFamilyIndexes = pDevice->getPhysicalDevice().getQueueFamilyIndexes();
 	if (deviceQueueFamilyIndexes.graphical != deviceQueueFamilyIndexes.present)
 	{
 		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 		createInfo.queueFamilyIndexCount = 2;
-		createInfo.pQueueFamilyIndices = (uint32_t*)&deviceQueueFamilyIndexes;
+		createInfo.pQueueFamilyIndices = (uint32_t*) &deviceQueueFamilyIndexes;
 	}
 	else
 	{

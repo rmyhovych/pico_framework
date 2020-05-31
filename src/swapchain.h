@@ -18,7 +18,7 @@ public:
 		bool isDepth;
 	};
 
-	Swapchain(const Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice);
+	Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice);
 	~Swapchain();
 
 	void init(const SwapchainConfigurations& swapchainConfigurations);
@@ -31,6 +31,7 @@ private:
 	static VkSwapchainKHR createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle);
 
 private:
+	Swapchain::Properties properties_;
 	VkSurfaceKHR surfaceHandle_;
 	Device* pDevice_;
 
@@ -44,8 +45,6 @@ private:
 
 	VkRenderPass renderPass_;
 	std::vector<VkFramebuffer> framebuffers_;
-
-	bool isDepth_;
 
 	std::vector<Pipeline*> pipelines_;
 };

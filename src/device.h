@@ -9,12 +9,8 @@
 #include <vector>
 
 #include "surface.h"
+#include "physical_device.h"
 
-struct QueueFamilyIndexes
-{
-	uint32_t graphical;
-	uint32_t present;
-};
 
 // TODO: separate queue management from device
 class Device
@@ -29,33 +25,16 @@ public:
 	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
 
 	VkDevice getHandle() const;
-	VkPhysicalDevice getPhysiacalDevice() const;
-
-	const QueueFamilyIndexes& getQueueFamilyIndexes() const;
+	const PhysicalDevice& getPhysicalDevice() const;
 
 	void destroy();
 
 private:
-	static bool isSuitable(VkPhysicalDevice physicalDevice, const Surface &surface, const std::vector<const char*> &extensions);
-
-	static QueueFamilyIndexes getAvailableQueueFamilyIndexes(VkPhysicalDevice physicalDevice, const Surface &surface);
-
-	static bool getQueueGraphicsFamilyIndex(VkPhysicalDevice physicalDevice, uint32_t* index);
-
-	static bool getQueuePresentFamilyIndex(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle, uint32_t* index, uint32_t priorityIndex);
-
-	static VkDevice createLogicalDevice(VkPhysicalDevice physicalDevice, const QueueFamilyIndexes &familyIndexes, const std::vector<const char*> &extensions);
-
-
-	static void setQueueCreateInfo(VkDeviceQueueCreateInfo &queueCreateInfo, uint32_t index, float priority);
-
-private:
 	VkInstance instance_;
+	VkDevice handle_;
 
-	VkPhysicalDevice physicalDevice_;
-	VkDevice logicalDevice_;
+	PhysicalDevice physicalDevice_;
 
-	QueueFamilyIndexes queueFamilyIndexes_;
 	VkQueue queueGraphics_;
 	VkQueue queuePresent_;
 };
