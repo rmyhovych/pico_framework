@@ -29,11 +29,11 @@ int main()
 	*/
 
 	BuddyTree tree(256, 10);
-	int offset = tree.findFreeOffset(100);
-	int offset2 = tree.findFreeOffset(400);
-	int offset3 = tree.findFreeOffset(200);
-	int offset4 = tree.findFreeOffset(200);
-	int offset5 = tree.findFreeOffset(400);
+	int offset = tree.findFreeNode(100);
+	int offset2 = tree.findFreeNode(400);
+	int offset3 = tree.findFreeNode(200);
+	int offset4 = tree.findFreeNode(200);
+	int offset5 = tree.findFreeNode(400);
 
 	GLFWWindowManager windowManager(800, 600);
 

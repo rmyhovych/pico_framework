@@ -10,7 +10,7 @@
 struct BuddyNode
 {
 	bool isTaken = false;
-	int rowPosition = 0;
+	int offset = 0;
 
 	BuddyNode* left = nullptr;
 	BuddyNode* right = nullptr;
@@ -26,24 +26,26 @@ public:
 
 	void addOrder();
 
-	int findFreeOffset(int size);
+	BuddyNode* findFreeNode(int size);
+
+	BuddyNode* findTakenNode(int offset);
 
 	int size() const;
 
 private:
 	int getNodeSize(int nodeOrder) const;
 
-	BuddyNode* getFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder);
+	BuddyNode* findFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder);
 
-	BuddyNode* addNewNode();
+	BuddyNode* findTakenNode(BuddyNode* subroot, int offset);
+
+	void deleteNode(BuddyNode* node);
 
 private:
 	const int PAGE_SIZE_;
 	int rootOrder_;
 
 	BuddyNode* root_;
-
-	std::vector<BuddyNode*> nodes_;
 };
 
 

@@ -9,21 +9,13 @@ BuddyTree::BuddyTree(int pageSize, int startingOrder) :
 		PAGE_SIZE_(pageSize),
 		rootOrder_(startingOrder),
 
-		root_(new BuddyNode),
-
-		nodes_(0)
+		root_(new BuddyNode)
 {
-	nodes_.push_back(root_);
 }
 
 BuddyTree::~BuddyTree()
 {
-	for (BuddyNode* n : nodes_)
-	{
-		delete n;
-	}
-
-	nodes_.resize(0);
+	deleteNode(root_);
 }
 
 void BuddyTree::addOrder()
@@ -34,22 +26,21 @@ void BuddyTree::addOrder()
 	++rootOrder_;
 }
 
-int BuddyTree::findFreeOffset(int size)
+BuddyNode* BuddyTree::findFreeNode(int size)
 {
 	int neededOrder = size / PAGE_SIZE_;
 	if (neededOrder > rootOrder_)
 	{
-		return -1;
+		return nullptr;
 	}
 
-	BuddyNode* freeNode = getFreeNode(root_, rootOrder_, neededOrder);
-	if (freeNode == nullptr)
-	{
-		return -1;
-	}
+	BuddyNode* freeNode = findFreeNode(root_, rootOrder_, neededOrder);
+	return freeNode;
+}
 
-	freeNode->isTaken = true;
-	return freeNode->rowPosition * getNodeSize(neededOrder);
+BuddyNode* BuddyTree::findTakenNode(int offset)
+{
+	return nullptr;
 }
 
 int BuddyTree::size() const
@@ -63,7 +54,7 @@ int BuddyTree::getNodeSize(int nodeOrder) const
 	return (nodeOrder + 1) * PAGE_SIZE_;
 }
 
-BuddyNode* BuddyTree::getFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder)
+BuddyNode* BuddyTree::findFreeNode(BuddyNode* subroot, int rootOrder, int neededOrder)
 {
 	if (subroot->isTaken)
 	{
@@ -82,30 +73,47 @@ BuddyNode* BuddyTree::getFreeNode(BuddyNode* subroot, int rootOrder, int neededO
 
 	if (subroot->left == nullptr)
 	{
-		subroot->left = addNewNode();
-		subroot->left->rowPosition = subroot->rowPosition * 2;
+		subroot->left = new BuddyNode;
+		subroot->left->offset = subroot->offset;
 	}
 
 	int lowerOrder = rootOrder - 1;
 
-	BuddyNode* nodeFound = getFreeNode(subroot->left, lowerOrder, neededOrder);
+	BuddyNode* nodeFound = findFreeNode(subroot->left, lowerOrder, neededOrder);
 	if (nodeFound == nullptr)
 	{
 		if (subroot->right == nullptr)
 		{
-			subroot->right = addNewNode();
-			subroot->right->rowPosition = subroot->rowPosition * 2 + 1;
+			subroot->right = new BuddyNode;
+			subroot->right->offset = subroot->offset + getNodeSize(neededOrder);
 		}
 
-		nodeFound = getFreeNode(subroot->right, lowerOrder, neededOrder);
+		nodeFound = findFreeNode(subroot->right, lowerOrder, neededOrder);
 	}
 
 	return nodeFound;
 }
 
-BuddyNode* BuddyTree::addNewNode()
+BuddyNode* BuddyTree::findTakenNode(BuddyNode* subroot, int offset)
 {
-	BuddyNode* newNode = new BuddyNode;
-	nodes_.push_back(newNode);
-	return newNode;
+	if (subroot->offset == offset && subroot->isTaken)
+		return subroot;
+
+	BuddyNode* newSubroot = offset < subroot->right->offset ? subroot->left : subroot->right;
+	if (newSubroot != nullptr)
+		return findTakenNode(newSubroot, offset);
+
+	return nullptr;
+}
+
+
+void BuddyTree::deleteNode(BuddyNode* node)
+{
+	if (node == nullptr)
+		return;
+
+	deleteNode(node->left);
+	deleteNode(node->right);
+
+	delete node;
 }
