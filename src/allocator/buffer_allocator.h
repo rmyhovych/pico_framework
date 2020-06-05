@@ -8,7 +8,7 @@
 
 #include "abs_allocator.h"
 
-class BufferAllocator : public AbsAllocator<VkImage>
+class BufferAllocator : public Allocator<VkImage>
 {
 public:
 	BufferAllocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice);

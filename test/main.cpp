@@ -29,11 +29,11 @@ int main()
 	*/
 
 	BuddyTree tree(256, 10);
-	int offset = tree.findFreeNode(100);
-	int offset2 = tree.findFreeNode(400);
-	int offset3 = tree.findFreeNode(200);
-	int offset4 = tree.findFreeNode(200);
-	int offset5 = tree.findFreeNode(400);
+	Node* n0 = tree.findFreeNode(100);
+	Node* n1 = tree.findFreeNode(400);
+	Node* n2 = tree.findFreeNode(200);
+	Node* n3 = tree.findFreeNode(200);
+	Node* n4 = tree.findFreeNode(400);
 
 	GLFWWindowManager windowManager(800, 600);
 
@@ -48,7 +48,7 @@ int main()
 
 	Device* d = instance.getDevice();
 
-	BufferAllocator alloc(d->getHandle(), d->getPhysicalDevice().getHandle());
+	//BufferAllocator alloc(d->getHandle(), d->getPhysicalDevice().getHandle());
 
 	return 0;
 }

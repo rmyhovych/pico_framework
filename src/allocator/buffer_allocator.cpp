@@ -5,7 +5,7 @@
 #include "buffer_allocator.h"
 
 BufferAllocator::BufferAllocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice) :
-		AbsAllocator<VkImage>(logicalDevice, physicalDevice, 256, 5)
+		Allocator<VkImage>(logicalDevice, physicalDevice, 4, 10)
 {
 
 }

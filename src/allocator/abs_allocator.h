@@ -8,22 +8,27 @@
 #include "pfvk.h"
 #include <map>
 #include <unordered_map>
-#include <utility>
 
-#include "buddy_tree.h"
+#include "allocator/tree/buddy_tree.h"
 
-struct MemoryInfo
+struct MemoryObject
 {
 	uint32_t index;
 	uint32_t offset;
 	uint32_t size;
 };
 
+struct MemoryAllocation
+{
+	VkDeviceMemory memory;
+	BuddyTree tree = BuddyTree(0, 0);
+};
+
 template<class T>
-class AbsAllocator
+class Allocator
 {
 public:
-	AbsAllocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice, int pageSize, int orderSize);
+	Allocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice, int pageSize, int orderSize);
 
 	virtual void allocate(const T &key) = 0;
 
@@ -38,7 +43,7 @@ private:
 
 	uint32_t getMemoryType(uint32_t memoryTypeFilter, VkMemoryPropertyFlags memoryPropertyFlags);
 
-	std::pair<VkDeviceMemory, BuddyTree> &createNewMemorySlot();
+	MemoryAllocation &createNewMemorySlot();
 
 private:
 	VkDevice logicalDevice_;
@@ -47,31 +52,29 @@ private:
 	const int PAGE_SIZE_;
 	const int ORDER_SIZE_;
 
-	std::vector<std::pair<VkDeviceMemory, BuddyTree>> memory_;
-	std::map<int, MemoryInfo> memoryMap_;
+	std::vector<MemoryAllocation> memory_;
+	std::map<int, MemoryObject> memoryMap_;
 };
 
 /**-----------------------------------------------------------------------------------------------------------------------------*/
 
 template<class T>
-AbsAllocator<T>::AbsAllocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice, int pageSize, int orderSize) :
+Allocator<T>::Allocator(VkDevice logicalDevice, VkPhysicalDevice physicalDevice, int pageSize, int orderSize) :
 		logicalDevice_(logicalDevice),
 		physicalDevice_(physicalDevice),
 
 		PAGE_SIZE_(pageSize),
 		ORDER_SIZE_(orderSize),
 
-		allocationTree_(pageSize, orderSize),
-
-		memory_(0),
+		memory_(0)
 {
 	createNewMemorySlot();
 }
 
 template<class T>
-void AbsAllocator<T>::copyData(const T &k, void* data, uint32_t size)
+void Allocator<T>::copyData(const T &k, void* data, uint32_t size)
 {
-	const MemoryInfo &info = memoryMap_[hash(k)];
+	const MemoryObject &info = memoryMap_[hash(k)];
 	VkDeviceMemory m = memory_[info.index];
 
 	void* dataPtr;
@@ -82,7 +85,7 @@ void AbsAllocator<T>::copyData(const T &k, void* data, uint32_t size)
 
 
 template<class T>
-uint32_t AbsAllocator<T>::getMemoryType(uint32_t memoryTypeFilter, VkMemoryPropertyFlags memoryPropertyFlags)
+uint32_t Allocator<T>::getMemoryType(uint32_t memoryTypeFilter, VkMemoryPropertyFlags memoryPropertyFlags)
 {
 	VkPhysicalDeviceMemoryProperties memoryProperties;
 	vkGetPhysicalDeviceMemoryProperties(physicalDevice_, &memoryProperties);
@@ -95,17 +98,18 @@ uint32_t AbsAllocator<T>::getMemoryType(uint32_t memoryTypeFilter, VkMemoryPrope
 		}
 	}
 
-	throw VulkanException("Failed to find suitable memory type.");
+	throw std::exception("Failed to find suitable memory type.");
 }
 
 template<class T>
-std::pair<VkDeviceMemory, BuddyTree> &AbsAllocator<T>::createNewMemorySlot()
+MemoryAllocation &Allocator<T>::createNewMemorySlot()
 {
-	memory_.push_back(std::pair<VkDeviceMemory, BuddyTree>(VK_NULL_HANDLE, BuddyTree(PAGE_SIZE_, ORDER_SIZE_)));
-	std::pair<VkDeviceMemory, BuddyTree> &newMemory = memory_.back();
+	MemoryAllocation allocation{VK_NULL_HANDLE, BuddyTree(PAGE_SIZE_, ORDER_SIZE_)};
+	memory_.push_back(allocation);
+	MemoryAllocation &newMemory = memory_.back();
 
+	/*
 	VkMemoryRequirements memoryRequirements;
-	getMemoryRequirements()
 
 	VkMemoryAllocateInfo allocateInfo{};
 	allocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -113,6 +117,10 @@ std::pair<VkDeviceMemory, BuddyTree> &AbsAllocator<T>::createNewMemorySlot()
 
 			vkAllo
 	newMemory.first
+
+	*/
+
+
 }
 
 

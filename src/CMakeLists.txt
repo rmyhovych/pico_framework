@@ -21,9 +21,9 @@ set(PICOFRAMEWORK_FILES
 		physical_device.cpp physical_device.h
 
 		allocator/abs_allocator.h
-		allocator/buddy_tree.cpp allocator/buddy_tree.h
+		allocator/tree/buddy_tree.cpp allocator/tree/buddy_tree.h
 		allocator/buffer_allocator.cpp allocator/buffer_allocator.h
-		)
+		allocator/tree/buddy_node.cpp)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 
