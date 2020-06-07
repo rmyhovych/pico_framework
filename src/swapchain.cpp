@@ -43,7 +43,9 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 	);
 
 	renderPassBuilder.pushBackDepth(depthFormat);
-	renderPass_ = renderPassBuilder.build();
+	renderPass_ = renderPassBuilder.getRenderPass();
+
+
 }
 
 void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
@@ -111,4 +113,14 @@ VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainC
 	CALL_VK(vkCreateSwapchainKHR(pDevice->getHandle(), &createInfo, nullptr, &swapchainHandle))
 
 	return swapchainHandle;
+}
+
+void Swapchain::createFramebuffers(std::vector<VkFramebuffer> &framebuffers, VkRenderPass renderPass, const std::vector<VkImageView> &imageViews,
+                                   VkImageView depthView)
+{
+	framebuffers.resize(imageViews.size());
+
+	VkFramebufferCreateInfo createInfo{};
+	createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+
 }

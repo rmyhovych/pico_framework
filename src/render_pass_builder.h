@@ -17,11 +17,17 @@ class RenderPassBuilder
 public:
 	explicit RenderPassBuilder(VkDevice deviceHandle);
 
-	RenderPassBuilder& pushBackColor(VkFormat format);
+	RenderPassBuilder &pushBackColor(VkFormat format);
 
-	RenderPassBuilder& pushBackDepth(VkFormat format);
+	RenderPassBuilder &pushBackDepth(VkFormat format);
 
-	VkRenderPass build();
+	VkRenderPass getRenderPass();
+
+	void createFramebuffers(std::vector<VkFramebuffer> &framebuffers,
+	                        std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent);
+
+private:
+	void updateRenderPass();
 
 private:
 	VkDevice deviceHandle_;
@@ -32,6 +38,10 @@ private:
 	VkAttachmentReference depthAttachment_;
 
 	VkSubpassDescription subpass_;
+
+
+	VkRenderPass renderPass_;
+	bool wasModified_;
 };
 
 

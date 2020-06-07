@@ -10,7 +10,10 @@ RenderPassBuilder::RenderPassBuilder(VkDevice deviceHandle) :
 		attachmentDescriptions_(0),
 		colorAttachments_(0),
 		depthAttachment_({}),
-		subpass_({})
+		subpass_({}),
+
+		renderPass_(VK_NULL_HANDLE),
+		wasModified_(true)
 {
 	subpass_.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 
@@ -21,8 +24,10 @@ RenderPassBuilder::RenderPassBuilder(VkDevice deviceHandle) :
 
 RenderPassBuilder &RenderPassBuilder::pushBackColor(VkFormat format)
 {
+	wasModified_ = true;
+
 	attachmentDescriptions_.push_back({});
-	VkAttachmentDescription& attachmentDescription = attachmentDescriptions_.back();
+	VkAttachmentDescription &attachmentDescription = attachmentDescriptions_.back();
 
 	attachmentDescription.format = format;
 	attachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -34,7 +39,7 @@ RenderPassBuilder &RenderPassBuilder::pushBackColor(VkFormat format)
 	attachmentDescription.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	colorAttachments_.push_back({});
-	VkAttachmentReference& attachmentReference = colorAttachments_.back();
+	VkAttachmentReference &attachmentReference = colorAttachments_.back();
 	attachmentReference.attachment = attachmentDescriptions_.size() - 1;
 	attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
@@ -48,8 +53,10 @@ RenderPassBuilder &RenderPassBuilder::pushBackDepth(VkFormat format)
 		throw std::exception("Depth already attached!");
 	}
 
+	wasModified_ = true;
+
 	attachmentDescriptions_.push_back({});
-	VkAttachmentDescription& attachmentDescription = attachmentDescriptions_.back();
+	VkAttachmentDescription &attachmentDescription = attachmentDescriptions_.back();
 
 	attachmentDescription.format = format;
 	attachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -68,9 +75,46 @@ RenderPassBuilder &RenderPassBuilder::pushBackDepth(VkFormat format)
 	return *this;
 }
 
-
-VkRenderPass RenderPassBuilder::build()
+VkRenderPass RenderPassBuilder::getRenderPass()
 {
+	updateRenderPass();
+	return renderPass_;
+}
+
+void RenderPassBuilder::createFramebuffers(std::vector<VkFramebuffer> &framebuffers, std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent)
+{
+	updateRenderPass();
+
+	framebuffers.resize(attachmentsList.size());
+
+	VkFramebufferCreateInfo createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	createInfo.renderPass = renderPass_;
+	createInfo.width = extent.width;
+	createInfo.height = extent.height;
+	createInfo.layers = 1;
+
+	int i = 0;
+	for (std::vector<VkImageView> &attachments : attachmentsList)
+	{
+		if (attachments.size() != attachmentDescriptions_.size())
+			throw std::exception("Framebuffer attachments count incompatible with render pass attachments!");
+
+		createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+		createInfo.pAttachments = attachments.data();
+
+		CALL_VK(vkCreateFramebuffer(deviceHandle_, &createInfo, nullptr, &framebuffers[i++]))
+	}
+}
+
+void RenderPassBuilder::updateRenderPass()
+{
+	if (!wasModified_)
+	{
+		wasModified_ = false;
+		return;
+	}
+
 	VkSubpassDescription subpass = {};
 	subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
 	subpass.colorAttachmentCount = static_cast<uint32_t>(colorAttachments_.size());
@@ -96,8 +140,5 @@ VkRenderPass RenderPassBuilder::build()
 	renderPassCreateInfo.dependencyCount = 1;
 	renderPassCreateInfo.pDependencies = &dependency;
 
-	VkRenderPass renderPass;
-	CALL_VK(vkCreateRenderPass(deviceHandle_, &renderPassCreateInfo, nullptr, &renderPass))
-
-	return renderPass;
+	CALL_VK(vkCreateRenderPass(deviceHandle_, &renderPassCreateInfo, nullptr, &renderPass_))
 }

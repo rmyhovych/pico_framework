@@ -3,7 +3,6 @@
 //
 
 #include <cstdio>
-#include "allocator/buffer_allocator.h"
 
 #include "instance.h"
 #include "window/glfw_window_manager.h"
@@ -27,13 +26,6 @@ int main()
 	pRenderer->createSwapchain(Swapchain::Properties{true});
 
 	*/
-
-	BuddyTree tree(256, 10);
-	Node* n0 = tree.fillFreeNode(100);
-	Node* n1 = tree.fillFreeNode(400);
-	Node* n2 = tree.fillFreeNode(200);
-	Node* n3 = tree.fillFreeNode(200);
-	Node* n4 = tree.fillFreeNode(400);
 
 	GLFWWindowManager windowManager(800, 600);
 
