@@ -3,13 +3,13 @@
 //
 
 #include "buddy_tree.h"
-
+#include <functional>
 
 BuddyTree::BuddyTree(uint32_t pageSize, uint32_t startingOrder) :
 		PAGE_SIZE_(pageSize),
 		rootOrder_(startingOrder),
 
-		root_(new Node)
+		root_(new BuddyNode(getNodeSize(startingOrder), 0, false))
 {
 }
 
@@ -20,22 +20,21 @@ BuddyTree::~BuddyTree()
 
 void BuddyTree::addOrder()
 {
-	Node* oldRoot = root_;
-	root_ = new Node;
+	++rootOrder_;
 
-	if (oldRoot->left != nullptr || oldRoot->right != nullptr || oldRoot->isTaken)
+	BuddyNode* oldRoot = root_;
+	if (oldRoot->getLeft() != nullptr || oldRoot->getRight() != nullptr || oldRoot->isTaken())
 	{
-		root_->left = oldRoot;
+		root_ = new BuddyNode(oldRoot);
 	}
 	else
 	{
 		delete oldRoot;
+		root_ = new BuddyNode(getNodeSize(rootOrder_), 0);
 	}
-
-	++rootOrder_;
 }
 
-BuddyTree::Node* BuddyTree::findFreeNode(uint32_t size)
+BuddyNode* BuddyTree::fillFreeNode(uint32_t size)
 {
 	uint32_t neededOrder = size / PAGE_SIZE_;
 	if (neededOrder > rootOrder_)
@@ -43,18 +42,17 @@ BuddyTree::Node* BuddyTree::findFreeNode(uint32_t size)
 		return nullptr;
 	}
 
-	Node* freeNode = findFreeNode(root_, rootOrder_, neededOrder);
-	return freeNode;
+	return fillFreeNode(root_, rootOrder_, neededOrder);
 }
 
-BuddyTree::Node* BuddyTree::findTakenNode(uint32_t offset)
+BuddyNode* BuddyTree::findTakenNode(uint32_t offset)
 {
 	return nullptr;
 }
 
-void BuddyTree::removeNode(BuddyTree::Node* node)
+void BuddyTree::removeNode(BuddyNode* node)
 {
-	root_->deleteChild(node);
+	root_->deleteDescendant(node);
 }
 
 
@@ -70,52 +68,68 @@ uint32_t BuddyTree::getNodeSize(uint32_t nodeOrder) const
 	return (nodeOrder + 1) * PAGE_SIZE_;
 }
 
-BuddyTree::Node* BuddyTree::findFreeNode(BuddyTree::Node* subroot, uint32_t rootOrder, uint32_t neededOrder)
+BuddyNode* BuddyTree::fillFreeNode(BuddyNode* subroot, uint32_t rootOrder, uint32_t neededOrder)
 {
-	if (subroot->isTaken)
+	if (subroot->isTaken())
 	{
 		return nullptr;
 	}
 
-	if (rootOrder == neededOrder)
-	{
-		if (subroot->left == nullptr)
-		{
-			return subroot;
-		}
 
-		return nullptr;
+	bool rightFirst = subroot->getLeft() == nullptr && subroot->getRight() != nullptr;
+	std::pair<std::function<BuddyNode*(void)>, std::function<void(bool)>> rightFinder(
+			[&]() -> BuddyNode*
+			{ return subroot->getRight(); },
+			[&](bool taken) -> void
+			{ subroot->setRight(taken); }
+	);
+
+	std::pair<std::function<BuddyNode*(void)>, std::function<void(bool)>> leftFinder(
+			[&]() -> BuddyNode*
+			{ return subroot->getLeft(); },
+			[&](bool taken) -> void
+			{ subroot->setLeft(taken); }
+	);
+
+	std::vector<std::pair<std::function<BuddyNode*(void)>, std::function<void(bool)>>*> nodeFinders(0);
+	if (rightFirst)
+	{
+		nodeFinders.push_back(&rightFinder);
+		nodeFinders.push_back(&leftFinder);
 	}
-
-	if (subroot->left == nullptr)
+	else
 	{
-		subroot->left = new Node;
-		subroot->left->offset = subroot->offset;
+		nodeFinders.push_back(&leftFinder);
+		nodeFinders.push_back(&rightFinder);
 	}
 
 	uint32_t lowerOrder = rootOrder - 1;
+	BuddyNode* nodeFound = nullptr;
 
-	Node* nodeFound = findFreeNode(subroot->left, lowerOrder, neededOrder);
-	if (nodeFound == nullptr)
+	bool isNextOrder = lowerOrder == neededOrder;
+	for (auto finder : nodeFinders)
 	{
-		if (subroot->right == nullptr)
+		if (finder->first() == nullptr)
 		{
-			subroot->right = new Node;
-			subroot->right->offset = subroot->offset + getNodeSize(neededOrder);
+			finder->second(isNextOrder);
+			if (isNextOrder)
+				return finder->first();
 		}
 
-		nodeFound = findFreeNode(subroot->right, lowerOrder, neededOrder);
+		nodeFound = fillFreeNode(finder->first(), lowerOrder, neededOrder);
+		if (nodeFound != nullptr)
+			break;
 	}
 
 	return nodeFound;
 }
 
-BuddyTree::Node* BuddyTree::findTakenNode(BuddyTree::Node* subroot, uint32_t offset)
+BuddyNode* BuddyTree::findTakenNode(BuddyNode* subroot, uint32_t offset)
 {
-	if (subroot->offset == offset && subroot->isTaken)
+	if (subroot->getOffset() == offset && subroot->isTaken())
 		return subroot;
 
-	Node* newSubroot = offset < subroot->right->offset ? subroot->left : subroot->right;
+	BuddyNode* newSubroot = offset < subroot->getRight()->getOffset() ? subroot->getLeft() : subroot->getRight();
 	if (newSubroot != nullptr)
 		return findTakenNode(newSubroot, offset);
 

@@ -20,10 +20,10 @@ set(PICOFRAMEWORK_FILES
 		render_pass_builder.cpp render_pass_builder.h
 		physical_device.cpp physical_device.h
 
-		allocator/abs_allocator.h
+		allocator/allocator.h
 		allocator/tree/buddy_tree.cpp allocator/tree/buddy_tree.h
 		allocator/buffer_allocator.cpp allocator/buffer_allocator.h
-		allocator/tree/buddy_node.cpp)
+		allocator/tree/buddy_node.cpp allocator/tree/buddy_node.h allocator/allocator.cpp)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

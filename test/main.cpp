@@ -29,11 +29,11 @@ int main()
 	*/
 
 	BuddyTree tree(256, 10);
-	Node* n0 = tree.findFreeNode(100);
-	Node* n1 = tree.findFreeNode(400);
-	Node* n2 = tree.findFreeNode(200);
-	Node* n3 = tree.findFreeNode(200);
-	Node* n4 = tree.findFreeNode(400);
+	Node* n0 = tree.fillFreeNode(100);
+	Node* n1 = tree.fillFreeNode(400);
+	Node* n2 = tree.fillFreeNode(200);
+	Node* n3 = tree.fillFreeNode(200);
+	Node* n4 = tree.fillFreeNode(400);
 
 	GLFWWindowManager windowManager(800, 600);
 

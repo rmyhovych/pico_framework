@@ -6,7 +6,7 @@
 #define PICOFRAMEWORK_BUFFER_ALLOCATOR_H
 
 
-#include "abs_allocator.h"
+#include "allocator.h"
 
 class BufferAllocator : public Allocator<VkImage>
 {
