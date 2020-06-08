@@ -33,6 +33,7 @@ private:
 	static void createFramebuffers(std::vector<VkFramebuffer> &framebuffers, VkRenderPass renderPass, const std::vector<VkImageView> &imageViews,
 	                               VkImageView depthView = VK_NULL_HANDLE);
 
+	void getImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle);
 
 private:
 	Swapchain::Properties properties_;

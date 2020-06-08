@@ -20,10 +20,7 @@ Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties& 
 
 Instance::~Instance()
 {
-	if (renderer_ != nullptr)
-	{
-		delete renderer_;
-	}
+	delete renderer_;
 
 	device_.destroy();
 	surface_.destroy();

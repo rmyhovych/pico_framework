@@ -13,6 +13,8 @@ Device::Device(const Device::Properties &properties, VkInstance instance, const 
 	handle_ = physicalDevice_.createLogicalDevice(properties.extensions);
 	const QueueFamilyIndexes &queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
 
+	allocator_.init(instance_, handle_, physicalDevice_.getHandle());
+
 	// Queues
 	vkGetDeviceQueue(handle_, queueFamilyIndexes.graphical, 0, &queueGraphics_);
 	vkGetDeviceQueue(handle_, queueFamilyIndexes.present, 0, &queuePresent_);
@@ -30,5 +32,12 @@ const PhysicalDevice &Device::getPhysicalDevice() const
 
 void Device::destroy()
 {
+	allocator_.destroy();
 	vkDestroyDevice(handle_, nullptr);
+}
+
+
+Allocator* Device::getAllocator()
+{
+	return &allocator_;
 }

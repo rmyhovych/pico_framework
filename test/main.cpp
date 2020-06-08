@@ -3,6 +3,7 @@
 //
 
 #include <cstdio>
+#include <resource_factory.h>
 
 #include "instance.h"
 #include "window/glfw_window_manager.h"
@@ -40,7 +41,8 @@ int main()
 
 	Device* d = instance.getDevice();
 
-	//BufferAllocator alloc(d->getHandle(), d->getPhysicalDevice().getHandle());
+	ResourceFactory resourceFactory(d);
+	resourceFactory.createImage(VkExtent2D{500, 500}, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
 	return 0;
 }

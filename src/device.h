@@ -10,9 +10,9 @@
 
 #include "surface.h"
 #include "physical_device.h"
+#include "allocator.h"
 
 
-// TODO: separate queue management from device
 class Device
 {
 public:
@@ -24,6 +24,8 @@ public:
 
 	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
 
+	Allocator* getAllocator();
+
 	VkDevice getHandle() const;
 	const PhysicalDevice& getPhysicalDevice() const;
 
@@ -34,6 +36,8 @@ private:
 	VkDevice handle_;
 
 	PhysicalDevice physicalDevice_;
+
+	Allocator allocator_;
 
 	VkQueue queueGraphics_;
 	VkQueue queuePresent_;

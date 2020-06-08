@@ -3,7 +3,7 @@
 //
 
 #include "swapchain.h"
-#include "image_factory.h"
+#include "resource_factory.h"
 #include "render_pass_builder.h"
 
 Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice) :
@@ -26,16 +26,18 @@ Swapchain::~Swapchain()
 void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 {
 	handle_ = createHandle(swapchainConfigurations, pDevice_, surfaceHandle_);
+	getImages(images_, handle_);
 
-	const PhysicalDevice &physicalDevice = pDevice_->getPhysicalDevice();
+	ResourceFactory resourceFactory(pDevice_);
 
-	ImageFactory imageFactory(pDevice_);
-	imageFactory.createImages(images_, handle_);
-	imageFactory.createImageViews(imageViews_, images_, swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
+	imageViews_.resize(images_.size());
+	for (uint32_t i = 0; i < imageViews_.size(); ++i)
+		imageViews_[i] = resourceFactory.createImageView(images_[i], swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
 
 	RenderPassBuilder renderPassBuilder(pDevice_->getHandle());
 	renderPassBuilder.pushBackColor(swapchainConfigurations.surfaceFormat.format);
 
+	const PhysicalDevice &physicalDevice = pDevice_->getPhysicalDevice();
 	VkFormat depthFormat = physicalDevice.getSupportedFormat(
 			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
 			VK_IMAGE_TILING_OPTIMAL,
@@ -44,8 +46,6 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 
 	renderPassBuilder.pushBackDepth(depthFormat);
 	renderPass_ = renderPassBuilder.getRenderPass();
-
-
 }
 
 void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
@@ -123,4 +123,14 @@ void Swapchain::createFramebuffers(std::vector<VkFramebuffer> &framebuffers, VkR
 	VkFramebufferCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 
+}
+
+void Swapchain::getImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle)
+{
+	VkDevice deviceHandle = pDevice_->getHandle();
+
+	uint32_t nImages = 0;
+	vkGetSwapchainImagesKHR(deviceHandle, swapchainHandle, &nImages, nullptr);
+	destination.resize(nImages);
+	vkGetSwapchainImagesKHR(deviceHandle, swapchainHandle, &nImages, destination.data());
 }

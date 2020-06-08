@@ -16,14 +16,10 @@ set(PICOFRAMEWORK_FILES
 		renderer.cpp renderer.h
 		swapchain.cpp swapchain.h
 		pipeline.cpp pipeline.h
-		image_factory.cpp image_factory.h
 		render_pass_builder.cpp render_pass_builder.h
 		physical_device.cpp physical_device.h
 
-		allocator/allocator.h
-		allocator/tree/buddy_tree.cpp allocator/tree/buddy_tree.h
-		allocator/buffer_allocator.cpp allocator/buffer_allocator.h
-		allocator/tree/buddy_node.cpp allocator/tree/buddy_node.h allocator/allocator.cpp)
+		resource_factory.cpp resource_factory.h allocator.cpp allocator.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 
@@ -37,6 +33,7 @@ target_include_directories(
 		${LIBS_PATH}/glfw-3.3.2/include
 		${LIBS_PATH}/glm-0.9.9.6
 		${LIBS_PATH}/stb
+		${LIBS_PATH}/vma
 
 		${VULKAN_PATH}/Include
 )
