@@ -10,7 +10,7 @@
 
 #include "surface.h"
 #include "physical_device.h"
-#include "allocator.h"
+#include "allocator/allocator.h"
 
 
 class Device
@@ -27,7 +27,10 @@ public:
 	Allocator* getAllocator();
 
 	VkDevice getHandle() const;
-	const PhysicalDevice& getPhysicalDevice() const;
+
+	const PhysicalDevice &getPhysicalDevice() const;
+
+	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags) const;
 
 	void destroy();
 

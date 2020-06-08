@@ -19,7 +19,7 @@ set(PICOFRAMEWORK_FILES
 		render_pass_builder.cpp render_pass_builder.h
 		physical_device.cpp physical_device.h
 
-		resource_factory.cpp resource_factory.h allocator.cpp allocator.h)
+		resource_factory.cpp resource_factory.h allocator/allocator.cpp allocator/allocator.h allocator/staging_allocator.cpp allocator/staging_allocator.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

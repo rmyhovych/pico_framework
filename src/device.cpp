@@ -13,7 +13,7 @@ Device::Device(const Device::Properties &properties, VkInstance instance, const 
 	handle_ = physicalDevice_.createLogicalDevice(properties.extensions);
 	const QueueFamilyIndexes &queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
 
-	allocator_.init(instance_, handle_, physicalDevice_.getHandle());
+	allocator_.init(instance_, this);
 
 	// Queues
 	vkGetDeviceQueue(handle_, queueFamilyIndexes.graphical, 0, &queueGraphics_);
@@ -40,4 +40,17 @@ void Device::destroy()
 Allocator* Device::getAllocator()
 {
 	return &allocator_;
+}
+
+VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags) const
+{
+	VkCommandPoolCreateInfo commandPoolCreateInfo{};
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	commandPoolCreateInfo.queueFamilyIndex = physicalDevice_.getQueueFamilyIndexes().graphical;
+	commandPoolCreateInfo.flags = flags;
+	commandPoolCreateInfo.pNext = nullptr;
+
+	VkCommandPool commandPool;
+	CALL_VK(vkCreateCommandPool(handle_, &commandPoolCreateInfo, nullptr, &commandPool))
+	return commandPool;
 }
