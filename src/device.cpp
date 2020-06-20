@@ -8,16 +8,22 @@ Device::Device(const Device::Properties &properties, VkInstance instance, const 
 		instance_(instance),
 		handle_(VK_NULL_HANDLE),
 
-		physicalDevice_(instance, surface.getHandle(), properties.type, properties.extensions)
+		physicalDevice_(instance, surface.getHandle(), properties.type, properties.extensions),
+
+		pAllocator_(nullptr)
 {
 	handle_ = physicalDevice_.createLogicalDevice(properties.extensions);
 	const QueueFamilyIndexes &queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
 
-	allocator_.init(instance_, this);
-
 	// Queues
 	vkGetDeviceQueue(handle_, queueFamilyIndexes.graphical, 0, &queueGraphics_);
 	vkGetDeviceQueue(handle_, queueFamilyIndexes.present, 0, &queuePresent_);
+
+	pAllocator_ = Allocator::Builder()
+			.setInstance(instance_)
+			.setDevices(handle_, physicalDevice_.getHandle())
+			.setTransferData(createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT, queueFamilyIndexes.graphical), queueGraphics_)
+			.build();
 }
 
 VkDevice Device::getHandle() const
@@ -32,21 +38,21 @@ const PhysicalDevice &Device::getPhysicalDevice() const
 
 void Device::destroy()
 {
-	allocator_.destroy();
+	delete pAllocator_;
 	vkDestroyDevice(handle_, nullptr);
 }
 
 
 Allocator* Device::getAllocator()
 {
-	return &allocator_;
+	return pAllocator_;
 }
 
-VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags) const
+VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueIndex) const
 {
 	VkCommandPoolCreateInfo commandPoolCreateInfo{};
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	commandPoolCreateInfo.queueFamilyIndex = physicalDevice_.getQueueFamilyIndexes().graphical;
+	commandPoolCreateInfo.queueFamilyIndex = queueIndex;
 	commandPoolCreateInfo.flags = flags;
 	commandPoolCreateInfo.pNext = nullptr;
 

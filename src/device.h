@@ -30,7 +30,7 @@ public:
 
 	const PhysicalDevice &getPhysicalDevice() const;
 
-	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags) const;
+	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueIndex) const;
 
 	void destroy();
 
@@ -40,7 +40,7 @@ private:
 
 	PhysicalDevice physicalDevice_;
 
-	Allocator allocator_;
+	Allocator* pAllocator_;
 
 	VkQueue queueGraphics_;
 	VkQueue queuePresent_;

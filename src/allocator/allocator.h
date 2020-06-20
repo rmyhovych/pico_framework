@@ -29,41 +29,71 @@ public:
 	{
 	public:
 
-		BufferAllocation stageBuffer(VkBuffer buffer, VkBufferUsageFlags usage, VkBufferCopy bufferCopy);
+		BufferAllocation stageBuffer(BufferAllocation &source, VkBufferUsageFlags usage, VkDeviceSize size);
 
 		ImageAllocation stageImage(VkBuffer buffer, uint32_t size);
 
-		void execute();
-
 	private:
-		StagingCommand(VkDevice device, VmaAllocator allocator, VkCommandPool commandPool, VmaMemoryUsage finalUsage);
+		friend Allocator;
+
+		StagingCommand(VkDevice device, VmaAllocator allocator, VkCommandBuffer transferCommandBuffer, VkQueue transferQueue, VmaMemoryUsage finalUsage);
 
 		VkDevice deviceHandle_;
 		VmaAllocator allocator_;
-		VkCommandPool commandPool_;
 
 		VmaAllocationCreateInfo allocationCreateInfo_;
 
-		VkCommandBuffer commandBuffer_;
+		VkCommandBuffer transferCommandBuffer_;
+
+		VkQueue transferQueue_;
 	};
 
-	Allocator();
+	class Builder
+	{
+	public:
+		Builder();
 
-	void init(VkInstance instance, Device* pDevice);
+		Builder &setInstance(VkInstance instance);
 
-	void destroy();
+		Builder &setDevices(VkDevice device, VkPhysicalDevice physicalDevice);
+
+		Builder &setTransferData(VkCommandPool transferCommandPool, VkQueue transferQueue);
+
+		Allocator* build() const;
+
+	private:
+		VkInstance instance_;
+		VkDevice device_;
+		VkPhysicalDevice physicalDevice_;
+		VkCommandPool transferCommandPool_;
+		VkQueue transferQueue_;
+	};
+
+	~Allocator();
 
 	BufferAllocation createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
 	ImageAllocation createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
+	void free(BufferAllocation &allocation) const;
+
+	void free(ImageAllocation &allocation) const;
+
 	void* map(VmaAllocation allocation);
 
 	void unmap(VmaAllocation allocation);
 
+	StagingCommand* createStagingCommand(VmaMemoryUsage finalUsage) const;
+
+	void executeStagingCommand(StagingCommand* stagingCommand) const;
+
 private:
-	Device* pDevice_;
-	VkCommandPool commandPool_;
+	Allocator(VkInstance instance, VkDevice device, VkPhysicalDevice physicalDevice, VkCommandPool transferCommandPool, VkQueue transferQueue);
+
+	VkDevice device_;
+
+	VkCommandPool transferCommandPool_;
+	VkQueue transferQueue_;
 
 	VmaAllocator vmaAllocator_;
 };
