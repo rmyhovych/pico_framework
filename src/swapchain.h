@@ -19,24 +19,33 @@ public:
 	};
 
 	Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfaceHandle, Device* pDevice);
+
 	~Swapchain();
 
-	void init(const SwapchainConfigurations& swapchainConfigurations);
+	Pipeline* createPipeline();
 
-	void reset(const SwapchainConfigurations& swapchainConfigurations);
+	void recordCommands() const;
 
-private:
+	void init(const SwapchainConfigurations &swapchainConfigurations);
+
 	void destroy();
 
-	static VkSwapchainKHR createHandle(const SwapchainConfigurations& swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle);
+	void reset(const SwapchainConfigurations &swapchainConfigurations);
 
-	static void createFramebuffers(std::vector<VkFramebuffer> &framebuffers, VkRenderPass renderPass, const std::vector<VkImageView> &imageViews,
-	                               VkImageView depthView = VK_NULL_HANDLE);
+private:
+	static VkSwapchainKHR createHandle(const SwapchainConfigurations &swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle);
 
 	void getImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle);
 
+	void createDepthResources(VkExtent2D extent);
+
+	void createFramebuffers(VkExtent2D extent);
+
+	void createCommandBuffers();
+
 private:
 	Swapchain::Properties properties_;
+
 	VkSurfaceKHR surfaceHandle_;
 	Device* pDevice_;
 
@@ -45,11 +54,14 @@ private:
 	std::vector<VkImage> images_;
 	std::vector<VkImageView> imageViews_;
 
-	VkImage depthImage_;
+	ImageAllocation depthImageAllocation_;
 	VkImageView depthImageView_;
 
 	VkRenderPass renderPass_;
 	std::vector<VkFramebuffer> framebuffers_;
+
+	VkCommandPool commandPool_;
+	std::vector<VkCommandBuffer> commandBuffers_;
 
 	std::vector<Pipeline*> pipelines_;
 };

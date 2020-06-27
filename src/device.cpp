@@ -22,7 +22,7 @@ Device::Device(const Device::Properties &properties, VkInstance instance, const 
 	pAllocator_ = Allocator::Builder()
 			.setInstance(instance_)
 			.setDevices(handle_, physicalDevice_.getHandle())
-			.setTransferData(createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT, queueFamilyIndexes.graphical), queueGraphics_)
+			.setTransferData(createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT, TRANSFER), queueGraphics_)
 			.build();
 }
 
@@ -48,11 +48,23 @@ Allocator* Device::getAllocator()
 	return pAllocator_;
 }
 
-VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueIndex) const
+VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, FamilyIndexType familyIndexType) const
 {
+	QueueFamilyIndexes queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
+
 	VkCommandPoolCreateInfo commandPoolCreateInfo{};
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	commandPoolCreateInfo.queueFamilyIndex = queueIndex;
+	switch (familyIndexType)
+	{
+		case TRANSFER:
+		case GRAPHICAL:
+			commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndexes.graphical;
+			break;
+
+		case PRESENT:
+			commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndexes.present;
+			break;
+	}
 	commandPoolCreateInfo.flags = flags;
 	commandPoolCreateInfo.pNext = nullptr;
 

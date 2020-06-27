@@ -11,8 +11,23 @@ Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfa
 		surfaceHandle_(surfaceHandle),
 		pDevice_(pDevice),
 
-		handle_(VK_NULL_HANDLE)
+		handle_(VK_NULL_HANDLE),
+
+		images_(),
+		imageViews_(),
+
+		depthImageAllocation_({VK_NULL_HANDLE, VK_NULL_HANDLE}),
+		depthImageView_(VK_NULL_HANDLE),
+
+		renderPass_(VK_NULL_HANDLE),
+		framebuffers_(),
+
+		commandPool_(VK_NULL_HANDLE),
+		commandBuffers_(),
+
+		pipelines_()
 {
+	commandPool_ = pDevice_->createCommandPool(0, GRAPHICAL);
 }
 
 Swapchain::~Swapchain()
@@ -46,12 +61,13 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 
 	renderPassBuilder.pushBackDepth(depthFormat);
 	renderPass_ = renderPassBuilder.getRenderPass();
-}
 
-void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
-{
-	destroy();
-	init(swapchainConfigurations);
+	if (properties_.isDepth)
+		createDepthResources(swapchainConfigurations.extent);
+
+	createFramebuffers(swapchainConfigurations.extent);
+
+	createCommandBuffers();
 }
 
 void Swapchain::destroy()
@@ -67,6 +83,13 @@ void Swapchain::destroy()
 	vkDestroySwapchainKHR(deviceHandle, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
+
+void Swapchain::reset(const SwapchainConfigurations &swapchainConfigurations)
+{
+	destroy();
+	init(swapchainConfigurations);
+}
+
 
 VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainConfigurations, const Device* pDevice, VkSurfaceKHR surfaceHandle)
 {
@@ -115,16 +138,6 @@ VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainC
 	return swapchainHandle;
 }
 
-void Swapchain::createFramebuffers(std::vector<VkFramebuffer> &framebuffers, VkRenderPass renderPass, const std::vector<VkImageView> &imageViews,
-                                   VkImageView depthView)
-{
-	framebuffers.resize(imageViews.size());
-
-	VkFramebufferCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-
-}
-
 void Swapchain::getImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle)
 {
 	VkDevice deviceHandle = pDevice_->getHandle();
@@ -133,4 +146,76 @@ void Swapchain::getImages(std::vector<VkImage> &destination, VkSwapchainKHR swap
 	vkGetSwapchainImagesKHR(deviceHandle, swapchainHandle, &nImages, nullptr);
 	destination.resize(nImages);
 	vkGetSwapchainImagesKHR(deviceHandle, swapchainHandle, &nImages, destination.data());
+}
+
+
+void Swapchain::createDepthResources(VkExtent2D extent)
+{
+	Allocator* pAllocator = pDevice_->getAllocator();
+	VkFormat depthFormat = pDevice_->getPhysicalDevice().getSupportedFormat(
+			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+	);
+
+	VkImageCreateInfo imageCreateInfo{};
+	imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+	imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+
+	imageCreateInfo.extent.width = extent.width;
+	imageCreateInfo.extent.height = extent.height;
+	imageCreateInfo.extent.depth = 1;
+
+	imageCreateInfo.mipLevels = 1;
+	imageCreateInfo.arrayLayers = 1;
+	imageCreateInfo.format = depthFormat;
+	imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+	imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+	imageCreateInfo.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+	imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+	imageCreateInfo.flags = 0;
+
+	pAllocator->createImage(&depthImageAllocation_, imageCreateInfo, VMA_MEMORY_USAGE_GPU_ONLY);
+
+}
+
+void Swapchain::createFramebuffers(VkExtent2D extent)
+{
+	framebuffers_.resize(imageViews_.size());
+	std::vector<VkImageView> attachments;
+	attachments.push_back(VK_NULL_HANDLE);
+
+	if (properties_.isDepth)
+		attachments.push_back(depthImageView_);
+
+	VkFramebufferCreateInfo createInfo{};
+	createInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+	createInfo.renderPass = renderPass_;
+	createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+	createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+	createInfo.pAttachments = attachments.data();
+	createInfo.width = extent.width;
+	createInfo.height = extent.height;
+	createInfo.layers = 1;
+
+	VkDevice deviceHandle = pDevice_->getHandle();
+
+	for (int i = framebuffers_.size() - 1; i >= 0; --i)
+	{
+		attachments[0] = imageViews_[i];
+		CALL_VK(vkCreateFramebuffer(deviceHandle, &createInfo, nullptr, &framebuffers_[i]))
+	}
+}
+
+void Swapchain::createCommandBuffers()
+{
+	commandBuffers_.resize(framebuffers_.size());
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo = {};
+	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	commandBufferAllocateInfo.commandPool = commandPool_;
+	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	commandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers_.size());
+
+	CALL_VK(vkAllocateCommandBuffers(pDevice_->getHandle(), &commandBufferAllocateInfo, commandBuffers_.data()))
 }

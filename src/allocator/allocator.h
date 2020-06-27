@@ -31,7 +31,7 @@ public:
 
 		BufferAllocation stageBuffer(BufferAllocation &source, VkBufferUsageFlags usage, VkDeviceSize size);
 
-		ImageAllocation stageImage(VkBuffer buffer, uint32_t size);
+		ImageAllocation stageImage(BufferAllocation &source, VkBufferUsageFlags usage, VkDeviceSize size);
 
 	private:
 		friend Allocator;
@@ -71,9 +71,9 @@ public:
 
 	~Allocator();
 
-	BufferAllocation createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	void createBuffer(BufferAllocation* dst, VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
-	ImageAllocation createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	void createImage(ImageAllocation* dst, VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
 	void free(BufferAllocation &allocation) const;
 

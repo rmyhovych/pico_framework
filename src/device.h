@@ -12,6 +12,10 @@
 #include "physical_device.h"
 #include "allocator/allocator.h"
 
+enum FamilyIndexType
+{
+	GRAPHICAL, TRANSFER, PRESENT
+};
 
 class Device
 {
@@ -30,7 +34,7 @@ public:
 
 	const PhysicalDevice &getPhysicalDevice() const;
 
-	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueIndex) const;
+	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, FamilyIndexType familyIndexType) const;
 
 	void destroy();
 

@@ -47,7 +47,7 @@ BufferAllocation Allocator::StagingCommand::stageBuffer(BufferAllocation &source
 	return allocation;
 }
 
-ImageAllocation Allocator::StagingCommand::stageImage(VkBuffer buffer, uint32_t size)
+ImageAllocation Allocator::StagingCommand::stageImage(BufferAllocation &source, VkBufferUsageFlags usage, VkDeviceSize size)
 {
 	return ImageAllocation();
 }
@@ -130,28 +130,22 @@ Allocator::~Allocator()
 	vkDestroyCommandPool(device_, transferCommandPool_, nullptr);
 }
 
-BufferAllocation Allocator::createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+void Allocator::createBuffer(BufferAllocation* dst, VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;
 	allocationCreateInfo.flags = flags;
 
-	BufferAllocation allocation{};
-	CALL_VK(vmaCreateBuffer(vmaAllocator_, &bufferCreateInfo, &allocationCreateInfo, &allocation.buffer, &allocation.allocation, nullptr))
-
-	return allocation;
+	CALL_VK(vmaCreateBuffer(vmaAllocator_, &bufferCreateInfo, &allocationCreateInfo, &dst.buffer, &dst.allocation, nullptr))
 }
 
-ImageAllocation Allocator::createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+void Allocator::createImage(ImageAllocation* dst, VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;
 	allocationCreateInfo.flags = flags;
 
-	ImageAllocation allocation{};
-	CALL_VK(vmaCreateImage(vmaAllocator_, &imageCreateInfo, &allocationCreateInfo, &allocation.image, &allocation.allocation, nullptr))
-
-	return allocation;
+	CALL_VK(vmaCreateImage(vmaAllocator_, &imageCreateInfo, &allocationCreateInfo, &dst->image, &dst->allocation, nullptr))
 }
 
 
