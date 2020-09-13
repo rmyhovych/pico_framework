@@ -15,6 +15,7 @@ class GLFWWindowManager : public AbsWindowManager
 {
 public:
 	GLFWWindowManager(uint32_t width, uint32_t height);
+
 	~GLFWWindowManager();
 
 	std::vector<const char*> getRequiredInstanceExtensions() const override;

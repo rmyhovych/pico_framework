@@ -14,7 +14,7 @@ PhysicalDevice::PhysicalDevice(VkInstance instanceHandle, VkSurfaceKHR surfaceHa
 
 	if (deviceCount < 1)
 	{
-		throw std::exception("No devices supporting Vulkan found!");
+		throw std::runtime_error("No devices supporting Vulkan found!");
 	}
 
 	std::vector<VkPhysicalDevice> physicalDevices(deviceCount);
@@ -40,7 +40,7 @@ PhysicalDevice::PhysicalDevice(VkInstance instanceHandle, VkSurfaceKHR surfaceHa
 
 		if (!isDeviceSuitable(handle_, surfaceHandle, neededExtensions))
 		{
-			throw std::exception("No device is suitable!");
+			throw std::runtime_error("No device is suitable!");
 		}
 	}
 
@@ -116,7 +116,7 @@ VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candida
 			return format;
 		}
 
-		throw std::exception("Failed to find supported format.");
+		throw std::runtime_error("Failed to find supported format.");
 	}
 }
 
@@ -159,12 +159,12 @@ QueueFamilyIndexes PhysicalDevice::getAvailableQueueFamilyIndexes(VkPhysicalDevi
 	QueueFamilyIndexes familyIndexes = {0, 0};
 	if (!getQueueFamilyIndexGraphics(physicalDevice, &familyIndexes.graphical))
 	{
-		throw std::exception("Device not suitable.");
+		throw std::runtime_error("Device not suitable.");
 	}
 
 	if (!getQueueFamilyIndexPresent(physicalDevice, surfaceHandle, &familyIndexes.present, familyIndexes.graphical))
 	{
-		throw std::exception("Device not suitable.");
+		throw std::runtime_error("Device not suitable.");
 	}
 
 	return familyIndexes;

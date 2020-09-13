@@ -9,6 +9,7 @@ cmake-build-*/
 
 # File-based project format
 *.iws
+*.cbp
 
 # IntelliJ
 out/
@@ -21,3 +22,16 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
+
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+*.a
+*.out

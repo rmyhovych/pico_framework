@@ -16,7 +16,7 @@
 class Instance
 {
 public:
-	Instance(AbsWindowManager* pWindowManager, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties);
+	Instance(AbsWindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties);
 
 	~Instance();
 

@@ -27,7 +27,9 @@ ImageAllocation ResourceFactory::createImage(VkExtent2D extent, VkFormat format,
 	imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	imageCreateInfo.flags = 0;
 
-	return pAllocator_->createImage(imageCreateInfo, memoryUsage);
+	ImageAllocation dst;
+	pAllocator_->createImage(&dst, imageCreateInfo, memoryUsage, VMA_ALLOCATION_CREATE_NEVER_ALLOCATE_BIT);
+	return dst;
 }
 
 VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const

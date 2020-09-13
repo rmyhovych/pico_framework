@@ -7,7 +7,7 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* pWindowManager) :
+Surface::Surface(const Surface::Properties &properties, VkInstance instance, AbsWindowManager* pWindowManager) :
 		handle_(VK_NULL_HANDLE),
 		instance_(instance),
 		pWindowManager_(pWindowManager),
@@ -15,11 +15,11 @@ Surface::Surface(const Surface::Properties& properties, VkInstance instance, Abs
 {
 	if (instance == VK_NULL_HANDLE)
 	{
-		throw std::exception("Can't construct surface with NULL instance handle!");
+		throw std::runtime_error("Can't construct surface with NULL instance handle!");
 	}
 	if (pWindowManager == nullptr)
 	{
-		throw std::exception("Can't init Surface with NULL window manager!");
+		throw std::runtime_error("Can't init Surface with NULL window manager!");
 	}
 
 	pWindowManager_ = pWindowManager;

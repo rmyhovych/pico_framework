@@ -7,7 +7,7 @@
 #include <vector>
 
 
-Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties& surfaceProperties, const Device::Properties& deviceProperties) :
+Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties) :
 		handle_(createInstanceHandle(pWindowManager)),
 		pWindowManager_(pWindowManager),
 

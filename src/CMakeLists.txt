@@ -19,9 +19,13 @@ set(PICOFRAMEWORK_FILES
 		render_pass_builder.cpp render_pass_builder.h
 		physical_device.cpp physical_device.h
 
-		resource_factory.cpp resource_factory.h allocator/allocator.cpp allocator/allocator.h allocator/staging_allocator.cpp allocator/staging_allocator.h)
+		resource_factory.cpp resource_factory.h
+		allocator/allocator.cpp allocator/allocator.h
+		)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
+
+message("MESSAGE : ${VULKAN_PATH}")
 
 target_include_directories(
 		PICOFRAMEWORK
@@ -35,12 +39,12 @@ target_include_directories(
 		${LIBS_PATH}/stb
 		${LIBS_PATH}/vma
 
-		${VULKAN_PATH}/Include
+		${VULKAN_INCLUDE_PATH}
 )
 
 target_link_libraries(
 		PICOFRAMEWORK
 
 		${LIBS_PATH}/glfw-3.3.2/lib/glfw3.lib
-		${VULKAN_PATH}/Lib/vulkan-1.lib
+		Vulkan
 )

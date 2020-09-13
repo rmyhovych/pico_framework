@@ -5,7 +5,6 @@
 #define VMA_IMPLEMENTATION
 
 #include "allocator.h"
-#include "device.h"
 
 
 Allocator::StagingCommand::StagingCommand(VkDevice device, VmaAllocator allocator, VkCommandBuffer transferCommandBuffer, VkQueue transferQueue, VmaMemoryUsage finalUsage) :
@@ -49,6 +48,7 @@ BufferAllocation Allocator::StagingCommand::stageBuffer(BufferAllocation &source
 
 ImageAllocation Allocator::StagingCommand::stageImage(BufferAllocation &source, VkBufferUsageFlags usage, VkDeviceSize size)
 {
+	// TODO
 	return ImageAllocation();
 }
 
@@ -89,7 +89,7 @@ Allocator* Allocator::Builder::build() const
 	    transferCommandPool_ == VK_NULL_HANDLE ||
 	    transferQueue_ == VK_NULL_HANDLE)
 	{
-		throw std::exception("Missing parameter for allocator building!");
+		throw std::runtime_error("Missing parameter for allocator building!");
 	}
 
 	return new Allocator(instance_, device_, physicalDevice_, transferCommandPool_, transferQueue_);
@@ -136,7 +136,7 @@ void Allocator::createBuffer(BufferAllocation* dst, VkBufferCreateInfo &bufferCr
 	allocationCreateInfo.usage = memoryUsage;
 	allocationCreateInfo.flags = flags;
 
-	CALL_VK(vmaCreateBuffer(vmaAllocator_, &bufferCreateInfo, &allocationCreateInfo, &dst.buffer, &dst.allocation, nullptr))
+	CALL_VK(vmaCreateBuffer(vmaAllocator_, &bufferCreateInfo, &allocationCreateInfo, &dst->buffer, &dst->allocation, nullptr))
 }
 
 void Allocator::createImage(ImageAllocation* dst, VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const

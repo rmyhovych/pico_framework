@@ -27,7 +27,7 @@ GLFWWindowManager::GLFWWindowManager(uint32_t width, uint32_t height) :
 	if (pWindow_ == nullptr)
 	{
 		glfwTerminate();
-		throw std::exception("Failed to create GLFW window!");
+		throw std::runtime_error("Failed to create GLFW window!");
 	}
 }
 

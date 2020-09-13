@@ -50,7 +50,7 @@ RenderPassBuilder &RenderPassBuilder::pushBackDepth(VkFormat format)
 {
 	if (subpass_.pDepthStencilAttachment != nullptr)
 	{
-		throw std::exception("Depth already attached!");
+		throw std::runtime_error("Depth already attached!");
 	}
 
 	wasModified_ = true;
@@ -98,7 +98,7 @@ void RenderPassBuilder::createFramebuffers(std::vector<VkFramebuffer> &framebuff
 	for (std::vector<VkImageView> &attachments : attachmentsList)
 	{
 		if (attachments.size() != attachmentDescriptions_.size())
-			throw std::exception("Framebuffer attachments count incompatible with render pass attachments!");
+			throw std::runtime_error("Framebuffer attachments count incompatible with render pass attachments!");
 
 		createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		createInfo.pAttachments = attachments.data();

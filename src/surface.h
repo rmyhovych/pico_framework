@@ -27,7 +27,7 @@ public:
 		VkFormat format;
 	};
 
-	explicit Surface(const Surface::Properties& properties, VkInstance instance, AbsWindowManager* pWindowManager);
+	explicit Surface(const Surface::Properties &properties, VkInstance instance, AbsWindowManager* pWindowManager);
 
 	void destroy();
 
