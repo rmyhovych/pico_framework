@@ -2,17 +2,17 @@
 // Created by rmyho on 5/20/2020.
 //
 
-#ifndef PICOFRAMEWORK_ABS_WINDOW_MANAGER_H
-#define PICOFRAMEWORK_ABS_WINDOW_MANAGER_H
+#ifndef PICOFRAMEWORK_WINDOW_MANAGER_H
+#define PICOFRAMEWORK_WINDOW_MANAGER_H
 
 #include <pfvk.h>
 #include <functional>
 #include <vector>
 
-class AbsWindowManager
+class WindowManager
 {
 public:
-	AbsWindowManager();
+	WindowManager();
 
 	virtual VkSurfaceKHR createSurfaceHandle(VkInstance instance) = 0;
 
@@ -22,11 +22,11 @@ public:
 
 	void setResizeCallback(std::function<void(VkExtent2D)> resizeCallback);
 
-	void callResizeCallback(VkExtent2D newSize) const;
+	void resize(VkExtent2D newSize) const;
 
 private:
 	std::function<void(VkExtent2D)> resizeCallback_;
 };
 
 
-#endif //PICOFRAMEWORK_ABS_WINDOW_MANAGER_H
+#endif //PICOFRAMEWORK_WINDOW_MANAGER_H

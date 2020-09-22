@@ -83,7 +83,7 @@ public:
 
 	void unmap(VmaAllocation allocation);
 
-	StagingCommand* createStagingCommand(VmaMemoryUsage finalUsage) const;
+	StagingCommand* newStagingCommand(VmaMemoryUsage finalUsage) const;
 
 	void executeStagingCommand(StagingCommand* stagingCommand) const;
 

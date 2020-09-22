@@ -10,13 +10,13 @@
 
 #include "surface.h"
 #include "device.h"
-#include "window/abs_window_manager.h"
+#include "window/window_manager.h"
 #include "renderer.h"
 
 class Instance
 {
 public:
-	Instance(AbsWindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties);
+	Instance(WindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties);
 
 	~Instance();
 
@@ -25,11 +25,11 @@ public:
 	Device* getDevice();
 
 private:
-	static VkInstance createInstanceHandle(AbsWindowManager* pWindowManager);
+	static VkInstance createInstanceHandle(WindowManager* pWindowManager);
 
 private:
 	VkInstance handle_;
-	AbsWindowManager* pWindowManager_;
+	WindowManager* pWindowManager_;
 
 	Surface surface_;
 	Device device_;

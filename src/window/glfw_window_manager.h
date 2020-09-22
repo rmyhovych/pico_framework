@@ -9,9 +9,9 @@
 
 #include <GLFW/glfw3.h>
 
-#include "abs_window_manager.h"
+#include "window_manager.h"
 
-class GLFWWindowManager : public AbsWindowManager
+class GLFWWindowManager : public WindowManager
 {
 public:
 	GLFWWindowManager(uint32_t width, uint32_t height);

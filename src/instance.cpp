@@ -7,7 +7,7 @@
 #include <vector>
 
 
-Instance::Instance(AbsWindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties) :
+Instance::Instance(WindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties) :
 		handle_(createInstanceHandle(pWindowManager)),
 		pWindowManager_(pWindowManager),
 
@@ -40,7 +40,7 @@ Renderer* Instance::getRenderer()
 }
 
 
-VkInstance Instance::createInstanceHandle(AbsWindowManager* pWindowManager)
+VkInstance Instance::createInstanceHandle(WindowManager* pWindowManager)
 {
 	VkApplicationInfo appInfo = {};
 

@@ -7,8 +7,8 @@
 
 void framebufferResizeCallback(GLFWwindow* window, int width, int height)
 {
-	AbsWindowManager* windowManager = reinterpret_cast<AbsWindowManager*>(glfwGetWindowUserPointer(window));
-	windowManager->callResizeCallback(VkExtent2D{static_cast<uint32_t>(width), static_cast<uint32_t>(height)});
+	WindowManager* windowManager = reinterpret_cast<WindowManager*>(glfwGetWindowUserPointer(window));
+	windowManager->resize(VkExtent2D{static_cast<uint32_t>(width), static_cast<uint32_t>(height)});
 }
 
 
@@ -19,6 +19,7 @@ GLFWWindowManager::GLFWWindowManager(uint32_t width, uint32_t height) :
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+
 
 	pWindow_ = glfwCreateWindow(width, height, "Vulkan", nullptr, nullptr);
 	glfwSetWindowUserPointer(pWindow_, this);

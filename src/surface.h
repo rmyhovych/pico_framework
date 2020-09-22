@@ -9,7 +9,7 @@
 #include <pfvk.h>
 #include <vector>
 
-#include "window/abs_window_manager.h"
+#include "window/window_manager.h"
 
 struct SwapchainConfigurations
 {
@@ -27,7 +27,7 @@ public:
 		VkFormat format;
 	};
 
-	explicit Surface(const Surface::Properties &properties, VkInstance instance, AbsWindowManager* pWindowManager);
+	explicit Surface(const Surface::Properties &properties, VkInstance instance, WindowManager* pWindowManager);
 
 	void destroy();
 
@@ -47,7 +47,7 @@ private:
 	VkSurfaceKHR handle_;
 
 	VkInstance instance_;
-	AbsWindowManager* pWindowManager_;
+	WindowManager* pWindowManager_;
 
 	VkFormat format_;
 };

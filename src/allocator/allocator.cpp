@@ -172,7 +172,7 @@ void Allocator::unmap(VmaAllocation allocation)
 	vmaUnmapMemory(vmaAllocator_, allocation);
 }
 
-Allocator::StagingCommand* Allocator::createStagingCommand(VmaMemoryUsage finalUsage) const
+Allocator::StagingCommand* Allocator::newStagingCommand(VmaMemoryUsage finalUsage) const
 {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {};
 	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -199,6 +199,4 @@ void Allocator::executeStagingCommand(StagingCommand* stagingCommand) const
 	vkQueueWaitIdle(transferQueue_);
 
 	vkFreeCommandBuffers(device_, transferCommandPool_, 1, &stagingCommand->transferCommandBuffer_);
-
-	delete stagingCommand;
 }

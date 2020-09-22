@@ -115,9 +115,9 @@ VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candida
 		{
 			return format;
 		}
-
-		throw std::runtime_error("Failed to find supported format.");
 	}
+
+	return VK_FORMAT_UNDEFINED;
 }
 
 

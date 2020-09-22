@@ -9,10 +9,10 @@ set(PICOFRAMEWORK_FILES
 		surface.cpp
 		device.cpp
 		device.h
-		window/abs_window_manager.h
+		window/window_manager.h
 		window/glfw_window_manager.cpp
 		window/glfw_window_manager.h
-		window/abs_window_manager.cpp
+		window/window_manager.cpp
 		renderer.cpp renderer.h
 		swapchain.cpp swapchain.h
 		pipeline.cpp pipeline.h

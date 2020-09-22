@@ -7,7 +7,7 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(const Surface::Properties &properties, VkInstance instance, AbsWindowManager* pWindowManager) :
+Surface::Surface(const Surface::Properties &properties, VkInstance instance, WindowManager* pWindowManager) :
 		handle_(VK_NULL_HANDLE),
 		instance_(instance),
 		pWindowManager_(pWindowManager),
