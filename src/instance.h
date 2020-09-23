@@ -16,25 +16,16 @@
 class Instance
 {
 public:
-	Instance(WindowManager* pWindowManager, const Surface::Properties &surfaceProperties, const Device::Properties &deviceProperties);
+	Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions);
 
 	~Instance();
 
-	Renderer* getRenderer();
+	VkInstance getHandle() const;
 
-	Device* getDevice();
-
-private:
-	static VkInstance createInstanceHandle(WindowManager* pWindowManager);
+	std::vector<PhysicalDevice> getPhysicalDevices();
 
 private:
 	VkInstance handle_;
-	WindowManager* pWindowManager_;
-
-	Surface surface_;
-	Device device_;
-
-	Renderer* renderer_;
 };
 
 

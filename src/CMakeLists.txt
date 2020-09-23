@@ -25,8 +25,6 @@ set(PICOFRAMEWORK_FILES
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 
-message("MESSAGE : ${VULKAN_PATH}")
-
 target_include_directories(
 		PICOFRAMEWORK
 
@@ -46,5 +44,5 @@ target_link_libraries(
 		PICOFRAMEWORK
 
 		${LIBS_PATH}/glfw-3.3.2/lib/glfw3.lib
-		Vulkan
+		${Vulkan_LIBRARIES}
 )

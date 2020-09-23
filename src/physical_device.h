@@ -8,37 +8,19 @@
 #include "pfvk.h"
 #include "surface.h"
 
-struct QueueFamilyIndexes
-{
-	uint32_t graphical;
-	uint32_t present;
-};
-
 class PhysicalDevice
 {
 public:
-	PhysicalDevice(VkInstance instanceHandle, VkSurfaceKHR surfaceHandle, VkPhysicalDeviceType deviceType, const std::vector<const char*> &neededExtensions);
+	PhysicalDevice(VkPhysicalDevice handle);
 
 	VkPhysicalDevice getHandle() const;
 
-	VkDevice createLogicalDevice(const std::vector<const char*> &extensions) const;
-
-	const QueueFamilyIndexes &getQueueFamilyIndexes() const;
-
 	VkFormat getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
 
-private:
-	static bool isDeviceSuitable(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle, const std::vector<const char*> &extensions);
-
-	static QueueFamilyIndexes getAvailableQueueFamilyIndexes(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle);
-
-	static bool getQueueFamilyIndexGraphics(VkPhysicalDevice physicalDevice, uint32_t* index);
-
-	static bool getQueueFamilyIndexPresent(VkPhysicalDevice physicalDevice, VkSurfaceKHR surfaceHandle, uint32_t* index, uint32_t priorityIndex);
+	bool getQueueFamilyIndex(VkPhysicalDevice physicalDevice, VkQueueFlags flags, uint32_t* index);
 
 private:
 	VkPhysicalDevice handle_;
-	QueueFamilyIndexes queueFamilyIndexes_;
 };
 
 
