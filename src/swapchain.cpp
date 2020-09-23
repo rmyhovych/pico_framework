@@ -112,20 +112,6 @@ VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainC
 	createInfo.imageArrayLayers = 1;
 	createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-	const QueueFamilyIndexes &deviceQueueFamilyIndexes = pDevice->getPhysicalDevice().getQueueFamilyIndexes();
-	if (deviceQueueFamilyIndexes.graphical != deviceQueueFamilyIndexes.present)
-	{
-		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
-		createInfo.queueFamilyIndexCount = 2;
-		createInfo.pQueueFamilyIndices = (uint32_t*) &deviceQueueFamilyIndexes;
-	}
-	else
-	{
-		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-		createInfo.queueFamilyIndexCount = 0;
-		createInfo.pQueueFamilyIndices = nullptr;
-	}
-
 	createInfo.preTransform = swapchainConfigurations.surfaceCapabilities.currentTransform;
 	createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
 	createInfo.presentMode = swapchainConfigurations.presentMode;

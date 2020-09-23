@@ -42,7 +42,7 @@ private:
 	VkInstance instance_;
 	VkDevice handle_;
 
-	PhysicalDevice physicalDevice_;
+	VkPhysicalDevice physicalDevice_;
 
 	Allocator* pAllocator_;
 

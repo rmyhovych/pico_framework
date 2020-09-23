@@ -34,11 +34,17 @@ VkInstance Instance::getHandle() const
 
 std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 {
+	std::vector<PhysicalDevice> physicalDevices = std::vector<PhysicalDevice>();
+
 	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices(handle_, &deviceCount, nullptr);
 
 	std::vector<VkPhysicalDevice> physicalDeviceHandles(deviceCount);
 	vkEnumeratePhysicalDevices(handle_, &deviceCount, physicalDeviceHandles.data());
 
-	return std::vector<PhysicalDevice>();
+	physicalDevices.reserve(deviceCount);
+	for (VkPhysicalDevice physicalDeviceHandle : physicalDeviceHandles)
+		physicalDevices.emplace_back(physicalDeviceHandle);
+
+	return physicalDevices;
 }

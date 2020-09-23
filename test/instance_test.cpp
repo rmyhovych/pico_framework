@@ -18,6 +18,10 @@ int main()
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 
 	Instance instance = Instance(appInfo, std::vector<const char*>());
+	std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
+
+	VkPhysicalDeviceProperties p;
+	vkGetPhysicalDeviceProperties(physicalDevices[0].getHandle(), &p);
 
 	return 0;
 }
