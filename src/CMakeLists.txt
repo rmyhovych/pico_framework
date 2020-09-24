@@ -32,7 +32,7 @@ target_include_directories(
 
 		./
 
-		${LIBS_PATH}/glfw-3.3.2/include
+		${glfw3_INCLUDE_PATH}
 		${LIBS_PATH}/glm-0.9.9.6
 		${LIBS_PATH}/stb
 		${LIBS_PATH}/vma
@@ -43,6 +43,6 @@ target_include_directories(
 target_link_libraries(
 		PICOFRAMEWORK
 
-		${LIBS_PATH}/glfw-3.3.2/lib/glfw3.lib
+		glfw3
 		${Vulkan_LIBRARIES}
 )

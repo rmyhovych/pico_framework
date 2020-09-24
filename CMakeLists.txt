@@ -3,6 +3,14 @@ set(CMAKE_BUILD_TYPE Debug)
 
 project(PICOFRAMEWORK)
 
+# GLFW 3
+if (UNIX)
+	find_package(glfw3 3.3 REQUIRED FATAL_ERROR)
+	set(glfw3_INCLUDE_PATH /usr/local/include/GLFW/glfw3)
+
+	set(glfw3_LIBS dl GL GLU glfw3 X11 Xxf86vm Xrandr pthread Xi)
+endif ()
+
 
 # VULKAN
 set(VULKAN_VERSION 1.2.148.1)
@@ -16,3 +24,4 @@ get_filename_component(LIBS_PATH libs REALPATH)
 
 add_subdirectory(src)
 add_subdirectory(test)
+
