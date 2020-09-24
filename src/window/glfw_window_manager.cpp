@@ -47,7 +47,7 @@ std::vector<const char*> GLFWWindowManager::getRequiredInstanceExtensions() cons
 }
 
 
-VkExtent2D GLFWWindowManager::getWindowSize()
+VkExtent2D GLFWWindowManager::getExtent() const
 {
 	int width, height;
 	glfwGetFramebufferSize(pWindow_, &width, &height);
@@ -55,7 +55,7 @@ VkExtent2D GLFWWindowManager::getWindowSize()
 	return VkExtent2D{static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 }
 
-VkSurfaceKHR GLFWWindowManager::createSurfaceHandle(VkInstance instance)
+VkSurfaceKHR GLFWWindowManager::createSurfaceHandle(VkInstance instance) const
 {
 	VkSurfaceKHR surfaceHandle;
 	CALL_VK(glfwCreateWindowSurface(instance, pWindow_, nullptr, &surfaceHandle))

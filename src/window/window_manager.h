@@ -14,15 +14,15 @@ class WindowManager
 public:
 	WindowManager();
 
-	virtual VkSurfaceKHR createSurfaceHandle(VkInstance instance) = 0;
-
 	virtual std::vector<const char*> getRequiredInstanceExtensions() const = 0;
 
-	virtual VkExtent2D getWindowSize() = 0;
+	virtual VkExtent2D getExtent() const = 0;
+
+	virtual VkSurfaceKHR createSurfaceHandle(VkInstance instance) const = 0;
 
 	void setResizeCallback(std::function<void(VkExtent2D)> resizeCallback);
 
-	void resize(VkExtent2D newSize) const;
+	void resize(VkExtent2D newExtent);
 
 private:
 	std::function<void(VkExtent2D)> resizeCallback_;

@@ -33,7 +33,7 @@ Swapchain* Renderer::createSwapchain(const Swapchain::Properties &swapchainPrope
 	Swapchain* newSwapchain = new Swapchain(swapchainProperties, pSurface_->getHandle(), pDevice_);
 
 	VkPhysicalDevice physicalDeviceHandle = pDevice_->getPhysicalDevice().getHandle();
-	newSwapchain->init(pSurface_->getSwapchainConfigurations(physicalDeviceHandle));
+	//newSwapchain->init(pSurface_->getSwapchainConfigurations(physicalDeviceHandle));
 
 	swapchains_.push_back(newSwapchain);
 	return newSwapchain;

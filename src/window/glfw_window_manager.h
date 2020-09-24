@@ -20,9 +20,9 @@ public:
 
 	std::vector<const char*> getRequiredInstanceExtensions() const override;
 
-	VkExtent2D getWindowSize() override;
+	VkExtent2D getExtent() const override;
 
-	VkSurfaceKHR createSurfaceHandle(VkInstance instance) override;
+	VkSurfaceKHR createSurfaceHandle(VkInstance instance) const override;
 
 private:
 	GLFWwindow* pWindow_;

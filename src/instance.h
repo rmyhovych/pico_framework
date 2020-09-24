@@ -16,16 +16,19 @@
 class Instance
 {
 public:
-	Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions);
+	Instance(const VkApplicationInfo &applicationInfo, const WindowManager* pWindowManager);
 
 	~Instance();
 
-	VkInstance getHandle() const;
+	VkSurfaceKHR getSurfaceHandle() const;
 
 	std::vector<PhysicalDevice> getPhysicalDevices();
 
 private:
 	VkInstance handle_;
+	const WindowManager* pWindowManager_;
+
+	VkSurfaceKHR surface_;
 };
 
 

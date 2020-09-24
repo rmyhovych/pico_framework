@@ -7,37 +7,16 @@
 #include <exception>
 #include <algorithm>
 
-Surface::Surface(const Surface::Properties &properties, VkInstance instance, WindowManager* pWindowManager) :
-		handle_(VK_NULL_HANDLE),
-		instance_(instance),
-		pWindowManager_(pWindowManager),
-		format_(properties.format)
-{
-	if (instance == VK_NULL_HANDLE)
-	{
-		throw std::runtime_error("Can't construct surface with NULL instance handle!");
-	}
-	if (pWindowManager == nullptr)
-	{
-		throw std::runtime_error("Can't init Surface with NULL window manager!");
-	}
+Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) :
+		handle_(handle),
 
-	pWindowManager_ = pWindowManager;
-	handle_ = pWindowManager_->createSurfaceHandle(instance_);
+		format_(format),
+		colorSpace_(colorSpace),
+		presentMode_(presentMode)
+{
 }
 
-
-void Surface::destroy()
-{
-	pWindowManager_ = nullptr;
-	if (handle_ != VK_NULL_HANDLE)
-	{
-		vkDestroySurfaceKHR(instance_, handle_, nullptr);
-		handle_ = VK_NULL_HANDLE;
-	}
-}
-
-SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice physicalDevice) const
+SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const
 {
 	SwapchainConfigurations configurations{};
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, handle_, &configurations.surfaceCapabilities);
@@ -64,10 +43,7 @@ SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice phy
 	}
 	configurations.presentMode = choosePresentMode(presentModes);
 
-
-	VkExtent2D windowExtent = pWindowManager_->getWindowSize();
 	configurations.extent = chooseExtent(configurations.surfaceCapabilities, windowExtent);
-
 
 	return configurations;
 }
@@ -77,12 +53,11 @@ VkSurfaceKHR Surface::getHandle() const
 	return handle_;
 }
 
-
 VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
 {
 	for (const VkSurfaceFormatKHR &format : surfaceFormats)
 	{
-		if (format.format == format_ && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+		if (format.format == format_ && format.colorSpace == colorSpace_)
 		{
 			return format;
 		}
@@ -91,11 +66,11 @@ VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceForma
 	return surfaceFormats[0];
 }
 
-VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes)
+VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes) const
 {
 	for (const VkPresentModeKHR &presentMode : presentModes)
 	{
-		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+		if (presentMode == presentMode_)
 		{
 			return presentMode;
 		}

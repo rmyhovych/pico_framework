@@ -6,8 +6,11 @@
 
 #include <vector>
 
-Instance::Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions) :
-		handle_(VK_NULL_HANDLE)
+Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager* pWindowManager) :
+		handle_(VK_NULL_HANDLE),
+		pWindowManager_(pWindowManager),
+
+		surface_(VK_NULL_HANDLE)
 {
 	VkInstanceCreateInfo instanceCreateInfo = {};
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
@@ -16,10 +19,13 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const std::vector<c
 	instanceCreateInfo.enabledLayerCount = 0;
 	instanceCreateInfo.ppEnabledLayerNames = nullptr;
 
+	const std::vector<const char*> requiredExtensions = pWindowManager_->getRequiredInstanceExtensions();
 	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
 	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
 	CALL_VK(vkCreateInstance(&instanceCreateInfo, nullptr, &handle_))
+
+	surface_ = pWindowManager_->createSurfaceHandle(handle_);
 }
 
 Instance::~Instance()
@@ -27,10 +33,11 @@ Instance::~Instance()
 	vkDestroyInstance(handle_, nullptr);
 }
 
-VkInstance Instance::getHandle() const
+VkSurfaceKHR Instance::getSurfaceHandle() const
 {
-	return handle_;
+	return surface_;
 }
+
 
 std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 {
@@ -48,3 +55,4 @@ std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 
 	return physicalDevices;
 }
+

@@ -22,34 +22,25 @@ struct SwapchainConfigurations
 class Surface
 {
 public:
-	struct Properties
-	{
-		VkFormat format;
-	};
+	explicit Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
 
-	explicit Surface(const Surface::Properties &properties, VkInstance instance, WindowManager* pWindowManager);
-
-	void destroy();
-
-	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice) const;
+	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const;
 
 	VkSurfaceKHR getHandle() const;
 
 private:
 	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
 
-	static VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes);
+	VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes) const;
 
 	static VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabilities, VkExtent2D windowExtent);
-
 
 private:
 	VkSurfaceKHR handle_;
 
-	VkInstance instance_;
-	WindowManager* pWindowManager_;
-
 	VkFormat format_;
+	VkColorSpaceKHR colorSpace_;
+	VkPresentModeKHR presentMode_;
 };
 
 
