@@ -12,42 +12,25 @@
 #include "physical_device.h"
 #include "allocator/allocator.h"
 
-enum FamilyIndexType
-{
-	GRAPHICAL, TRANSFER, PRESENT
-};
 
 class Device
 {
 public:
-	struct Properties
-	{
-		VkPhysicalDeviceType type;
-		std::vector<const char*> extensions;
-	};
+	Device(const PhysicalDevice* pPhysicalDevice, const std::vector<VkQueueFlags> &queueFlags, const std::vector<const char*> &deviceExtensions);
 
-	Device(const Device::Properties &properties, VkInstance instance, const Surface &surface);
-
-	Allocator* getAllocator();
-
-	VkDevice getHandle() const;
-
-	const PhysicalDevice &getPhysicalDevice() const;
-
-	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, FamilyIndexType familyIndexType) const;
+	~Device();
 
 	void destroy();
 
+	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueFamilyIndex) const;
+
 private:
-	VkInstance instance_;
+	static VkDevice createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions);
+
+public:
 	VkDevice handle_;
-
-	VkPhysicalDevice physicalDevice_;
-
-	Allocator* pAllocator_;
-
-	VkQueue queueGraphics_;
-	VkQueue queuePresent_;
+	const PhysicalDevice* pPhysicalDevice_;
+	std::vector<DeviceQueue> deviceQueues_;
 };
 
 

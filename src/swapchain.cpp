@@ -27,7 +27,7 @@ Swapchain::Swapchain(const Swapchain::Properties &properties, VkSurfaceKHR surfa
 
 		pipelines_()
 {
-	commandPool_ = pDevice_->createCommandPool(0, GRAPHICAL);
+	commandPool_ = pDevice_->createCommandPool(0, 0);
 }
 
 Swapchain::~Swapchain()
@@ -49,11 +49,11 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 	for (uint32_t i = 0; i < imageViews_.size(); ++i)
 		imageViews_[i] = resourceFactory.createImageView(images_[i], swapchainConfigurations.surfaceFormat.format, VK_IMAGE_ASPECT_COLOR_BIT);
 
-	RenderPassBuilder renderPassBuilder(pDevice_->getHandle());
+	RenderPassBuilder renderPassBuilder(pDevice_->handle_);
 	renderPassBuilder.pushBackColor(swapchainConfigurations.surfaceFormat.format);
 
-	const PhysicalDevice &physicalDevice = pDevice_->getPhysicalDevice();
-	VkFormat depthFormat = physicalDevice.getSupportedFormat(
+	const PhysicalDevice* physicalDevice = pDevice_->pPhysicalDevice_;
+	VkFormat depthFormat = physicalDevice->getSupportedFormat(
 			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
@@ -72,7 +72,7 @@ void Swapchain::init(const SwapchainConfigurations &swapchainConfigurations)
 
 void Swapchain::destroy()
 {
-	VkDevice deviceHandle = pDevice_->getHandle();
+	VkDevice deviceHandle = pDevice_->handle_;
 
 	for (VkImageView imageView : imageViews_)
 	{
@@ -119,14 +119,14 @@ VkSwapchainKHR Swapchain::createHandle(const SwapchainConfigurations &swapchainC
 	createInfo.oldSwapchain = nullptr;
 
 	VkSwapchainKHR swapchainHandle;
-	CALL_VK(vkCreateSwapchainKHR(pDevice->getHandle(), &createInfo, nullptr, &swapchainHandle))
+	CALL_VK(vkCreateSwapchainKHR(pDevice->handle_, &createInfo, nullptr, &swapchainHandle))
 
 	return swapchainHandle;
 }
 
 void Swapchain::getImages(std::vector<VkImage> &destination, VkSwapchainKHR swapchainHandle)
 {
-	VkDevice deviceHandle = pDevice_->getHandle();
+	VkDevice deviceHandle = pDevice_->handle_;
 
 	uint32_t nImages = 0;
 	vkGetSwapchainImagesKHR(deviceHandle, swapchainHandle, &nImages, nullptr);
@@ -137,8 +137,8 @@ void Swapchain::getImages(std::vector<VkImage> &destination, VkSwapchainKHR swap
 
 void Swapchain::createDepthResources(VkExtent2D extent)
 {
-	Allocator* pAllocator = pDevice_->getAllocator();
-	VkFormat depthFormat = pDevice_->getPhysicalDevice().getSupportedFormat(
+	Allocator* pAllocator = nullptr;
+	VkFormat depthFormat = pDevice_->pPhysicalDevice_->getSupportedFormat(
 			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
@@ -185,7 +185,7 @@ void Swapchain::createFramebuffers(VkExtent2D extent)
 	createInfo.height = extent.height;
 	createInfo.layers = 1;
 
-	VkDevice deviceHandle = pDevice_->getHandle();
+	VkDevice deviceHandle = pDevice_->handle_;
 
 	for (int i = framebuffers_.size() - 1; i >= 0; --i)
 	{
@@ -203,5 +203,5 @@ void Swapchain::createCommandBuffers()
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	commandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers_.size());
 
-	CALL_VK(vkAllocateCommandBuffers(pDevice_->getHandle(), &commandBufferAllocateInfo, commandBuffers_.data()))
+	CALL_VK(vkAllocateCommandBuffers(pDevice_->handle_, &commandBufferAllocateInfo, commandBuffers_.data()))
 }

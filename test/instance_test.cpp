@@ -24,11 +24,16 @@ int main()
 	std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
 
 	VkPhysicalDeviceProperties p;
-	vkGetPhysicalDeviceProperties(physicalDevices[0].getHandle(), &p);
+	vkGetPhysicalDeviceProperties(physicalDevices[0].handle_, &p);
 
 	Surface surface(instance.getSurfaceHandle(), VK_FORMAT_A8B8G8R8_UNORM_PACK32, VK_COLORSPACE_SRGB_NONLINEAR_KHR, VK_PRESENT_MODE_FIFO_KHR);
 
-	SwapchainConfigurations configurations = surface.getSwapchainConfigurations(physicalDevices[0].getHandle(), windowManager.getExtent());
+	SwapchainConfigurations configurations = surface.getSwapchainConfigurations(physicalDevices[0].handle_, windowManager.getExtent());
+
+	Device device(&physicalDevices[0], {VK_QUEUE_GRAPHICS_BIT, VK_QUEUE_TRANSFER_BIT}, {VK_KHR_SWAPCHAIN_EXTENSION_NAME});
+
+	device.destroy();
+	instance.destroy();
 
 	return 0;
 }

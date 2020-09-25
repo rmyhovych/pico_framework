@@ -19,7 +19,7 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager
 	instanceCreateInfo.enabledLayerCount = 0;
 	instanceCreateInfo.ppEnabledLayerNames = nullptr;
 
-	const std::vector<const char*> requiredExtensions = pWindowManager_->getRequiredInstanceExtensions();
+	const std::vector<const char*> requiredExtensions = pWindowManager_->getInstanceExtensions();
 	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
 	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
 
@@ -30,14 +30,21 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager
 
 Instance::~Instance()
 {
-	vkDestroyInstance(handle_, nullptr);
+	if (handle_ != VK_NULL_HANDLE)
+		printf("WARNING : VkInstance handle was not explicitly destroyed.\n");
 }
+
+void Instance::destroy()
+{
+	vkDestroyInstance(handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
+}
+
 
 VkSurfaceKHR Instance::getSurfaceHandle() const
 {
 	return surface_;
 }
-
 
 std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 {
@@ -55,4 +62,3 @@ std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 
 	return physicalDevices;
 }
-

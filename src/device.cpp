@@ -3,72 +3,92 @@
 //
 
 #include "device.h"
+#include <set>
 
-Device::Device(const Device::Properties &properties, VkInstance instance, const Surface &surface) :
-		instance_(instance),
+Device::Device(const PhysicalDevice* pPhysicalDevice, const std::vector<VkQueueFlags> &queueFlags, const std::vector<const char*> &deviceExtensions) :
 		handle_(VK_NULL_HANDLE),
-
-		pAllocator_(nullptr)
+		pPhysicalDevice_(pPhysicalDevice),
+		deviceQueues_(0)
 {
-	//handle_ = physicalDevice_.createLogicalDevice(properties.extensions);
-	//const QueueFamilyIndexes &queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
+	deviceQueues_.reserve(queueFlags.size());
+	for (VkQueueFlags queueFlag : queueFlags)
+		deviceQueues_.push_back({VK_NULL_HANDLE, 0, queueFlag});
 
-	// Queues
-	vkGetDeviceQueue(handle_, 0, 0, &queueGraphics_);
-	vkGetDeviceQueue(handle_, 0, 0, &queuePresent_);
+	pPhysicalDevice_->pickQueueFamilies(deviceQueues_);
 
-	pAllocator_ = Allocator::Builder()
-			.setInstance(instance_)
-			.setDevices(handle_, physicalDevice_)
-			.setTransferData(createCommandPool(VK_COMMAND_POOL_CREATE_TRANSIENT_BIT, TRANSFER), queueGraphics_)
-			.build();
+	handle_ = createHandle(pPhysicalDevice_->handle_, deviceQueues_, deviceExtensions);
+
+	for (DeviceQueue &deviceQueue : deviceQueues_)
+		vkGetDeviceQueue(handle_, deviceQueue.family, 0, &deviceQueue.queue);
 }
 
-VkDevice Device::getHandle() const
+Device::~Device()
 {
-	return handle_;
-}
-
-const PhysicalDevice &Device::getPhysicalDevice() const
-{
-	return physicalDevice_;
+	if (handle_ != VK_NULL_HANDLE)
+		printf("WARNING : VkDevice handle was not explicitly destroyed.\n");
 }
 
 void Device::destroy()
 {
-	delete pAllocator_;
 	vkDestroyDevice(handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
 }
 
 
-Allocator* Device::getAllocator()
+VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueFamilyIndex) const
 {
-	return pAllocator_;
-}
-
-VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, FamilyIndexType familyIndexType) const
-{
-	/*
-	QueueFamilyIndexes queueFamilyIndexes = physicalDevice_.getQueueFamilyIndexes();
-
 	VkCommandPoolCreateInfo commandPoolCreateInfo{};
 	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	switch (familyIndexType)
-	{
-		case TRANSFER:
-		case GRAPHICAL:
-			commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndexes.graphical;
-			break;
-
-		case PRESENT:
-			commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndexes.present;
-			break;
-	}
+	commandPoolCreateInfo.queueFamilyIndex = queueFamilyIndex;
 	commandPoolCreateInfo.flags = flags;
 	commandPoolCreateInfo.pNext = nullptr;
+
 	VkCommandPool commandPool;
 	CALL_VK(vkCreateCommandPool(handle_, &commandPoolCreateInfo, nullptr, &commandPool))
-	*/
 
-	return VkCommandPool();
+	return commandPool;
+}
+
+VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions)
+{
+	std::set<uint32_t> uniqueQueueFamilies;
+	for (const DeviceQueue &q : queues)
+		uniqueQueueFamilies.insert(q.family);
+
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+
+	float priority = 1.0f;
+	for (uint32_t queueFamilyIndex : uniqueQueueFamilies)
+	{
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = queueFamilyIndex;
+		queueCreateInfo.queueCount = 1;
+		queueCreateInfo.pQueuePriorities = &priority;
+
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
+
+
+	VkDeviceCreateInfo deviceCreateInfo = {};
+	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+
+	VkPhysicalDeviceFeatures physicalDeviceFeatures = {};
+	physicalDeviceFeatures.samplerAnisotropy = VK_TRUE;
+
+	deviceCreateInfo.pEnabledFeatures = &physicalDeviceFeatures;
+
+	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+	deviceCreateInfo.enabledExtensionCount = (uint32_t) deviceExtensions.size();
+
+	deviceCreateInfo.enabledLayerCount = 0;
+	deviceCreateInfo.ppEnabledLayerNames = nullptr;
+
+	VkDevice device;
+	CALL_VK(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device))
+
+	return device;
 }

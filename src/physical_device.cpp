@@ -4,15 +4,12 @@
 
 #include "physical_device.h"
 
+#include <set>
+
+
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice handle) :
 		handle_(handle)
 {
-}
-
-
-VkPhysicalDevice PhysicalDevice::getHandle() const
-{
-	return handle_;
 }
 
 
@@ -48,27 +45,49 @@ VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candida
 }
 
 
-bool PhysicalDevice::getQueueFamilyIndex(VkPhysicalDevice physicalDevice, VkQueueFlags flags, uint32_t* index)
+std::vector<uint32_t> PhysicalDevice::getQueueFamilyIndexes(VkQueueFlags flags) const
 {
 	uint32_t nQueueFamilies;
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &nQueueFamilies, nullptr);
+	vkGetPhysicalDeviceQueueFamilyProperties(handle_, &nQueueFamilies, nullptr);
 
 	std::vector<VkQueueFamilyProperties> queueFamilyProperties(nQueueFamilies);
-	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &nQueueFamilies, queueFamilyProperties.data());
+	vkGetPhysicalDeviceQueueFamilyProperties(handle_, &nQueueFamilies, queueFamilyProperties.data());
 
-	bool found = false;
+	std::vector<uint32_t> indexes(0);
+
 	for (uint32_t i = 0; i < nQueueFamilies; ++i)
 	{
 		if ((queueFamilyProperties[i].queueFlags & flags) == flags)
 		{
-			if (index != nullptr)
-			{
-				*index = i;
-			}
-
-			return true;
+			indexes.push_back(i);
 		}
 	}
 
-	return found;
+	return indexes;
+}
+
+void PhysicalDevice::pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) const
+{
+	VkQueueFlags commonType = 0;
+	for (DeviceQueue &queue : queueInfos)
+	{
+		commonType |= queue.type;
+	}
+
+	std::vector<uint32_t> commonFamilies = getQueueFamilyIndexes(commonType);
+	if (!commonFamilies.empty())
+	{
+		for (DeviceQueue &queue : queueInfos)
+		{
+			queue.family = commonFamilies[0];
+		}
+	}
+	else
+	{
+		for (DeviceQueue &queue : queueInfos)
+		{
+			std::vector<uint32_t> families = getQueueFamilyIndexes(queue.type);
+			queue.family = families[0];
+		}
+	}
 }

@@ -11,6 +11,8 @@
 
 #include "window/window_manager.h"
 
+class PhysicalDevice;
+
 struct SwapchainConfigurations
 {
 	VkPresentModeKHR presentMode;
@@ -24,9 +26,9 @@ class Surface
 public:
 	explicit Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
 
-	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const;
+	bool isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const;
 
-	VkSurfaceKHR getHandle() const;
+	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const;
 
 private:
 	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
@@ -35,9 +37,11 @@ private:
 
 	static VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabilities, VkExtent2D windowExtent);
 
-private:
+
+public:
 	VkSurfaceKHR handle_;
 
+private:
 	VkFormat format_;
 	VkColorSpaceKHR colorSpace_;
 	VkPresentModeKHR presentMode_;

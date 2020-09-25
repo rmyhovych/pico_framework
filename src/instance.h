@@ -20,6 +20,8 @@ public:
 
 	~Instance();
 
+	void destroy();
+
 	VkSurfaceKHR getSurfaceHandle() const;
 
 	std::vector<PhysicalDevice> getPhysicalDevices();

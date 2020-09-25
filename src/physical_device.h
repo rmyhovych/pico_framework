@@ -8,19 +8,27 @@
 #include "pfvk.h"
 #include "surface.h"
 
+struct DeviceQueue
+{
+	VkQueue queue = VK_NULL_HANDLE;
+	uint32_t family = 0;
+	VkQueueFlags type = 0;
+};
+
+
 class PhysicalDevice
 {
 public:
-	PhysicalDevice(VkPhysicalDevice handle);
-
-	VkPhysicalDevice getHandle() const;
+	explicit PhysicalDevice(VkPhysicalDevice handle);
 
 	VkFormat getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
 
-	bool getQueueFamilyIndex(VkPhysicalDevice physicalDevice, VkQueueFlags flags, uint32_t* index);
+	std::vector<uint32_t> getQueueFamilyIndexes(VkQueueFlags flags) const;
 
-private:
-	VkPhysicalDevice handle_;
+	void pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) const;
+
+public:
+	const VkPhysicalDevice handle_;
 };
 
 

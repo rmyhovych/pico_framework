@@ -18,7 +18,7 @@ public:
 
 	~GLFWWindowManager();
 
-	std::vector<const char*> getRequiredInstanceExtensions() const override;
+	std::vector<const char*> getInstanceExtensions() const override;
 
 	VkExtent2D getExtent() const override;
 

@@ -4,8 +4,9 @@
 
 #include "surface.h"
 
-#include <exception>
 #include <algorithm>
+
+#include "physical_device.h"
 
 Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) :
 		handle_(handle),
@@ -14,6 +15,14 @@ Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpac
 		colorSpace_(colorSpace),
 		presentMode_(presentMode)
 {
+}
+
+bool Surface::isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const
+{
+	VkBool32 supported;
+	vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.handle_, queueFamilyIndex, handle_, &supported);
+
+	return supported == VK_TRUE;
 }
 
 SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const
@@ -48,10 +57,6 @@ SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice phy
 	return configurations;
 }
 
-VkSurfaceKHR Surface::getHandle() const
-{
-	return handle_;
-}
 
 VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
 {
@@ -96,4 +101,3 @@ VkExtent2D Surface::chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabi
 
 	return extentToUse;
 }
-

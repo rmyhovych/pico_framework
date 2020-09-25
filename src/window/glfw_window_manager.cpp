@@ -38,7 +38,7 @@ GLFWWindowManager::~GLFWWindowManager()
 	glfwTerminate();
 }
 
-std::vector<const char*> GLFWWindowManager::getRequiredInstanceExtensions() const
+std::vector<const char*> GLFWWindowManager::getInstanceExtensions() const
 {
 	uint32_t nExtensions = 0;
 	const char** extensions = glfwGetRequiredInstanceExtensions(&nExtensions);

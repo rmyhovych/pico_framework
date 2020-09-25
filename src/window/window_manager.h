@@ -14,7 +14,7 @@ class WindowManager
 public:
 	WindowManager();
 
-	virtual std::vector<const char*> getRequiredInstanceExtensions() const = 0;
+	virtual std::vector<const char*> getInstanceExtensions() const = 0;
 
 	virtual VkExtent2D getExtent() const = 0;
 

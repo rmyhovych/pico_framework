@@ -5,8 +5,8 @@
 #include "resource_factory.h"
 
 ResourceFactory::ResourceFactory(Device* pDevice) :
-		deviceHandle_(pDevice->getHandle()),
-		pAllocator_(pDevice->getAllocator())
+		deviceHandle_(pDevice->handle_),
+		pAllocator_(nullptr)
 {
 }
 
