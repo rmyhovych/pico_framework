@@ -4,10 +4,25 @@
 
 #include "resource_factory.h"
 
-ResourceFactory::ResourceFactory(Device* pDevice) :
-		deviceHandle_(pDevice->handle_),
-		pAllocator_(nullptr)
+ResourceFactory::ResourceFactory(const Device &device, const Allocator* pAllocator) :
+		deviceHandle_(device.handle_),
+		pAllocator_(pAllocator)
 {
+}
+
+
+BufferAllocation ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const
+{
+	VkBufferCreateInfo bufferCreateInfo{};
+	bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	bufferCreateInfo.size = size;
+	bufferCreateInfo.usage = usageFlags;
+	bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	bufferCreateInfo.queueFamilyIndexCount = 0;
+	bufferCreateInfo.pQueueFamilyIndices = nullptr;
+	bufferCreateInfo.flags = 0;
+
+	return pAllocator_->createBuffer(bufferCreateInfo, memoryUsage, 0);
 }
 
 
@@ -27,9 +42,7 @@ ImageAllocation ResourceFactory::createImage(VkExtent2D extent, VkFormat format,
 	imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
 	imageCreateInfo.flags = 0;
 
-	ImageAllocation dst;
-	pAllocator_->createImage(&dst, imageCreateInfo, memoryUsage, VMA_ALLOCATION_CREATE_NEVER_ALLOCATE_BIT);
-	return dst;
+	return pAllocator_->createImage(imageCreateInfo, memoryUsage, 0);
 }
 
 VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const
@@ -51,3 +64,4 @@ VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkI
 	CALL_VK(vkCreateImageView(deviceHandle_, &viewCreateInfo, nullptr, &imageView))
 	return imageView;
 }
+

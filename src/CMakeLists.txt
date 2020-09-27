@@ -10,15 +10,13 @@ set(PICOFRAMEWORK_FILES
 		device.cpp
 		device.h
 		window/window_manager.h
-		window/glfw_window_manager.cpp
-		window/glfw_window_manager.h
 		window/window_manager.cpp
 		pipeline.cpp pipeline.h
 		physical_device.cpp physical_device.h
 
-		resource_factory.cpp resource_factory.h
-		allocator/allocator.cpp allocator/allocator.h
-		renderpass/render_pass_builder.cpp renderpass/render_pass_builder.h renderpass/render_pass.cpp renderpass/render_pass.h)
+		resources/resource_factory.cpp resources/resource_factory.h
+		resources/allocator.cpp resources/allocator.h
+		renderpass/render_pass_builder.cpp renderpass/render_pass_builder.h renderpass/render_pass.cpp renderpass/render_pass.h resources/alloc_objects.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 
@@ -29,7 +27,6 @@ target_include_directories(
 
 		./
 
-		${glfw3_INCLUDE_PATH}
 		${LIBS_PATH}/glm-0.9.9.6
 		${LIBS_PATH}/stb
 		${LIBS_PATH}/vma
@@ -39,7 +36,5 @@ target_include_directories(
 
 target_link_libraries(
 		PICOFRAMEWORK
-
-		glfw3
 		${Vulkan_LIBRARIES}
 )

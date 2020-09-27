@@ -21,7 +21,9 @@ class PhysicalDevice
 public:
 	explicit PhysicalDevice(VkPhysicalDevice handle);
 
-	VkFormat getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
+	VkFormat pickSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
+
+	VkFormat pickSupportedDepthFormat() const;
 
 	std::vector<uint32_t> getQueueFamilyIndexes(VkQueueFlags flags) const;
 

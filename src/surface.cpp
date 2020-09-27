@@ -17,6 +17,12 @@ Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpac
 {
 }
 
+Surface::~Surface()
+{
+	if (handle_ != VK_NULL_HANDLE)
+		printf("WARNING : VkSurfaceKHR handle was not explicitly destroyed.\n");
+}
+
 void Surface::destroy(VkInstance instance)
 {
 	vkDestroySurfaceKHR(instance, handle_, nullptr);

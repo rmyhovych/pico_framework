@@ -7,6 +7,8 @@
 #include <string>
 #include <window/glfw_window_manager.h>
 #include <renderpass/render_pass_builder.h>
+#include <resources/allocator.h>
+#include <resources/resource_factory.h>
 
 int main()
 {
@@ -35,10 +37,22 @@ int main()
 
 	RenderPass renderPass = RenderPassBuilder()
 			.pushBackColor(VK_FORMAT_A8B8G8R8_UNORM_PACK32)
-			.pushBackDepth(VK_FORMAT_D24_UNORM_S8_UINT)
+			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build(device.handle_);
 
 
+	Allocator allocator(instance, device);
+	ResourceFactory resourceFactory(device, &allocator);
+
+	BufferAllocation bufferAllocation = resourceFactory.createBuffer(64, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+
+	uint32_t* ptr = (uint32_t*) allocator.map(bufferAllocation);
+	ptr[0] = 12;
+	allocator.unmap(bufferAllocation);
+
+	allocator.free(bufferAllocation);
+
+	allocator.destroy();
 	renderPass.destroy(device.handle_);
 	surface.destroy(instance.handle_);
 	device.destroy();

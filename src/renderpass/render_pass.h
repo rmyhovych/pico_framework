@@ -13,6 +13,8 @@ class RenderPass
 public:
 	explicit RenderPass(VkRenderPass handle);
 
+	~RenderPass();
+
 	void destroy(VkDevice device);
 
 	std::vector<VkFramebuffer> createFramebuffers(VkDevice deviceHandle, std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent);

@@ -8,10 +8,14 @@
 #include "pfvk.h"
 #include "device.h"
 
+#include "allocator.h"
+
 class ResourceFactory
 {
 public:
-	explicit ResourceFactory(Device* pDevice);
+	explicit ResourceFactory(const Device &device, const Allocator* pAllocator);
+
+	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
 	ImageAllocation createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
@@ -19,7 +23,7 @@ public:
 
 private:
 	VkDevice deviceHandle_;
-	Allocator* pAllocator_;
+	const Allocator* pAllocator_;
 };
 
 

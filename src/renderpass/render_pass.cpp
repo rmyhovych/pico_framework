@@ -9,6 +9,13 @@ RenderPass::RenderPass(VkRenderPass handle) :
 {
 }
 
+RenderPass::~RenderPass()
+{
+	if (handle_ != VK_NULL_HANDLE)
+		printf("WARNING : VkRenderPass handle was not explicitly destroyed.\n");
+}
+
+
 void RenderPass::destroy(VkDevice device)
 {
 	vkDestroyRenderPass(device, handle_, nullptr);
@@ -38,3 +45,4 @@ std::vector<VkFramebuffer> RenderPass::createFramebuffers(VkDevice deviceHandle,
 
 	return framebuffers;
 }
+

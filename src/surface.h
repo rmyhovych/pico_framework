@@ -26,6 +26,8 @@ class Surface
 public:
 	explicit Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
 
+	~Surface();
+
 	void destroy(VkInstance instance);
 
 	bool isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const;

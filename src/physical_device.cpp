@@ -4,8 +4,6 @@
 
 #include "physical_device.h"
 
-#include <set>
-
 
 PhysicalDevice::PhysicalDevice(VkPhysicalDevice handle) :
 		handle_(handle)
@@ -13,7 +11,7 @@ PhysicalDevice::PhysicalDevice(VkPhysicalDevice handle) :
 }
 
 
-VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const
+VkFormat PhysicalDevice::pickSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const
 {
 	for (VkFormat format : candidates)
 	{
@@ -44,6 +42,14 @@ VkFormat PhysicalDevice::getSupportedFormat(const std::vector<VkFormat> &candida
 	return VK_FORMAT_UNDEFINED;
 }
 
+VkFormat PhysicalDevice::pickSupportedDepthFormat() const
+{
+	return pickSupportedFormat(
+			{VK_FORMAT_D24_UNORM_S8_UINT, VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT},
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+	);
+}
 
 std::vector<uint32_t> PhysicalDevice::getQueueFamilyIndexes(VkQueueFlags flags) const
 {
@@ -91,3 +97,4 @@ void PhysicalDevice::pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) con
 		}
 	}
 }
+

@@ -9,7 +9,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "window_manager.h"
+#include "window/window_manager.h"
 
 class GLFWWindowManager : public WindowManager
 {
