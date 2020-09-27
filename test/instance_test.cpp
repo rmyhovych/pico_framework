@@ -6,6 +6,7 @@
 
 #include <string>
 #include <window/glfw_window_manager.h>
+#include <renderpass/render_pass_builder.h>
 
 int main()
 {
@@ -32,6 +33,14 @@ int main()
 
 	Device device(&physicalDevices[0], {VK_QUEUE_GRAPHICS_BIT, VK_QUEUE_TRANSFER_BIT}, {VK_KHR_SWAPCHAIN_EXTENSION_NAME});
 
+	RenderPass renderPass = RenderPassBuilder()
+			.pushBackColor(VK_FORMAT_A8B8G8R8_UNORM_PACK32)
+			.pushBackDepth(VK_FORMAT_D24_UNORM_S8_UINT)
+			.build(device.handle_);
+
+
+	renderPass.destroy(device.handle_);
+	surface.destroy(instance.handle_);
 	device.destroy();
 	instance.destroy();
 

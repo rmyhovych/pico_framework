@@ -17,6 +17,13 @@ Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpac
 {
 }
 
+void Surface::destroy(VkInstance instance)
+{
+	vkDestroySurfaceKHR(instance, handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
+}
+
+
 bool Surface::isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const
 {
 	VkBool32 supported;

@@ -26,6 +26,8 @@ class Surface
 public:
 	explicit Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
 
+	void destroy(VkInstance instance);
+
 	bool isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const;
 
 	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const;

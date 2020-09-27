@@ -11,7 +11,6 @@
 #include "surface.h"
 #include "device.h"
 #include "window/window_manager.h"
-#include "renderer.h"
 
 class Instance
 {
@@ -26,8 +25,10 @@ public:
 
 	std::vector<PhysicalDevice> getPhysicalDevices();
 
-private:
+public:
 	VkInstance handle_;
+
+private:
 	const WindowManager* pWindowManager_;
 
 	VkSurfaceKHR surface_;
