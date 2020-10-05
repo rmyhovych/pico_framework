@@ -11,7 +11,6 @@ set(PICOFRAMEWORK_FILES
 		device.h
 		window/window_manager.h
 		window/window_manager.cpp
-		pipeline.cpp pipeline.h
 		physical_device.cpp physical_device.h
 
 		resources/resource_factory.cpp resources/resource_factory.h
