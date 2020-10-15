@@ -8,12 +8,12 @@
 class ResourceReader
 {
 public:
-        static std::vector<char> readData(const char* relativePath);
+	static std::vector<char> readData(const char* relativePath);
 
 private:
-        ResourceReader() {};
+	ResourceReader() {};
 
-        static const std::string ROOT_PATH;
+	static const std::string ROOT_PATH;
 };
 
 #endif // RESOURCEREADER_H
