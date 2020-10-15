@@ -13,6 +13,10 @@ struct DeviceQueue
 	VkQueue queue = VK_NULL_HANDLE;
 	uint32_t family = 0;
 	VkQueueFlags type = 0;
+
+	bool isType(VkQueueFlags subtype) const {
+		return (type & subtype) == subtype;
+	}
 };
 
 

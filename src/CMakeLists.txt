@@ -13,9 +13,13 @@ set(PICOFRAMEWORK_FILES
 		window/window_manager.cpp
 		physical_device.cpp physical_device.h
 
+                resources/resource_reader.cpp resources/resource_reader.h
 		resources/resource_factory.cpp resources/resource_factory.h
 		resources/allocator.cpp resources/allocator.h
-		renderpass/render_pass_builder.cpp renderpass/render_pass_builder.h renderpass/render_pass.cpp renderpass/render_pass.h resources/alloc_objects.h)
+                renderpass/render_pass.cpp renderpass/render_pass.h
+                resources/alloc_objects.h
+                swapchain/swapchain.cpp swapchain/swapchain.h
+)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

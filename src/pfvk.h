@@ -5,15 +5,17 @@
 #include <stdexcept>
 #include <string>
 
-#define CALL_VK(result)                                             \
-    if (VK_SUCCESS != (result)) {                                   \
-        throw std::runtime_error(std::string("Vulkan Error[")       \
-            .append(std::to_string(result))                         \
-            .append(std::string("]. File["))                        \
-            .append(std::string(__FILE__))                          \
-            .append(std::string("], line["))                        \
-            .append(std::to_string(__LINE__))                       \
-            .append(std::string("]. Error[")).c_str());             \
+#define CALL_VK(result)                                         \
+    if (VK_SUCCESS != (result)) {                               \
+        throw std::runtime_error(std::string("Vulkan Error[")   \
+            .append(std::to_string(result))                     \
+            .append(std::string("]. File["))                    \
+            .append(std::string(__FILE__))                      \
+            .append(std::string("], line["))                    \
+            .append(std::to_string(__LINE__))                   \
+            .append(std::string("]. Error["))                   \
+            .append(std::to_string(result))                     \
+            .append(std::string("].")));                        \
     }
 
 

@@ -17,9 +17,15 @@ public:
 
 	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
+	void destroyBuffer(BufferAllocation &buffer) const;
+
 	ImageAllocation createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
+	void destroyImage(ImageAllocation &image) const;
+
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const;
+
+	void destroyImageView(VkImageView imageView) const;
 
 private:
 	VkDevice deviceHandle_;

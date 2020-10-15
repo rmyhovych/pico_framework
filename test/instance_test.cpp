@@ -6,9 +6,11 @@
 
 #include <string>
 #include <window/glfw_window_manager.h>
-#include <renderpass/render_pass_builder.h>
 #include <resources/allocator.h>
 #include <resources/resource_factory.h>
+
+#include "renderpass/render_pass.h"
+
 
 int main()
 {
@@ -35,12 +37,6 @@ int main()
 
 	Device device(&physicalDevices[0], {VK_QUEUE_GRAPHICS_BIT, VK_QUEUE_TRANSFER_BIT}, {VK_KHR_SWAPCHAIN_EXTENSION_NAME});
 
-	RenderPass renderPass = RenderPassBuilder()
-			.pushBackColor(VK_FORMAT_A8B8G8R8_UNORM_PACK32)
-			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
-			.build(device.handle_);
-
-
 	Allocator allocator(instance, device);
 	ResourceFactory resourceFactory(device, &allocator);
 
@@ -52,8 +48,14 @@ int main()
 
 	allocator.free(bufferAllocation);
 
-	allocator.destroy();
+	RenderPass renderPass = RenderPass::Builder(device)
+			.pushBackColor(VK_FORMAT_A2B10G10R10_SINT_PACK32)
+			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
+			.build();
+
 	renderPass.destroy(device.handle_);
+
+	allocator.destroy();
 	surface.destroy(instance.handle_);
 	device.destroy();
 	instance.destroy();

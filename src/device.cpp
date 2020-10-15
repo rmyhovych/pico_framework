@@ -92,3 +92,4 @@ VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector
 
 	return device;
 }
+

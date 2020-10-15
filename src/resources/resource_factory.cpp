@@ -25,6 +25,11 @@ BufferAllocation ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageF
 	return pAllocator_->createBuffer(bufferCreateInfo, memoryUsage, 0);
 }
 
+void ResourceFactory::destroyBuffer(BufferAllocation &buffer) const
+{
+	pAllocator_->free(buffer);
+}
+
 
 ImageAllocation ResourceFactory::createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const
 {
@@ -45,6 +50,12 @@ ImageAllocation ResourceFactory::createImage(VkExtent2D extent, VkFormat format,
 	return pAllocator_->createImage(imageCreateInfo, memoryUsage, 0);
 }
 
+void ResourceFactory::destroyImage(ImageAllocation &image) const
+{
+	pAllocator_->free(image);
+}
+
+
 VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const
 {
 	VkImageViewCreateInfo viewCreateInfo = {};
@@ -63,5 +74,10 @@ VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkI
 	VkImageView imageView;
 	CALL_VK(vkCreateImageView(deviceHandle_, &viewCreateInfo, nullptr, &imageView))
 	return imageView;
+}
+
+void ResourceFactory::destroyImageView(VkImageView imageView) const
+{
+	vkDestroyImageView(deviceHandle_, imageView, nullptr);
 }
 

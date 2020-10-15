@@ -6,11 +6,37 @@
 #define PICOFRAMEWORK_RENDER_PASS_H
 
 #include <vector>
+#include <surface.h>
+#include <device.h>
+#include <resources/resource_factory.h>
 #include "pfvk.h"
 
 class RenderPass
 {
 public:
+	class Builder
+	{
+	public:
+		Builder(const Device &device);
+
+		Builder &pushBackColor(VkFormat format);
+
+		Builder &pushBackDepth(VkFormat format);
+
+		Builder &setPipelineBindPoint(VkPipelineBindPoint pipelineBindPoint);
+
+		RenderPass build();
+
+	private:
+		VkDevice deviceHandle_;
+
+		std::vector<VkAttachmentDescription> attachmentDescriptions_;
+		std::vector<VkAttachmentReference> colorAttachments_;
+		VkAttachmentReference depthAttachment_;
+
+		VkSubpassDescription subpass_;
+	};
+
 	explicit RenderPass(VkRenderPass handle);
 
 	~RenderPass();
