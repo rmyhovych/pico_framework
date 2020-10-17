@@ -27,6 +27,8 @@ set(PICOFRAMEWORK_FILES
 	pipeline/state/color_blend_state.cpp pipeline/state/color_blend_state.h
 	pipeline/state/dynamic_state.cpp pipeline/state/dynamic_state.h
 	pipeline/state/depth_stencil_state.cpp pipeline/state/depth_stencil_state.h
+
+	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
 )
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
