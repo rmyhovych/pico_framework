@@ -1,7 +1,6 @@
 #include "viewport_state.h"
 
-ViewportState::ViewportState(VkExtent2D extent) :
-    createInfo_({})
+ViewportState::ViewportState(VkExtent2D extent)
 {
 	VkViewport viewport = {};
 	viewport.x = 0.0f;
@@ -22,8 +21,3 @@ ViewportState::ViewportState(VkExtent2D extent) :
 	createInfo_.pScissors = &scissor;
 }
 
-
-const VkPipelineViewportStateCreateInfo *ViewportState::getCreateInfoPtr() const
-{
-	return &createInfo_;
-}

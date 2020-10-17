@@ -1,16 +1,15 @@
 #ifndef VERTEXDESCRIPTION_H
 #define VERTEXDESCRIPTION_H
 
-#include "pfvk.h"
+#include "pipeline_state.h"
 #include <vector>
 
-class VertexInputState
+class VertexInputState:
+		public PipelineState<VkPipelineVertexInputStateCreateInfo>
 {
 public:
 	VertexInputState(uint32_t stride, VkVertexInputRate inputRate=VK_VERTEX_INPUT_RATE_VERTEX);
 	VertexInputState& pushAttribute(VkFormat format, uint32_t offset);
-
-	const VkPipelineVertexInputStateCreateInfo* getCreateInfoPtr();
 
 private:
 	VkVertexInputBindingDescription bindingDescription_;

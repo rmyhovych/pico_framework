@@ -1,17 +1,14 @@
 #ifndef VIEWPORTSTATE_H
 #define VIEWPORTSTATE_H
 
-#include "pfvk.h"
+#include "pipeline_state.h"
 
-class ViewportState
+class ViewportState:
+		public PipelineState<VkPipelineViewportStateCreateInfo>
 {
 public:
 	explicit ViewportState(VkExtent2D extent);
 
-	const VkPipelineViewportStateCreateInfo* getCreateInfoPtr() const;
-
-private:
-	VkPipelineViewportStateCreateInfo createInfo_;
 };
 
 #endif // VIEWPORTSTATE_H
