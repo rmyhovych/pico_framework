@@ -2,9 +2,7 @@
 
 VertexInputState::VertexInputState(uint32_t stride, VkVertexInputRate inputRate) :
 	bindingDescription_({}),
-	attributeDescriptions_(0),
-
-	createInfo_({})
+	attributeDescriptions_(0)
 {
 	bindingDescription_.binding = 0;
 	bindingDescription_.stride = stride;

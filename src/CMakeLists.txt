@@ -23,6 +23,10 @@ set(PICOFRAMEWORK_FILES
 	pipeline/state/input_assembly_state.cpp pipeline/state/input_assembly_state.h
 	pipeline/state/viewport_state.cpp pipeline/state/viewport_state.h
 	pipeline/state/rasterization_state.cpp pipeline/state/rasterization_state.h
+	pipeline/state/multisample_state.cpp pipeline/state/multisample_state.h
+	pipeline/state/color_blend_state.cpp pipeline/state/color_blend_state.h
+	pipeline/state/dynamic_state.cpp pipeline/state/dynamic_state.h
+	pipeline/state/depth_stencil_state.cpp pipeline/state/depth_stencil_state.h
 )
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})

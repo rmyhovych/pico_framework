@@ -3,8 +3,7 @@
 
 #include "pipeline_state.h"
 
-class InputAssemblyState:
-		PipelineState<VkPipelineInputAssemblyStateCreateInfo>
+class InputAssemblyState : public PipelineState<VkPipelineInputAssemblyStateCreateInfo>
 {
 public:
 	explicit InputAssemblyState(VkPrimitiveTopology topology);

@@ -4,8 +4,7 @@
 #include "pipeline_state.h"
 #include <vector>
 
-class VertexInputState:
-		public PipelineState<VkPipelineVertexInputStateCreateInfo>
+class VertexInputState : public PipelineState<VkPipelineVertexInputStateCreateInfo>
 {
 public:
 	VertexInputState(uint32_t stride, VkVertexInputRate inputRate=VK_VERTEX_INPUT_RATE_VERTEX);
@@ -14,8 +13,6 @@ public:
 private:
 	VkVertexInputBindingDescription bindingDescription_;
 	std::vector<VkVertexInputAttributeDescription> attributeDescriptions_;
-
-	VkPipelineVertexInputStateCreateInfo createInfo_;
 };
 
 #endif // VERTEXDESCRIPTION_H
