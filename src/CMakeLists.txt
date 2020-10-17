@@ -17,7 +17,9 @@ set(PICOFRAMEWORK_FILES
 	resources/alloc_objects.h
 	swapchain/swapchain.cpp swapchain/swapchain.h
 	pipeline/shader.cpp pipeline/shader.h
-	pipeline/vertex_binding.cpp pipeline/vertex_binding.h
+	pipeline/state/vertex_input_state.cpp pipeline/state/vertex_input_state.h
+	pipeline/state/input_assembly_state.cpp pipeline/state/input_assembly_state.h
+	pipeline/state/viewport_state.cpp pipeline/state/viewport_state.h
 )
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
