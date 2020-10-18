@@ -116,8 +116,7 @@ RenderPass::RenderPass(VkRenderPass handle) :
 
 RenderPass::~RenderPass()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VkRenderPass handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 

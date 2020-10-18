@@ -33,8 +33,7 @@ Allocator::Allocator(const Instance &instance, const Device &device) :
 
 Allocator::~Allocator()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VmaAllocator handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 void Allocator::destroy()

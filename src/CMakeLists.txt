@@ -29,6 +29,7 @@ set(PICOFRAMEWORK_FILES
 	pipeline/state/depth_stencil_state.cpp pipeline/state/depth_stencil_state.h
 
 	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
+	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
 )
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})

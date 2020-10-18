@@ -30,8 +30,7 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager
 
 Instance::~Instance()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VkInstance handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 void Instance::destroy()

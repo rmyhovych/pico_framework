@@ -2,7 +2,7 @@
 
 
 DescriptorSetLayout::Builder::Builder() :
-    bindings_(0)
+	bindings_(0)
 {
 }
 
@@ -22,7 +22,7 @@ DescriptorSetLayout::Builder& DescriptorSetLayout::Builder::pushBinding(VkDescri
 
 DescriptorSetLayout DescriptorSetLayout::Builder::build(const Device &device)
 {
-	VkDescriptorSetLayoutCreateInfo createInfo = {};
+	VkDescriptorSetLayoutCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 	createInfo.bindingCount = static_cast<uint32_t>(bindings_.size());
 	createInfo.pBindings = bindings_.data();
@@ -37,8 +37,7 @@ DescriptorSetLayout DescriptorSetLayout::Builder::build(const Device &device)
 
 DescriptorSetLayout::~DescriptorSetLayout()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VkDescriptorSetLayout handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 void DescriptorSetLayout::destroy(const Device &device)
@@ -48,6 +47,6 @@ void DescriptorSetLayout::destroy(const Device &device)
 }
 
 DescriptorSetLayout::DescriptorSetLayout(VkDescriptorSetLayout handle) :
-    handle_(handle)
+	handle_(handle)
 {
 }

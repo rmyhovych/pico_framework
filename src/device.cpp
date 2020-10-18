@@ -24,8 +24,7 @@ Device::Device(const PhysicalDevice* pPhysicalDevice, const std::vector<VkQueueF
 
 Device::~Device()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VkDevice handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 void Device::destroy()

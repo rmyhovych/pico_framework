@@ -88,8 +88,7 @@ Swapchain::Swapchain(VkSwapchainKHR handle, std::vector<VkImage>& images, std::v
 
 Swapchain::~Swapchain()
 {
-	if (handle_ != VK_NULL_HANDLE)
-		printf("WARNING : VkSwapchainKHR handle was not explicitly destroyed.\n");
+	CHECK_NULL_HANDLE(handle_)
 }
 
 void Swapchain::destroy(const Device &device, const ResourceFactory &resourceFactory)
