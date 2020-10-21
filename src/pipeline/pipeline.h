@@ -31,12 +31,12 @@ public:
 	};
 
 public:
-
-private:
-	Pipeline(VkPipeline handle);
 	~Pipeline();
 
 	void destroy(const Device& device);
+
+private:
+	Pipeline(VkPipeline handle);
 
 public:
 	VkPipeline handle_;
