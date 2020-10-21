@@ -29,6 +29,7 @@ set(PICOFRAMEWORK_FILES
 	pipeline/state/depth_stencil_state.cpp pipeline/state/depth_stencil_state.h
 
 	pipeline/shader.cpp pipeline/shader.h
+	pipeline/shader_stages.cpp pipeline/shader_stages.h
 	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
 	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
 	pipeline/pipeline.cpp pipeline/pipeline.h

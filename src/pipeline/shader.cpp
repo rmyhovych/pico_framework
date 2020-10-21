@@ -15,3 +15,14 @@ Shader::Shader(const Device& device, const char *filepath) :
 
 	CALL_VK(vkCreateShaderModule(device.handle_, &createInfo, nullptr, &module_))
 }
+
+Shader::~Shader()
+{
+	CHECK_NULL_HANDLE(module_)
+}
+
+void Shader::destroy(const Device& device)
+{
+	vkDestroyShaderModule(device.handle_, module_, nullptr);
+	module_ = VK_NULL_HANDLE;
+}

@@ -1,6 +1,8 @@
 #ifndef PIPELINE_H
 #define PIPELINE_H
 
+#include <optional>
+
 #include "device.h"
 #include "shader.h"
 
@@ -39,7 +41,7 @@ public:
 	private:
 		VkGraphicsPipelineCreateInfo createInfo_;
 
-		std::array<VkShaderModule, 2> shaderModules_;
+		std::vector<VkShaderModule> shaderModules_;
 	};
 
 public:

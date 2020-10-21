@@ -9,6 +9,9 @@ class Shader
 {
 public:
 	Shader(const Device& device, const char* filepath);
+	~Shader();
+
+	void destroy(const Device& device);
 
 public:
 	VkShaderModule module_;
