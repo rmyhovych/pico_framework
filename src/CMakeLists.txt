@@ -18,7 +18,10 @@ set(PICOFRAMEWORK_FILES
 
 	swapchain/swapchain.cpp swapchain/swapchain.h
 
-	pipeline/state/rasterization_state.cpp
+	pipeline/state/state_manager.cpp pipeline/state/state_manager.h
+
+	pipeline/state/pipeline_state.h
+	pipeline/state/rasterization_state.cpp pipeline/state/rasterization_state.h
 	pipeline/state/vertex_input_state.cpp pipeline/state/vertex_input_state.h
 	pipeline/state/input_assembly_state.cpp pipeline/state/input_assembly_state.h
 	pipeline/state/viewport_state.cpp pipeline/state/viewport_state.h

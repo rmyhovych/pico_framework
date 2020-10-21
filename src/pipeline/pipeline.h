@@ -4,16 +4,9 @@
 #include <optional>
 
 #include "device.h"
-#include "shader.h"
+#include "shader_stages.h"
 
-#include "state/vertex_input_state.h"
-#include "state/input_assembly_state.h"
-#include "state/viewport_state.h"
-#include "state/rasterization_state.h"
-#include "state/multisample_state.h"
-#include "state/depth_stencil_state.h"
-#include "state/color_blend_state.h"
-#include "state/dynamic_state.h"
+#include "state/state_manager.h"
 
 #include "pipeline_layout.h"
 #include "renderpass/render_pass.h"
@@ -26,22 +19,15 @@ public:
 	public:
 		Builder();
 
-		Builder& setShaders(const Shader& vertex, const Shader& fragment);
-		Builder& setVertexInputState(const VertexInputState& state);
-		Builder& setInputAssemblyState(const InputAssemblyState& state);
-		Builder& setViewportState(const ViewportState& state);
-		Builder& setRasterizationState(const RasterizationState& state);
-		Builder& setMultisampleState(const MultisampleState& state);
-		Builder& setDepthStencilState(const DepthStencilState& state);
-		Builder& setColorBlendState(const ColorBlendState& state);
-		Builder& setDynamicState(const DynamicState& state);
+		Builder& linkShaders(const ShaderStages* shaders);
+		Builder& linkStates(const StateManager* stateManager);
+		Builder& linkLayout(const PipelineLayout* layout);
+		Builder& linkRenderPass(const RenderPass* renderPass);
 
 		Pipeline build(const Device& device);
 
 	private:
 		VkGraphicsPipelineCreateInfo createInfo_;
-
-		std::vector<VkShaderModule> shaderModules_;
 	};
 
 public:

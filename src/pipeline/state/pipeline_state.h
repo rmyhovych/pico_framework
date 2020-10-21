@@ -5,6 +5,7 @@
 
 template <class T>
 class PipelineState {
+public:
 	const T* getCreateInfoPtr() const {
 		return &createInfo_;
 	}

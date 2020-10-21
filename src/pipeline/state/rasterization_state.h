@@ -6,7 +6,7 @@
 class RasterizationState : public PipelineState<VkPipelineRasterizationStateCreateInfo>
 {
 public:
-	RasterizationState(VkFrontFace frontFace=VK_FRONT_FACE_COUNTER_CLOCKWISE, VkCullModeFlags cullMode=VK_CULL_MODE_BACK_BIT);
+	RasterizationState(VkFrontFace frontFace, VkCullModeFlags cullMode);
 };
 
 #endif // RASTERIZATIONSTATE_H
