@@ -119,7 +119,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/ross/Qt/Tools/CMake/bin/cmake"
+			"value" : "/usr/bin/cmake"
 		},
 		{
 			"name" : "CMAKE_CPACK_COMMAND",
@@ -131,7 +131,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/ross/Qt/Tools/CMake/bin/cpack"
+			"value" : "/usr/bin/cpack"
 		},
 		{
 			"name" : "CMAKE_CTEST_COMMAND",
@@ -143,7 +143,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/ross/Qt/Tools/CMake/bin/ctest"
+			"value" : "/usr/bin/ctest"
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER",
@@ -943,7 +943,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/ross/Qt/Tools/CMake/share/cmake-3.18"
+			"value" : "/usr/share/cmake-3.18"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",

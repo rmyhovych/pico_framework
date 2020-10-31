@@ -33,6 +33,8 @@ public:
 public:
 	~Pipeline();
 
+	Pipeline(Pipeline&& p);
+
 	void destroy(const Device& device);
 
 private:

@@ -10,7 +10,7 @@ ShaderStages::ShaderStages() :
 ShaderStages::~ShaderStages()
 {
 	if (!shaders_.empty())
-		printf("WARNING: ShaderStages was not explicitly destroyed!");
+		printf("WARNING: ShaderStages was not explicitly destroyed!\n");
 }
 
 void ShaderStages::destroy(const Device &device)

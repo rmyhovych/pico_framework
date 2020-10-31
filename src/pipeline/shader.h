@@ -9,6 +9,8 @@ class Shader
 {
 public:
 	Shader(const Device& device, const char* filepath);
+	Shader(Shader&& s);
+
 	~Shader();
 
 	void destroy(const Device& device);

@@ -73,7 +73,14 @@ Pipeline::~Pipeline()
 	CHECK_NULL_HANDLE(handle_)
 }
 
+Pipeline::Pipeline(Pipeline &&p) :
+	handle_(p.handle_)
+{
+	p.handle_ = VK_NULL_HANDLE;
+}
+
 void Pipeline::destroy(const Device &device)
 {
 	vkDestroyPipeline(device.handle_, handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
 }

@@ -2,39 +2,14 @@
 
 #include <fstream>
 
-#ifdef _WIN32
-	#include <windows.h>
-	#include <Shlwapi.h>
-	#include <io.h>
-
-	#define access _access_s
-#endif // _WIN32
-
-std::string readRootPath()
-{
-	std::string execPath;
-
-#ifdef _WIN32
-	execPath.resize(MAX_PATH);
-	GetModuleFileNameA(NULL, (LPSTR) execPath.data(), MAX_PATH);
-#endif // _WIN32
-
-	std::string rootName("VulkanTest");
-	size_t index = execPath.find(rootName);
-
-	return execPath.substr(0, index + rootName.size() + 1);
-}
-
-const std::string ResourceReader::ROOT_PATH = readRootPath();
-
+#include <iostream>
 
 std::vector<char> ResourceReader::readData(const char *relativePath)
 {
-	std::string fullPath = ROOT_PATH + relativePath;
-	std::ifstream file(fullPath, std::ios::ate | std::ios::binary);
+	std::ifstream file(relativePath, std::ios::ate | std::ios::binary);
 
 	if (!file.is_open()) {
-		throw std::runtime_error("Failed to open file " + fullPath);
+		throw std::runtime_error("Failed to open file " + std::string(relativePath));
 	}
 
 	std::vector<char> fileContent(file.tellg());

@@ -2,6 +2,12 @@
 // Created by ross on 2020-09-21.
 //
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
+
 #include "instance.h"
 
 #include <string>
@@ -10,7 +16,19 @@
 #include <resources/resource_factory.h>
 
 #include "renderpass/render_pass.h"
+#include "pipeline/pipeline.h"
 
+struct Vertex {
+	glm::vec3 position;
+};
+
+Pipeline createPipeline(
+		const Device& device,
+		const SwapchainConfigurations& configurations,
+		const ShaderStages& shaderStages,
+		const PipelineLayout& pipelineLayout,
+		const RenderPass& renderPass
+		);
 
 int main()
 {
@@ -40,19 +58,25 @@ int main()
 	Allocator allocator(instance, device);
 	ResourceFactory resourceFactory(device, &allocator);
 
-	BufferAllocation bufferAllocation = resourceFactory.createBuffer(64, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
-
-	uint32_t* ptr = (uint32_t*) allocator.map(bufferAllocation);
-	ptr[0] = 12;
-	allocator.unmap(bufferAllocation);
-
-	allocator.free(bufferAllocation);
-
 	RenderPass renderPass = RenderPass::Builder(device)
 			.pushBackColor(VK_FORMAT_A2B10G10R10_SINT_PACK32)
 			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build();
 
+	ShaderStages shaders;
+	shaders
+			.addModule(device, "/home/ross/code/pico_framework/shaders/base.vert", VK_SHADER_STAGE_VERTEX_BIT)
+			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+
+	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder().build(device);
+	PipelineLayout pipelineLayout(device, descriptorSetLayout);
+
+	Pipeline pipeline = createPipeline(device, configurations, shaders, pipelineLayout, renderPass);
+	std::cout << pipeline.handle_ << std::endl;
+	shaders.destroy(device);
+	pipeline.destroy(device);
+	pipelineLayout.destroy(device);
+	descriptorSetLayout.destroy(device);
 	renderPass.destroy(device.handle_);
 
 	allocator.destroy();
@@ -61,4 +85,47 @@ int main()
 	instance.destroy();
 
 	return 0;
+}
+
+
+Pipeline createPipeline(
+		const Device& device,
+		const SwapchainConfigurations& configurations,
+		const ShaderStages& shaderStages,
+		const PipelineLayout& pipelineLayout,
+		const RenderPass& renderPass
+		)
+{
+	StateManager stateManager;
+	stateManager.setVertexInput(sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX)->
+			pushAttribute(VK_FORMAT_R32G32B32A32_SFLOAT, offsetof(Vertex, position));
+
+	stateManager.setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	stateManager.setViewport(configurations.extent);
+	stateManager.setRasterization(VK_FRONT_FACE_COUNTER_CLOCKWISE, VK_CULL_MODE_BACK_BIT);
+	stateManager.setMultisample();
+	stateManager.setDepthStencil(VK_FALSE, VK_FALSE, VK_COMPARE_OP_LESS);
+
+	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+	colorBlendAttachment.colorWriteMask =
+		VK_COLOR_COMPONENT_R_BIT |
+		VK_COLOR_COMPONENT_G_BIT |
+		VK_COLOR_COMPONENT_B_BIT |
+		VK_COLOR_COMPONENT_A_BIT;
+	colorBlendAttachment.blendEnable = VK_TRUE;
+	colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+	colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+	colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+	colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+	stateManager.setColorBlend()->addAttachment(colorBlendAttachment);
+	stateManager.setDynamic();
+
+	return Pipeline::Builder()
+			.linkShaders(&shaderStages)
+			.linkStates(&stateManager)
+			.linkLayout(&pipelineLayout)
+			.linkRenderPass(&renderPass)
+			.build(device);
 }
