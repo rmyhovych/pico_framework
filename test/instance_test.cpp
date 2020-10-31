@@ -30,8 +30,15 @@ Pipeline createPipeline(
 		const RenderPass& renderPass
 		);
 
+
 int main()
 {
+	// WINDOW
+	GLFWWindowManager windowManager(200, 200);
+
+
+	// INSTANCE
+
 	VkApplicationInfo appInfo = {};
 
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
@@ -41,9 +48,10 @@ int main()
 	appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_2;
 
-	GLFWWindowManager windowManager(200, 200);
-
 	Instance instance = Instance(appInfo, &windowManager);
+
+
+	// DEVICE
 	std::vector<PhysicalDevice> physicalDevices = instance.getPhysicalDevices();
 
 	VkPhysicalDeviceProperties p;
@@ -52,25 +60,44 @@ int main()
 	Surface surface(instance.getSurfaceHandle(), VK_FORMAT_A8B8G8R8_UNORM_PACK32, VK_COLORSPACE_SRGB_NONLINEAR_KHR, VK_PRESENT_MODE_FIFO_KHR);
 
 	SwapchainConfigurations configurations = surface.getSwapchainConfigurations(physicalDevices[0].handle_, windowManager.getExtent());
-
 	Device device(&physicalDevices[0], {VK_QUEUE_GRAPHICS_BIT, VK_QUEUE_TRANSFER_BIT}, {VK_KHR_SWAPCHAIN_EXTENSION_NAME});
 
-	Allocator allocator(instance, device);
-	ResourceFactory resourceFactory(device, &allocator);
 
+	// RENDER PASS
 	RenderPass renderPass = RenderPass::Builder(device)
 			.pushBackColor(VK_FORMAT_A2B10G10R10_SINT_PACK32)
 			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build();
 
+
+	// PIPELINE
 	ShaderStages shaders;
 	shaders
 			.addModule(device, "/home/ross/code/pico_framework/shaders/base.vert", VK_SHADER_STAGE_VERTEX_BIT)
 			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
-	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder().build(device);
+	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder()
+			.pushBinding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.build(device);
+
 	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
 	std::cout << pipeline.handle_ << std::endl;
+
+
+
+	// RESOURCES
+	Allocator allocator(instance, device);
+	ResourceFactory resourceFactory(device, &allocator);
+
+
+	// INPUT BUFFERS
+	std::vector<Vertex> vertices({{{-0.5f, 0.5f, 0.0f}}, {{0.5f, 0.5f, 0.0f}}, {{0.0f, -0.5f, 0.0f}}});
+	BufferAllocation vertexBuffer = resourceFactory.createBuffer(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+	std::cout << vertexBuffer.allocation << std::endl;
+
+	// CLEAN UP
+
+	resourceFactory.destroyBuffer(vertexBuffer);
 
 	shaders.destroy(device);
 	pipeline.destroy(device);
@@ -131,3 +158,4 @@ Pipeline createPipeline(
 
 	return pipeline;
 }
+

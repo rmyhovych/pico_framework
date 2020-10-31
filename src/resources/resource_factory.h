@@ -17,6 +17,12 @@ public:
 
 	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
+	template<typename T>
+	BufferAllocation createBuffer(const std::vector<T>& data, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const {
+		VkDeviceSize bufferSize = sizeof(data[0]) * data.size();
+		return createBuffer(bufferSize, usageFlags, memoryUsage);
+	}
+
 	void destroyBuffer(BufferAllocation &buffer) const;
 
 	ImageAllocation createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
