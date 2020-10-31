@@ -26,7 +26,7 @@ Pipeline createPipeline(
 		const Device& device,
 		const SwapchainConfigurations& configurations,
 		const ShaderStages& shaderStages,
-		const PipelineLayout& pipelineLayout,
+		const DescriptorSetLayout& descriptorSetLayout,
 		const RenderPass& renderPass
 		);
 
@@ -69,13 +69,11 @@ int main()
 			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder().build(device);
-	PipelineLayout pipelineLayout(device, descriptorSetLayout);
-
-	Pipeline pipeline = createPipeline(device, configurations, shaders, pipelineLayout, renderPass);
+	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
 	std::cout << pipeline.handle_ << std::endl;
+
 	shaders.destroy(device);
 	pipeline.destroy(device);
-	pipelineLayout.destroy(device);
 	descriptorSetLayout.destroy(device);
 	renderPass.destroy(device.handle_);
 
@@ -92,7 +90,7 @@ Pipeline createPipeline(
 		const Device& device,
 		const SwapchainConfigurations& configurations,
 		const ShaderStages& shaderStages,
-		const PipelineLayout& pipelineLayout,
+		const DescriptorSetLayout& descriptorSetLayout,
 		const RenderPass& renderPass
 		)
 {
@@ -122,10 +120,14 @@ Pipeline createPipeline(
 	stateManager.setColorBlend()->addAttachment(colorBlendAttachment);
 	stateManager.setDynamic();
 
-	return Pipeline::Builder()
+	PipelineLayout pipelineLayout(device, descriptorSetLayout);
+	Pipeline pipeline = Pipeline::Builder()
 			.linkShaders(&shaderStages)
 			.linkStates(&stateManager)
 			.linkLayout(&pipelineLayout)
 			.linkRenderPass(&renderPass)
 			.build(device);
+	pipelineLayout.destroy(device);
+
+	return pipeline;
 }
