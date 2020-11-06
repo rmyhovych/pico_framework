@@ -4,13 +4,13 @@
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
 #include "instance.h"
 
-#include <string>
 #include <window/glfw_window_manager.h>
 #include <resources/allocator.h>
 #include <resources/resource_factory.h>
@@ -18,17 +18,18 @@
 #include "renderpass/render_pass.h"
 #include "pipeline/pipeline.h"
 
-struct Vertex {
+struct Vertex
+{
 	glm::vec3 position;
 };
 
 Pipeline createPipeline(
-		const Device& device,
-		const SwapchainConfigurations& configurations,
-		const ShaderStages& shaderStages,
-		const DescriptorSetLayout& descriptorSetLayout,
-		const RenderPass& renderPass
-		);
+		const Device &device,
+		const SwapchainConfigurations &configurations,
+		const ShaderStages &shaderStages,
+		const DescriptorSetLayout &descriptorSetLayout,
+		const RenderPass &renderPass
+);
 
 
 int main()
@@ -87,17 +88,25 @@ int main()
 
 	// RESOURCES
 	Allocator allocator(instance, device);
-	ResourceFactory resourceFactory(device, &allocator);
+	ResourceFactory resourceFactory(&device, &allocator);
 
 
 	// INPUT BUFFERS
-	std::vector<Vertex> vertices({{{-0.5f, 0.5f, 0.0f}}, {{0.5f, 0.5f, 0.0f}}, {{0.0f, -0.5f, 0.0f}}});
-	BufferAllocation vertexBuffer = resourceFactory.createBuffer(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+	std::vector<Vertex> vertices({{{-0.5f, 0.5f,  0.0f}},
+	                              {{0.5f,  0.5f,  0.0f}},
+	                              {{0.0f,  -0.5f, 0.0f}}});
+	BufferAllocation vertexBuffer = resourceFactory.createDeviceBuffer(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 	std::cout << vertexBuffer.allocation << std::endl;
 
-	// CLEAN UP
+	std::vector<uint16_t> indexes({0, 1, 2});
+	BufferAllocation indexBuffer = resourceFactory.createDeviceBuffer(indexes, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
+	std::cout << indexBuffer.allocation << std::endl;
 
+
+	// CLEAN UP
+	resourceFactory.destroyBuffer(indexBuffer);
 	resourceFactory.destroyBuffer(vertexBuffer);
+	resourceFactory.destroy();
 
 	shaders.destroy(device);
 	pipeline.destroy(device);
@@ -114,12 +123,12 @@ int main()
 
 
 Pipeline createPipeline(
-		const Device& device,
-		const SwapchainConfigurations& configurations,
-		const ShaderStages& shaderStages,
-		const DescriptorSetLayout& descriptorSetLayout,
-		const RenderPass& renderPass
-		)
+		const Device &device,
+		const SwapchainConfigurations &configurations,
+		const ShaderStages &shaderStages,
+		const DescriptorSetLayout &descriptorSetLayout,
+		const RenderPass &renderPass
+)
 {
 	StateManager stateManager;
 	stateManager.setVertexInput(sizeof(Vertex), VK_VERTEX_INPUT_RATE_VERTEX)->
@@ -127,16 +136,16 @@ Pipeline createPipeline(
 
 	stateManager.setInputAssembly(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	stateManager.setViewport(configurations.extent);
-	stateManager.setRasterization(VK_FRONT_FACE_COUNTER_CLOCKWISE, VK_CULL_MODE_BACK_BIT);
+	stateManager.setRasterization(VK_FRONT_FACE_COUNTER_CLOCKWISE, VK_CULL_MODE_NONE);
 	stateManager.setMultisample();
 	stateManager.setDepthStencil(VK_FALSE, VK_FALSE, VK_COMPARE_OP_LESS);
 
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{};
 	colorBlendAttachment.colorWriteMask =
-		VK_COLOR_COMPONENT_R_BIT |
-		VK_COLOR_COMPONENT_G_BIT |
-		VK_COLOR_COMPONENT_B_BIT |
-		VK_COLOR_COMPONENT_A_BIT;
+			VK_COLOR_COMPONENT_R_BIT |
+			VK_COLOR_COMPONENT_G_BIT |
+			VK_COLOR_COMPONENT_B_BIT |
+			VK_COLOR_COMPONENT_A_BIT;
 	colorBlendAttachment.blendEnable = VK_TRUE;
 	colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
 	colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;

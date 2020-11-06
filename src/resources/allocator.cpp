@@ -13,7 +13,6 @@
 Allocator::Allocator(const Instance &instance, const Device &device) :
 		handle_(VK_NULL_HANDLE)
 {
-
 	VmaAllocatorCreateInfo allocatorCreateInfo{};
 	allocatorCreateInfo.instance = instance.handle_;
 	allocatorCreateInfo.device = device.handle_;
@@ -49,7 +48,7 @@ BufferAllocation Allocator::createBuffer(VkBufferCreateInfo &bufferCreateInfo, V
 	allocationCreateInfo.flags = flags;
 
 	BufferAllocation bufferAllocation;
-	CALL_VK(vmaCreateBuffer(handle_, &bufferCreateInfo, &allocationCreateInfo, &bufferAllocation.handle, &bufferAllocation.allocation, nullptr));
+	CALL_VK(vmaCreateBuffer(handle_, &bufferCreateInfo, &allocationCreateInfo, &bufferAllocation.handle, &bufferAllocation.allocation, nullptr))
 	return bufferAllocation;
 }
 

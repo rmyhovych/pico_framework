@@ -3,10 +3,16 @@
 
 #include "pfvk.h"
 
-template <class T>
-class PipelineState {
+template<class T>
+class PipelineState
+{
 public:
-	const T* getCreateInfoPtr() const {
+	PipelineState() :
+			createInfo_({})
+	{}
+
+	const T* getCreateInfoPtr() const
+	{
 		return &createInfo_;
 	}
 

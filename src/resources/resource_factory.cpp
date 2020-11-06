@@ -4,14 +4,37 @@
 
 #include "resource_factory.h"
 
-ResourceFactory::ResourceFactory(const Device &device, const Allocator* pAllocator) :
-		deviceHandle_(device.handle_),
-		pAllocator_(pAllocator)
+ResourceFactory::ResourceFactory(const Device* pDevice, const Allocator* pAllocator) :
+		pDevice_(pDevice),
+		pAllocator_(pAllocator),
+		pTransferQueue_(pDevice->getQueue(VK_QUEUE_TRANSFER_BIT))
 {
+	if (pTransferQueue_ == nullptr)
+		throw std::runtime_error("Missing transfer queue in Device!");
+
+	VkCommandPoolCreateInfo commandPoolCreateInfo{};
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+	commandPoolCreateInfo.pNext = nullptr;
+	commandPoolCreateInfo.queueFamilyIndex = pTransferQueue_->family;
+
+	CALL_VK(vkCreateCommandPool(pDevice->handle_, &commandPoolCreateInfo, nullptr, &transferCommandPool_))
 }
 
 
-BufferAllocation ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const
+ResourceFactory::~ResourceFactory()
+{
+	CHECK_NULL_HANDLE(transferCommandPool_)
+}
+
+void ResourceFactory::destroy()
+{
+	vkDestroyCommandPool(pDevice_->handle_, transferCommandPool_, nullptr);
+	transferCommandPool_ = VK_NULL_HANDLE;
+}
+
+
+BufferAllocation ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VkBufferCreateInfo bufferCreateInfo{};
 	bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -22,7 +45,7 @@ BufferAllocation ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageF
 	bufferCreateInfo.pQueueFamilyIndices = nullptr;
 	bufferCreateInfo.flags = 0;
 
-	return pAllocator_->createBuffer(bufferCreateInfo, memoryUsage, 0);
+	return pAllocator_->createBuffer(bufferCreateInfo, memoryUsage, flags);
 }
 
 void ResourceFactory::destroyBuffer(BufferAllocation &buffer) const
@@ -72,12 +95,46 @@ VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkI
 	subresourceRange.layerCount = 1;
 
 	VkImageView imageView;
-	CALL_VK(vkCreateImageView(deviceHandle_, &viewCreateInfo, nullptr, &imageView))
+	CALL_VK(vkCreateImageView(pDevice_->handle_, &viewCreateInfo, nullptr, &imageView))
 	return imageView;
 }
 
 void ResourceFactory::destroyImageView(VkImageView imageView) const
 {
-	vkDestroyImageView(deviceHandle_, imageView, nullptr);
+	vkDestroyImageView(pDevice_->handle_, imageView, nullptr);
 }
 
+VkCommandBuffer ResourceFactory::createTransferCommandBuffer() const
+{
+	VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {};
+	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	cmdBufferAllocateInfo.commandPool = transferCommandPool_;
+	cmdBufferAllocateInfo.commandBufferCount = 1;
+
+	VkCommandBuffer commandBuffer;
+	CALL_VK(vkAllocateCommandBuffers(pDevice_->handle_, &cmdBufferAllocateInfo, &commandBuffer))
+
+	VkCommandBufferBeginInfo cmdBufferBeginInfo = {};
+	cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+	CALL_VK(vkBeginCommandBuffer(commandBuffer, &cmdBufferBeginInfo))
+
+	return commandBuffer;
+}
+
+void ResourceFactory::submitTransferCommandBuffer(VkCommandBuffer transferCommandBuffer) const
+{
+	CALL_VK(vkEndCommandBuffer(transferCommandBuffer));
+
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = &transferCommandBuffer;
+
+	vkQueueSubmit(pTransferQueue_->queue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(pTransferQueue_->queue);
+
+	vkFreeCommandBuffers(pDevice_->handle_, transferCommandPool_, 1, &transferCommandBuffer);
+}

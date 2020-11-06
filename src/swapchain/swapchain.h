@@ -31,20 +31,22 @@ public:
 	};
 
 private:
-	Swapchain(VkSwapchainKHR handle, std::vector<VkImage>& images, std::vector<VkImageView> imageViews);
+	Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews);
 
 	~Swapchain();
 
 	void destroy(const Device &device, const ResourceFactory &resourceFactory);
 
-	std::vector<VkImageView> &getImageViews();
+	std::vector<std::vector<VkImageView>> getAttachments();
 
 public:
 	VkSwapchainKHR handle_;
 
 private:
-	std::vector<VkImage> images_;
 	std::vector<VkImageView> imageViews_;
+
+	VkImage depthImage_;
+	VkImageView depthImageView_;
 };
 
 

@@ -23,6 +23,8 @@ public:
 
 	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueFamilyIndex) const;
 
+	const DeviceQueue* getQueue(VkQueueFlags type) const;
+
 private:
 	static VkDevice createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions);
 

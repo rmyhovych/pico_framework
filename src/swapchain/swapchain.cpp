@@ -22,17 +22,18 @@ Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configuration
 
 	VkFormat imageFormat = configurations.surfaceFormat.format;
 	std::vector<VkImageView> swapchainImageViews(swapchainImages.size());
-	for (VkImage image : swapchainImages)
+	for (uint32_t i = 0; i < swapchainImages.size(); ++i)
 	{
-		resourceFactory_.createImageView(image, imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		swapchainImageViews[i] = resourceFactory_.createImageView(swapchainImages[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
-	return Swapchain(handle, swapchainImages, swapchainImageViews);
+	return Swapchain(handle, swapchainImageViews);
 }
 
 VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &configurations) const
 {
-	auto graphicsQueue = std::find_if(device_.deviceQueues_.begin(), device_.deviceQueues_.end(), [](const DeviceQueue &queue) { return queue.isType(VK_QUEUE_GRAPHICS_BIT); });
+	auto graphicsQueue = std::find_if(device_.deviceQueues_.begin(), device_.deviceQueues_.end(), [](const DeviceQueue &queue)
+	{ return queue.isType(VK_QUEUE_GRAPHICS_BIT); });
 
 	if (graphicsQueue == device_.deviceQueues_.end())
 		throw std::runtime_error("Missing VK_QUEUE_GRAPHICS_BIT queue in device!");
@@ -79,9 +80,8 @@ std::vector<VkImage> Swapchain::Builder::getImages(VkSwapchainKHR handle) const
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 
-Swapchain::Swapchain(VkSwapchainKHR handle, std::vector<VkImage>& images, std::vector<VkImageView> imageViews) :
+Swapchain::Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews) :
 		handle_(handle),
-		images_(std::move(images)),
 		imageViews_(std::move(imageViews))
 {
 }
@@ -93,11 +93,24 @@ Swapchain::~Swapchain()
 
 void Swapchain::destroy(const Device &device, const ResourceFactory &resourceFactory)
 {
+	for (VkImageView imageView : imageViews_)
+	{
+		resourceFactory.destroyImageView(imageView);
+	}
 
+	vkDestroySwapchainKHR(device.handle_, handle_, nullptr);
 }
 
-std::vector<VkImageView> &Swapchain::getImageViews()
+std::vector<std::vector<VkImageView>> Swapchain::getAttachments()
 {
-	return imageViews_;
+	std::vector<std::vector<VkImageView>> attachments(imageViews_.size());
+	std::transform(imageViews_.begin(), imageViews_.end(), attachments.begin(), [](VkImageView imageView) -> std::vector<VkImageView>
+	{
+		std::vector<VkImageView> attachment;
+		attachment.push_back(imageView);
+		return attachment;
+	});
+
+	return attachments;
 }
 

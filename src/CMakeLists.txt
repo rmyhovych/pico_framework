@@ -36,7 +36,7 @@ set(PICOFRAMEWORK_FILES
 	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
 	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
 	pipeline/pipeline.cpp pipeline/pipeline.h
-)
+		)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

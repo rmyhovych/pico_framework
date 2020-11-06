@@ -33,7 +33,7 @@ public:
 	void* map(ObjectAllocation<T> &obj) const;
 
 	template<typename T>
-	void unmap(ObjectAllocation<T> obj) const;
+	void unmap(ObjectAllocation<T> &obj) const;
 
 private:
 	VmaAllocator handle_;
@@ -48,7 +48,7 @@ void* Allocator::map(ObjectAllocation<T> &obj) const
 }
 
 template<typename T>
-void Allocator::unmap(ObjectAllocation<T> obj) const
+void Allocator::unmap(ObjectAllocation<T> &obj) const
 {
 	vmaUnmapMemory(handle_, obj.allocation);
 }

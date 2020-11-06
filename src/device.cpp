@@ -48,6 +48,17 @@ VkCommandPool Device::createCommandPool(VkCommandPoolCreateFlags flags, uint32_t
 	return commandPool;
 }
 
+const DeviceQueue* Device::getQueue(VkQueueFlags type) const
+{
+	for (const DeviceQueue &deviceQueue : deviceQueues_)
+	{
+		if ((deviceQueue.type | type) == type)
+			return &deviceQueue;
+	}
+
+	return nullptr;
+}
+
 VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions)
 {
 	std::set<uint32_t> uniqueQueueFamilies;

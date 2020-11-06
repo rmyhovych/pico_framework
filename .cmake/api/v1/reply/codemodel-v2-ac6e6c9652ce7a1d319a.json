@@ -70,14 +70,14 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "PICOFRAMEWORK::@145eef247bfb46b6828c",
-					"jsonFile" : "target-PICOFRAMEWORK-Debug-5a62196bf255babf2cd6.json",
+					"jsonFile" : "target-PICOFRAMEWORK-Debug-cb01a4285686677ed443.json",
 					"name" : "PICOFRAMEWORK",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 2,
 					"id" : "TEST::@36f028580bb02cc8272a",
-					"jsonFile" : "target-TEST-Debug-097724ffd3a0f6da51d4.json",
+					"jsonFile" : "target-TEST-Debug-d868c5d3b6230104e997.json",
 					"name" : "TEST",
 					"projectIndex" : 0
 				}
@@ -93,6 +93,6 @@
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 1
+		"minor" : 0
 	}
 }

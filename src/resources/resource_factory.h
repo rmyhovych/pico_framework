@@ -5,6 +5,8 @@
 #ifndef PICOFRAMEWORK_RESOURCE_FACTORY_H
 #define PICOFRAMEWORK_RESOURCE_FACTORY_H
 
+#include <cstring>
+
 #include "pfvk.h"
 #include "device.h"
 
@@ -13,15 +15,16 @@
 class ResourceFactory
 {
 public:
-	explicit ResourceFactory(const Device &device, const Allocator* pAllocator);
+	explicit ResourceFactory(const Device* pDevice, const Allocator* pAllocator);
 
-	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
+	~ResourceFactory();
+
+	void destroy();
+
+	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
 	template<typename T>
-	BufferAllocation createBuffer(const std::vector<T>& data, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const {
-		VkDeviceSize bufferSize = sizeof(data[0]) * data.size();
-		return createBuffer(bufferSize, usageFlags, memoryUsage);
-	}
+	BufferAllocation createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags) const;
 
 	void destroyBuffer(BufferAllocation &buffer) const;
 
@@ -34,9 +37,41 @@ public:
 	void destroyImageView(VkImageView imageView) const;
 
 private:
-	VkDevice deviceHandle_;
+	VkCommandBuffer createTransferCommandBuffer() const;
+
+	void submitTransferCommandBuffer(VkCommandBuffer transferCommandBuffer) const;
+
+private:
+	const Device* pDevice_;
 	const Allocator* pAllocator_;
+	const DeviceQueue* pTransferQueue_;
+
+	VkCommandPool transferCommandPool_;
 };
+
+template<typename T>
+BufferAllocation ResourceFactory::createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags) const
+{
+	VkDeviceSize bufferSize = sizeof(data[0]) * data.size();
+
+	BufferAllocation stagingBuffer = createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+	void* mapped = pAllocator_->map(stagingBuffer);
+	memcpy(mapped, data.data(), bufferSize);
+	pAllocator_->unmap(stagingBuffer);
+
+	BufferAllocation buffer = createBuffer(bufferSize, usageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY, VMA_ALLOCATION_CREATE_MAPPED_BIT);
+
+	VkCommandBuffer transferCommandBuffer = createTransferCommandBuffer();
+	VkBufferCopy bufferCopy{};
+	bufferCopy.size = bufferSize;
+	bufferCopy.srcOffset = 0;
+	bufferCopy.dstOffset = 0;
+	vkCmdCopyBuffer(transferCommandBuffer, stagingBuffer.handle, buffer.handle, 1, &bufferCopy);
+	submitTransferCommandBuffer(transferCommandBuffer);
+
+	destroyBuffer(stagingBuffer);
+	return buffer;
+}
 
 
 #endif //PICOFRAMEWORK_RESOURCE_FACTORY_H
