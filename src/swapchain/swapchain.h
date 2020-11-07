@@ -15,6 +15,7 @@ class Swapchain
 public:
 	class Builder
 	{
+	public:
 		Builder(const Surface &surface, const Device &device, const ResourceFactory &resourceFactory);
 
 		Swapchain build(const SwapchainConfigurations &configurations) const;

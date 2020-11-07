@@ -18,6 +18,8 @@ public:
 
 	~GLFWWindowManager();
 
+	bool isOpen() const;
+
 	std::vector<const char*> getInstanceExtensions() const override;
 
 	VkExtent2D getExtent() const override;

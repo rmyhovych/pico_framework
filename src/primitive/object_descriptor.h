@@ -15,11 +15,13 @@ public:
 	template<typename T>
 	ObjectDescriptor(const ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes);
 
+	ObjectDescriptor(ObjectDescriptor &&other);
+
 	~ObjectDescriptor();
 
 	void destroy(const ResourceFactory &resourceFactory);
 
-	void recordCommands(VkCommandBuffer commandBuffer) const;
+	[[noreturn]] void recordCommands(VkCommandBuffer commandBuffer) const;
 
 private:
 	BufferAllocation vertexBuffer_;
@@ -38,5 +40,6 @@ ObjectDescriptor::ObjectDescriptor(const ResourceFactory &resourceFactory, const
 	vertexBuffer_ = resourceFactory.createDeviceBuffer(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
 	indexBuffer_ = resourceFactory.createDeviceBuffer(indexes, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
 }
+
 
 #endif //PICOFRAMEWORK_OBJECT_DESCRIPTOR_H

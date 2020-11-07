@@ -38,6 +38,13 @@ GLFWWindowManager::~GLFWWindowManager()
 	glfwTerminate();
 }
 
+
+bool GLFWWindowManager::isOpen() const
+{
+	return glfwWindowShouldClose(pWindow_) == 0;
+}
+
+
 std::vector<const char*> GLFWWindowManager::getInstanceExtensions() const
 {
 	uint32_t nExtensions = 0;

@@ -27,7 +27,7 @@ Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const Ren
 
 	framebuffers_.resize(nImages);
 
-	VkFramebufferCreateInfo framebufferCreateInfo = {};
+	VkFramebufferCreateInfo framebufferCreateInfo{};
 	framebufferCreateInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 	framebufferCreateInfo.renderPass = pRenderPass->handle_;
 	framebufferCreateInfo.width = swapchainConfigurations.extent.width;
@@ -73,35 +73,37 @@ void Renderer::destroy()
 	for (VkFramebuffer framebuffer : framebuffers_)
 		vkDestroyFramebuffer(pDevice_->handle_, framebuffer, nullptr);
 	framebuffers_.clear();
+
+	for (ObjectDescriptor &objectDescriptor : objectDescriptors_)
+		objectDescriptor.destroy(*pResourceFactory_);
+	objectDescriptors_.clear();
 }
 
 
 void Renderer::recordCommands()
 {
-	VkCommandBufferBeginInfo commandBufferBeginInfo = {};
+	VkCommandBufferBeginInfo commandBufferBeginInfo{};
 	commandBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	commandBufferBeginInfo.flags = 0;
 	commandBufferBeginInfo.pInheritanceInfo = nullptr;
 
-	VkRenderPassBeginInfo renderPassBeginInfo = {};
+	VkRenderPassBeginInfo renderPassBeginInfo{};
 	renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 	renderPassBeginInfo.renderPass = pRenderPass_->handle_;
 	renderPassBeginInfo.renderArea.offset = {0, 0};
 	renderPassBeginInfo.renderArea.extent = swapchainConfigurations_.extent;
 
 	// ATTACHMENT ORDER
-	std::vector<VkClearValue> clearValues({{0.0f, 0.1f, 0.1f, 1.0f},
-	                                       {1.0f, 0}});
+	std::vector<VkClearValue> clearValues({{0.0f, 0.6f, 0.1f, 1.0f}});
 	renderPassBeginInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
 	renderPassBeginInfo.pClearValues = clearValues.data();
-
 
 	for (int32_t i = commandBuffers_.size() - 1; i >= 0; --i)
 	{
 		const VkCommandBuffer &commandBuffer = commandBuffers_[i];
 		renderPassBeginInfo.framebuffer = framebuffers_[i];
 
-		CALL_VK(vkBeginCommandBuffer(commandBuffers_[i], &commandBufferBeginInfo))
+		CALL_VK(vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo))
 		vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pPipeline_->handle_);

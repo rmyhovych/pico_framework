@@ -8,12 +8,13 @@
 class Shader
 {
 public:
-	Shader(const Device& device, const char* filepath);
-	Shader(Shader&& s);
+	Shader(const Device &device, const char* filepath);
+
+	Shader(Shader &&s) noexcept;
 
 	~Shader();
 
-	void destroy(const Device& device);
+	void destroy(const Device &device);
 
 public:
 	VkShaderModule module_;

@@ -14,9 +14,12 @@
 #include <window/glfw_window_manager.h>
 #include <resources/allocator.h>
 #include <resources/resource_factory.h>
+#include <renderer/renderer.h>
 
 #include "renderpass/render_pass.h"
 #include "pipeline/pipeline.h"
+
+#include <thread>
 
 struct Vertex
 {
@@ -67,44 +70,51 @@ int main()
 	// RENDER PASS
 	RenderPass renderPass = RenderPass::Builder(device)
 			.pushBackColor(VK_FORMAT_A2B10G10R10_SINT_PACK32)
-			.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
+					//.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build();
 
 
 	// PIPELINE
 	ShaderStages shaders;
 	shaders
-			.addModule(device, "/home/ross/code/pico_framework/shaders/base.vert", VK_SHADER_STAGE_VERTEX_BIT)
-			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
+			.addModule(device, "/home/ross/code/pico_framework/shaders/base.vert.spirv", VK_SHADER_STAGE_VERTEX_BIT)
+			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag.spirv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder()
 			.build(device);
 
 	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
-	std::cout << pipeline.handle_ << std::endl;
-
-
 
 	// RESOURCES
 	Allocator allocator(instance, device);
 	ResourceFactory resourceFactory(&device, &allocator);
 
 
+	Swapchain swapchain = Swapchain::Builder(surface, device, resourceFactory).build(configurations);
+
+
 	// INPUT BUFFERS
 	std::vector<Vertex> vertices({{{-0.5f, 0.5f,  0.0f}},
 	                              {{0.5f,  0.5f,  0.0f}},
 	                              {{0.0f,  -0.5f, 0.0f}}});
-	BufferAllocation vertexBuffer = resourceFactory.createDeviceBuffer(vertices, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT);
-	std::cout << vertexBuffer.allocation << std::endl;
-
 	std::vector<uint16_t> indexes({0, 1, 2});
-	BufferAllocation indexBuffer = resourceFactory.createDeviceBuffer(indexes, VK_BUFFER_USAGE_INDEX_BUFFER_BIT);
-	std::cout << indexBuffer.allocation << std::endl;
 
+	Renderer renderer(&device, &swapchain, &renderPass, &pipeline, &resourceFactory, configurations);
+	renderer.createObjectDescriptor(vertices, indexes);
+	renderer.recordCommands();
+
+	while (windowManager.isOpen())
+	{
+		glfwPollEvents();
+		renderer.render();
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	}
 
 	// CLEAN UP
-	resourceFactory.destroyBuffer(indexBuffer);
-	resourceFactory.destroyBuffer(vertexBuffer);
+	renderer.destroy();
+
+	swapchain.destroy(device, resourceFactory);
+
 	resourceFactory.destroy();
 
 	shaders.destroy(device);

@@ -8,13 +8,15 @@ class ShaderStages
 {
 public:
 	ShaderStages();
+
 	~ShaderStages();
 
-	void destroy(const Device& device);
+	void destroy(const Device &device);
 
-	ShaderStages& addModule(const Device& device, const char* path, VkShaderStageFlagBits stage);
+	ShaderStages &addModule(const Device &device, const char* path, VkShaderStageFlagBits stage);
 
 	uint32_t size() const;
+
 	const VkPipelineShaderStageCreateInfo* data() const;
 
 private:

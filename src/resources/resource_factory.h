@@ -59,7 +59,7 @@ BufferAllocation ResourceFactory::createDeviceBuffer(const std::vector<T> &data,
 	memcpy(ptr, data.data(), bufferSize);
 	pAllocator_->unmap(stagingBuffer);
 
-	BufferAllocation buffer = createBuffer(bufferSize, usageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY, VMA_ALLOCATION_CREATE_MAPPED_BIT);
+	BufferAllocation buffer = createBuffer(bufferSize, usageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
 
 	VkCommandBuffer transferCommandBuffer = createTransferCommandBuffer();
 	VkBufferCopy bufferCopy{};

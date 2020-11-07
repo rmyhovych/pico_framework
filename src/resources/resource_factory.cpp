@@ -126,7 +126,7 @@ VkCommandBuffer ResourceFactory::createTransferCommandBuffer() const
 
 void ResourceFactory::submitTransferCommandBuffer(VkCommandBuffer transferCommandBuffer) const
 {
-	CALL_VK(vkEndCommandBuffer(transferCommandBuffer));
+	CALL_VK(vkEndCommandBuffer(transferCommandBuffer))
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;

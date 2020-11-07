@@ -19,6 +19,15 @@ void ObjectDescriptor::destroy(const ResourceFactory &resourceFactory)
 	indexBuffer_ = BufferAllocation{};
 }
 
+ObjectDescriptor::ObjectDescriptor(ObjectDescriptor &&other) :
+		vertexBuffer_(other.vertexBuffer_),
+		indexBuffer_(other.indexBuffer_),
+		nIndexes_(other.nIndexes_)
+{
+	other.vertexBuffer_ = BufferAllocation{};
+	other.indexBuffer_ = BufferAllocation{};
+}
+
 void ObjectDescriptor::recordCommands(VkCommandBuffer commandBuffer) const
 {
 	VkDeviceSize zeroOffset{0};

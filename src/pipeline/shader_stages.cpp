@@ -1,8 +1,8 @@
 #include "shader_stages.h"
 
 ShaderStages::ShaderStages() :
-	shaders_(),
-	stageInfos_()
+		shaders_(),
+		stageInfos_()
 {
 
 }
@@ -15,19 +15,19 @@ ShaderStages::~ShaderStages()
 
 void ShaderStages::destroy(const Device &device)
 {
-	for (Shader& shader : shaders_)
+	for (Shader &shader : shaders_)
 		shader.destroy(device);
 
 	shaders_.clear();
 	stageInfos_.clear();
 }
 
-ShaderStages &ShaderStages::addModule(const Device &device, const char *path, VkShaderStageFlagBits stage)
+ShaderStages &ShaderStages::addModule(const Device &device, const char* path, VkShaderStageFlagBits stage)
 {
-	shaders_.push_back(Shader(device, path));
+	shaders_.emplace_back(device, path);
 
 	stageInfos_.push_back({});
-	VkPipelineShaderStageCreateInfo& createInfo = stageInfos_.back();
+	VkPipelineShaderStageCreateInfo &createInfo = stageInfos_.back();
 	createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	createInfo.module = shaders_.back().module_;
 	createInfo.stage = stage;
@@ -41,7 +41,7 @@ uint32_t ShaderStages::size() const
 	return static_cast<uint32_t>(stageInfos_.size());
 }
 
-const VkPipelineShaderStageCreateInfo *ShaderStages::data() const
+const VkPipelineShaderStageCreateInfo* ShaderStages::data() const
 {
 	return stageInfos_.data();
 }
