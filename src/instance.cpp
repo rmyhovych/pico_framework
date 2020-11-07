@@ -181,6 +181,10 @@ Instance::~Instance()
 
 void Instance::destroy()
 {
+#ifndef NDEBUG
+	vkDestroyDebugUtilsMessengerEXT_PROXY(handle_, debugMessenger_, nullptr);
+#endif // !NDEBUG
+
 	vkDestroyInstance(handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }

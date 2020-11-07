@@ -94,6 +94,11 @@ int main()
 
 
 	// INPUT BUFFERS
+	std::vector<Vertex> vertices2({{{-0.9f, 0.1f,  0.0f}},
+	                               {{0.0f,  0.5f,  0.0f}},
+	                               {{0.0f,  -0.5f, 0.0f}}});
+	std::vector<uint16_t> indexes2({0, 1, 2});
+
 	std::vector<Vertex> vertices({{{-0.5f, 0.5f,  0.0f}},
 	                              {{0.5f,  0.5f,  0.0f}},
 	                              {{0.0f,  -0.5f, 0.0f}}});
@@ -101,6 +106,9 @@ int main()
 
 	Renderer renderer(&device, &swapchain, &renderPass, &pipeline, &resourceFactory, configurations);
 	renderer.createObjectDescriptor(vertices, indexes);
+
+	renderer.createObjectDescriptor(vertices2, indexes2);
+
 	renderer.recordCommands();
 
 	while (windowManager.isOpen())

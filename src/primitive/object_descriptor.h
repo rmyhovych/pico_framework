@@ -15,13 +15,13 @@ public:
 	template<typename T>
 	ObjectDescriptor(const ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes);
 
-	ObjectDescriptor(ObjectDescriptor &&other);
+	ObjectDescriptor(ObjectDescriptor &&other) noexcept;
 
 	~ObjectDescriptor();
 
 	void destroy(const ResourceFactory &resourceFactory);
 
-	[[noreturn]] void recordCommands(VkCommandBuffer commandBuffer) const;
+	void recordCommands(VkCommandBuffer commandBuffer) const;
 
 private:
 	BufferAllocation vertexBuffer_;

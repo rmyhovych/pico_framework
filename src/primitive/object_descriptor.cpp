@@ -19,7 +19,7 @@ void ObjectDescriptor::destroy(const ResourceFactory &resourceFactory)
 	indexBuffer_ = BufferAllocation{};
 }
 
-ObjectDescriptor::ObjectDescriptor(ObjectDescriptor &&other) :
+ObjectDescriptor::ObjectDescriptor(ObjectDescriptor &&other) noexcept:
 		vertexBuffer_(other.vertexBuffer_),
 		indexBuffer_(other.indexBuffer_),
 		nIndexes_(other.nIndexes_)

@@ -62,12 +62,6 @@ Renderer::~Renderer()
 
 void Renderer::destroy()
 {
-	vkFreeCommandBuffers(pDevice_->handle_, commandPool_, commandBuffers_.size(), commandBuffers_.data());
-	commandBuffers_.clear();
-
-	vkDestroyCommandPool(pDevice_->handle_, commandPool_, nullptr);
-	commandPool_ = VK_NULL_HANDLE;
-
 	for (VkFramebuffer framebuffer : framebuffers_)
 		vkDestroyFramebuffer(pDevice_->handle_, framebuffer, nullptr);
 	framebuffers_.clear();
@@ -75,6 +69,9 @@ void Renderer::destroy()
 	for (ObjectDescriptor &objectDescriptor : objectDescriptors_)
 		objectDescriptor.destroy(*pResourceFactory_);
 	objectDescriptors_.clear();
+
+	vkDestroyCommandPool(pDevice_->handle_, commandPool_, nullptr);
+	commandPool_ = VK_NULL_HANDLE;
 
 	frameManager_.destroy();
 }
@@ -108,7 +105,7 @@ void Renderer::recordCommands()
 
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pPipeline_->handle_);
 
-		for (const ObjectDescriptor &objectDescriptor: objectDescriptors_)
+		for (auto &objectDescriptor : objectDescriptors_)
 			objectDescriptor.recordCommands(commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);
