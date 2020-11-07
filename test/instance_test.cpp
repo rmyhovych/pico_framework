@@ -78,7 +78,6 @@ int main()
 			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder()
-			.pushBinding(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
 			.build(device);
 
 	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
