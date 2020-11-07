@@ -101,7 +101,7 @@ void Swapchain::destroy(const Device &device, const ResourceFactory &resourceFac
 	vkDestroySwapchainKHR(device.handle_, handle_, nullptr);
 }
 
-std::vector<std::vector<VkImageView>> Swapchain::getAttachments()
+std::vector<std::vector<VkImageView>> Swapchain::getAttachments() const
 {
 	std::vector<std::vector<VkImageView>> attachments(imageViews_.size());
 	std::transform(imageViews_.begin(), imageViews_.end(), attachments.begin(), [](VkImageView imageView) -> std::vector<VkImageView>

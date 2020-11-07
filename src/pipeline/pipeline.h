@@ -15,16 +15,20 @@
 class Pipeline
 {
 public:
-	class Builder {
+	class Builder
+	{
 	public:
 		Builder();
 
-		Builder& linkShaders(const ShaderStages* shaders);
-		Builder& linkStates(const StateManager* stateManager);
-		Builder& linkLayout(const PipelineLayout* layout);
-		Builder& linkRenderPass(const RenderPass* renderPass);
+		Builder &linkShaders(const ShaderStages* shaders);
 
-		Pipeline build(const Device& device);
+		Builder &linkStates(const StateManager* stateManager);
+
+		Builder &linkLayout(const PipelineLayout* layout);
+
+		Builder &linkRenderPass(const RenderPass* renderPass);
+
+		Pipeline build(const Device &device);
 
 	private:
 		VkGraphicsPipelineCreateInfo createInfo_;
@@ -33,15 +37,16 @@ public:
 public:
 	~Pipeline();
 
-	Pipeline(Pipeline&& p);
+	Pipeline(Pipeline &&p);
 
-	void destroy(const Device& device);
+	void destroy(const Device &device);
 
 private:
-	Pipeline(VkPipeline handle);
+	Pipeline(VkPipeline handle, VkPipelineLayout layout);
 
 public:
 	VkPipeline handle_;
+	VkPipelineLayout layout_;
 };
 
 #endif // PIPELINE_H

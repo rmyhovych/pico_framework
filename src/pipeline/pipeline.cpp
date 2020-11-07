@@ -1,8 +1,8 @@
 #include "pipeline.h"
 
 
-Pipeline::Builder::Builder():
-	createInfo_({})
+Pipeline::Builder::Builder() :
+		createInfo_({})
 {
 	createInfo_.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 
@@ -42,13 +42,13 @@ Pipeline::Builder &Pipeline::Builder::linkStates(const StateManager* stateManage
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkLayout(const PipelineLayout *layout)
+Pipeline::Builder &Pipeline::Builder::linkLayout(const PipelineLayout* layout)
 {
 	createInfo_.layout = layout->handle_;
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkRenderPass(const RenderPass *renderPass)
+Pipeline::Builder &Pipeline::Builder::linkRenderPass(const RenderPass* renderPass)
 {
 	createInfo_.renderPass = renderPass->handle_;
 	return *this;
@@ -58,13 +58,13 @@ Pipeline Pipeline::Builder::build(const Device &device)
 {
 	VkPipeline handle;
 	CALL_VK(vkCreateGraphicsPipelines(device.handle_, VK_NULL_HANDLE, 1, &createInfo_, nullptr, &handle))
-	return Pipeline(handle);
+	return Pipeline(handle, VK_NULL_HANDLE);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------*/
 
-Pipeline::Pipeline(VkPipeline handle) :
-	handle_(handle)
+Pipeline::Pipeline(VkPipeline handle, VkPipelineLayout layout) :
+		handle_(handle)
 {
 }
 
@@ -74,7 +74,7 @@ Pipeline::~Pipeline()
 }
 
 Pipeline::Pipeline(Pipeline &&p) :
-	handle_(p.handle_)
+		handle_(p.handle_)
 {
 	p.handle_ = VK_NULL_HANDLE;
 }

@@ -6,8 +6,8 @@
 #include <string>
 
 #define CALL_VK(result)                                         \
-	if (VK_SUCCESS != (result))									\
-	{															\
+    if (VK_SUCCESS != (result))                                 \
+    {                                                           \
         throw std::runtime_error(std::string("Vulkan Error[")   \
             .append(std::to_string(result))                     \
             .append(std::string("]. File["))                    \
@@ -20,12 +20,12 @@
     }
 
 
-#define CHECK_NULL_HANDLE(handle)											\
-	if (handle != VK_NULL_HANDLE)											\
-		printf(																\
-			"WARNING : [%s:%s] handle was not explicitly destroyed.\n",		\
-			std::string(__FILE__).c_str(),									\
-			std::to_string(__LINE__).c_str()								\
-		);
+#define CHECK_NULL_HANDLE(handle)                                            \
+    if (handle != VK_NULL_HANDLE)                                            \
+        printf(                                                              \
+            "WARNING : [%s:%s] handle was not explicitly destroyed.\n",      \
+            std::string(__FILE__).c_str(),                                   \
+            std::to_string(__LINE__).c_str()                                 \
+        );
 
 #endif // PFVK_H

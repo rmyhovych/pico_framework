@@ -9,8 +9,6 @@
 #include "pfvk.h"
 #include "device.h"
 
-const uint32_t MAX_FRAMES_IN_FLIGHT = 5;
-
 class FrameManager
 {
 public:

@@ -36,7 +36,7 @@ set(PICOFRAMEWORK_FILES
 	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
 	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
 	pipeline/pipeline.cpp pipeline/pipeline.h
-		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h)
+		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

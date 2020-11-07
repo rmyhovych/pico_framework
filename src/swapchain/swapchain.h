@@ -30,14 +30,14 @@ public:
 		const ResourceFactory &resourceFactory_;
 	};
 
-private:
-	Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews);
-
 	~Swapchain();
 
 	void destroy(const Device &device, const ResourceFactory &resourceFactory);
 
-	std::vector<std::vector<VkImageView>> getAttachments();
+	std::vector<std::vector<VkImageView>> getAttachments() const;
+
+private:
+	Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews);
 
 public:
 	VkSwapchainKHR handle_;
