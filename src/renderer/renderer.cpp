@@ -62,8 +62,6 @@ Renderer::~Renderer()
 
 void Renderer::destroy()
 {
-	frameManager_.destroy();
-
 	vkFreeCommandBuffers(pDevice_->handle_, commandPool_, commandBuffers_.size(), commandBuffers_.data());
 	commandBuffers_.clear();
 
@@ -77,6 +75,8 @@ void Renderer::destroy()
 	for (ObjectDescriptor &objectDescriptor : objectDescriptors_)
 		objectDescriptor.destroy(*pResourceFactory_);
 	objectDescriptors_.clear();
+
+	frameManager_.destroy();
 }
 
 

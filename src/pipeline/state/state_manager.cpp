@@ -14,64 +14,91 @@ StateManager::StateManager() :
 {
 }
 
-std::shared_ptr<VertexInputState> StateManager::setVertexInput(uint32_t stride, VkVertexInputRate inputRate)
+StateManager::~StateManager()
 {
-	vertexInput_ = std::make_shared<VertexInputState>(stride, inputRate);
+	delete vertexInput_;
+	vertexInput_ = nullptr;
+
+	delete inputAssembly_;
+	inputAssembly_ = nullptr;
+
+	delete viewport_;
+	viewport_ = nullptr;
+
+	delete rasterization_;
+	rasterization_ = nullptr;
+
+	delete multisample_;
+	multisample_ = nullptr;
+
+	delete depthStencil_;
+	depthStencil_ = nullptr;
+
+	delete colorBlend_;
+	colorBlend_ = nullptr;
+
+	delete dynamic_;
+	dynamic_ = nullptr;
+}
+
+VertexInputState* StateManager::setVertexInput(uint32_t stride, VkVertexInputRate inputRate)
+{
+	vertexInput_ = new VertexInputState(stride, inputRate);
 	return vertexInput_;
 }
 
-std::shared_ptr<InputAssemblyState> StateManager::setInputAssembly(VkPrimitiveTopology topology)
+InputAssemblyState* StateManager::setInputAssembly(VkPrimitiveTopology topology)
 {
-	inputAssembly_ = std::make_shared<InputAssemblyState>(topology);
+	inputAssembly_ = new InputAssemblyState(topology);
 	return inputAssembly_;
 }
 
-std::shared_ptr<ViewportState> StateManager::setViewport(VkExtent2D extent)
+ViewportState* StateManager::setViewport(VkExtent2D extent)
 {
-	viewport_ = std::make_shared<ViewportState>(extent);
+	viewport_ = new ViewportState(extent);
 	return viewport_;
 }
 
-std::shared_ptr<RasterizationState> StateManager::setRasterization(VkFrontFace frontFace, VkCullModeFlags cullMode)
+RasterizationState* StateManager::setRasterization(VkFrontFace frontFace, VkCullModeFlags cullMode)
 {
-	rasterization_ = std::make_shared<RasterizationState>(frontFace, cullMode);
+	rasterization_ = new RasterizationState(frontFace, cullMode);
 	return rasterization_;
 }
 
-std::shared_ptr<MultisampleState> StateManager::setMultisample()
+MultisampleState* StateManager::setMultisample()
 {
-	multisample_ = std::make_shared<MultisampleState>();
+	multisample_ = new MultisampleState();
 	return multisample_;
 }
 
-std::shared_ptr<DepthStencilState> StateManager::setDepthStencil(VkBool32 depthTestEnable, VkBool32 depthWriteEnable, VkCompareOp depthCompareOp)
+DepthStencilState* StateManager::setDepthStencil(VkBool32 depthTestEnable, VkBool32 depthWriteEnable, VkCompareOp depthCompareOp)
 {
-	depthStencil_ = std::make_shared<DepthStencilState>(depthTestEnable, depthWriteEnable, depthCompareOp);
+	depthStencil_ = new DepthStencilState(depthTestEnable, depthWriteEnable, depthCompareOp);
 	return depthStencil_;
 }
 
-std::shared_ptr<ColorBlendState> StateManager::setColorBlend()
+ColorBlendState* StateManager::setColorBlend()
 {
-	colorBlend_ = std::make_shared<ColorBlendState>();
+	colorBlend_ = new ColorBlendState();
 	return colorBlend_;
 }
 
-std::shared_ptr<DynamicState> StateManager::setDynamic()
+DynamicState* StateManager::setDynamic()
 {
-	dynamic_ = std::make_shared<DynamicState>();
+	dynamic_ = new DynamicState();
 	return dynamic_;
 }
 
 
 void StateManager::applyOn(VkGraphicsPipelineCreateInfo* createInfo) const
 {
-	createInfo->pVertexInputState = getCreateInfo(vertexInput_.get());
-	createInfo->pInputAssemblyState = getCreateInfo(inputAssembly_.get());
-	createInfo->pViewportState = getCreateInfo(viewport_.get());
-	createInfo->pRasterizationState = getCreateInfo(rasterization_.get());
-	createInfo->pMultisampleState = getCreateInfo(multisample_.get());
-	createInfo->pDepthStencilState = getCreateInfo(depthStencil_.get());
-	createInfo->pColorBlendState = getCreateInfo(colorBlend_.get());
-	createInfo->pDynamicState = getCreateInfo(dynamic_.get());
+	createInfo->pVertexInputState = vertexInput_->getCreateInfoPtr();
+	createInfo->pInputAssemblyState = inputAssembly_->getCreateInfoPtr();
+	createInfo->pViewportState = viewport_->getCreateInfoPtr();
+	createInfo->pRasterizationState = rasterization_->getCreateInfoPtr();
+	createInfo->pMultisampleState = multisample_->getCreateInfoPtr();
+	createInfo->pDepthStencilState = depthStencil_->getCreateInfoPtr();
+	createInfo->pColorBlendState = colorBlend_->getCreateInfoPtr();
+	createInfo->pDynamicState = dynamic_->getCreateInfoPtr();
 }
 

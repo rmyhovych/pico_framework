@@ -80,7 +80,7 @@
 				},
 				{
 					"backtrace" : 2,
-					"path" : "/usr/src/vulkan/1.2.148.1/x86_64/include"
+					"path" : "/usr/src/vulkan/1.2.154.0/x86_64/include"
 				}
 			],
 			"language" : "CXX",

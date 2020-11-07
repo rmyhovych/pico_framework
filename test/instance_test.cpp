@@ -69,7 +69,7 @@ int main()
 
 	// RENDER PASS
 	RenderPass renderPass = RenderPass::Builder(device)
-			.pushBackColor(VK_FORMAT_A2B10G10R10_SINT_PACK32)
+			.pushBackColor(configurations.surfaceFormat.format)
 					//.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build();
 

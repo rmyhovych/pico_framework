@@ -5,6 +5,10 @@
 #include "device.h"
 #include <set>
 
+const std::vector<const char*> VALIDATION_LAYERS = {
+		"VK_LAYER_KHRONOS_validation"
+};
+
 Device::Device(const PhysicalDevice* pPhysicalDevice, const std::vector<VkQueueFlags> &queueFlags, const std::vector<const char*> &deviceExtensions) :
 		handle_(VK_NULL_HANDLE),
 		pPhysicalDevice_(pPhysicalDevice),
@@ -94,8 +98,14 @@ VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector
 	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
 	deviceCreateInfo.enabledExtensionCount = (uint32_t) deviceExtensions.size();
 
+#ifndef NDEBUG
+	deviceCreateInfo.enabledLayerCount = (uint32_t) VALIDATION_LAYERS.size();
+	deviceCreateInfo.ppEnabledLayerNames = VALIDATION_LAYERS.data();
+#else
 	deviceCreateInfo.enabledLayerCount = 0;
 	deviceCreateInfo.ppEnabledLayerNames = nullptr;
+#endif // !NDEBUG
+
 
 	VkDevice device;
 	CALL_VK(vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr, &device))

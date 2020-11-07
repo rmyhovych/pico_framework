@@ -106,7 +106,7 @@ void ResourceFactory::destroyImageView(VkImageView imageView) const
 
 VkCommandBuffer ResourceFactory::createTransferCommandBuffer() const
 {
-	VkCommandBufferAllocateInfo cmdBufferAllocateInfo = {};
+	VkCommandBufferAllocateInfo cmdBufferAllocateInfo{};
 	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 	cmdBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	cmdBufferAllocateInfo.commandPool = transferCommandPool_;
@@ -115,7 +115,7 @@ VkCommandBuffer ResourceFactory::createTransferCommandBuffer() const
 	VkCommandBuffer commandBuffer;
 	CALL_VK(vkAllocateCommandBuffers(pDevice_->handle_, &cmdBufferAllocateInfo, &commandBuffer))
 
-	VkCommandBufferBeginInfo cmdBufferBeginInfo = {};
+	VkCommandBufferBeginInfo cmdBufferBeginInfo{};
 	cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 	cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
@@ -128,7 +128,7 @@ void ResourceFactory::submitTransferCommandBuffer(VkCommandBuffer transferComman
 {
 	CALL_VK(vkEndCommandBuffer(transferCommandBuffer))
 
-	VkSubmitInfo submitInfo = {};
+	VkSubmitInfo submitInfo{};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &transferCommandBuffer;

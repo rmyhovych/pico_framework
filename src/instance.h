@@ -31,6 +31,10 @@ public:
 private:
 	const WindowManager* pWindowManager_;
 
+#ifndef NDEBUG
+	VkDebugUtilsMessengerEXT debugMessenger_ = VK_NULL_HANDLE;
+#endif // !NDEBUG
+
 	VkSurfaceKHR surface_;
 };
 

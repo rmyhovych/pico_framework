@@ -70,14 +70,14 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "PICOFRAMEWORK::@145eef247bfb46b6828c",
-					"jsonFile" : "target-PICOFRAMEWORK-Debug-cd3955da5ea6c0f174f3.json",
+					"jsonFile" : "target-PICOFRAMEWORK-Debug-86d1c877d034696f7d51.json",
 					"name" : "PICOFRAMEWORK",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 2,
 					"id" : "TEST::@36f028580bb02cc8272a",
-					"jsonFile" : "target-TEST-Debug-d868c5d3b6230104e997.json",
+					"jsonFile" : "target-TEST-Debug-8b180b7ec0f6b46e3267.json",
 					"name" : "TEST",
 					"projectIndex" : 0
 				}

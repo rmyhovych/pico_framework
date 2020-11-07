@@ -6,6 +6,6 @@ layout(location = 0) out vec3 fragmentColor;
 
 void main()
 {
-	fragmentColor = vec3(1.0, 0.2, 0.2);
-	gl_Position = vec4(vInPosition, 1.0);
+    fragmentColor = vec3(1.0, 0.2, 0.2);
+    gl_Position = vec4(vInPosition, 1.0);
 }
