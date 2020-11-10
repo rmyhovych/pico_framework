@@ -5,13 +5,10 @@
 #ifndef PICOFRAMEWORK_SURFACE_H
 #define PICOFRAMEWORK_SURFACE_H
 
+#include "pfvk.h"
+
 #include <cstdint>
-#include <pfvk.h>
 #include <vector>
-
-#include "window/window_manager.h"
-
-class PhysicalDevice;
 
 struct SwapchainConfigurations
 {
@@ -24,15 +21,15 @@ struct SwapchainConfigurations
 class Surface
 {
 public:
-	explicit Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
+	explicit Surface(VkSurfaceKHR handle, VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
 
 	~Surface();
 
-	void destroy(VkInstance instance);
+	void setPhysicalDevice(VkPhysicalDevice hPhysicalDevice);
 
-	bool isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const;
+	bool isQueueFamilySupported(uint32_t queueFamilyIndex) const;
 
-	SwapchainConfigurations getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const;
+	SwapchainConfigurations getSwapchainConfigurations(VkExtent2D windowExtent) const;
 
 private:
 	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
@@ -46,6 +43,9 @@ public:
 	VkSurfaceKHR handle_;
 
 private:
+	VkInstance hInstance_;
+	VkPhysicalDevice hPhysicalDevice_;
+
 	VkFormat format_;
 	VkColorSpaceKHR colorSpace_;
 	VkPresentModeKHR presentMode_;

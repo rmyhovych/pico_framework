@@ -4,7 +4,7 @@
 
 #include "renderer.h"
 
-Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, const ResourceFactory* pResourceFactory, const SwapchainConfigurations &swapchainConfigurations) :
+Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, ResourceFactory* pResourceFactory, const SwapchainConfigurations &swapchainConfigurations) :
 		pDevice_(pDevice),
 		pSwapchain_(pSwapchain),
 		pRenderPass_(pRenderPass),
@@ -66,8 +66,6 @@ void Renderer::destroy()
 		vkDestroyFramebuffer(pDevice_->handle_, framebuffer, nullptr);
 	framebuffers_.clear();
 
-	for (ObjectDescriptor &objectDescriptor : objectDescriptors_)
-		objectDescriptor.destroy(*pResourceFactory_);
 	objectDescriptors_.clear();
 
 	vkDestroyCommandPool(pDevice_->handle_, commandPool_, nullptr);

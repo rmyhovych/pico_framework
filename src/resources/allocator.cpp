@@ -6,17 +6,14 @@
 
 #include "allocator.h"
 
-#include "instance.h"
-#include "device.h"
 
-
-Allocator::Allocator(const Instance &instance, const Device &device) :
+Allocator::Allocator(VkInstance hInstance, VkDevice hDevice, VkPhysicalDevice hPhysicalDevice) :
 		handle_(VK_NULL_HANDLE)
 {
 	VmaAllocatorCreateInfo allocatorCreateInfo{};
-	allocatorCreateInfo.instance = instance.handle_;
-	allocatorCreateInfo.device = device.handle_;
-	allocatorCreateInfo.physicalDevice = device.pPhysicalDevice_->handle_;
+	allocatorCreateInfo.instance = hInstance;
+	allocatorCreateInfo.device = hDevice;
+	allocatorCreateInfo.physicalDevice = hPhysicalDevice;
 
 	allocatorCreateInfo.flags = VMA_ALLOCATOR_CREATE_EXTERNALLY_SYNCHRONIZED_BIT;
 	allocatorCreateInfo.pAllocationCallbacks = nullptr;
@@ -32,43 +29,51 @@ Allocator::Allocator(const Instance &instance, const Device &device) :
 
 Allocator::~Allocator()
 {
-	CHECK_NULL_HANDLE(handle_)
-}
-
-void Allocator::destroy()
-{
 	vmaDestroyAllocator(handle_);
 	handle_ = VK_NULL_HANDLE;
 }
 
-BufferAllocation Allocator::createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+std::pair<VkBuffer, VmaAllocation> Allocator::createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;
 	allocationCreateInfo.flags = flags;
 
-	BufferAllocation bufferAllocation;
-	CALL_VK(vmaCreateBuffer(handle_, &bufferCreateInfo, &allocationCreateInfo, &bufferAllocation.handle, &bufferAllocation.allocation, nullptr))
+	std::pair<VkBuffer, VmaAllocation> bufferAllocation;
+	CALL_VK(vmaCreateBuffer(handle_, &bufferCreateInfo, &allocationCreateInfo, &bufferAllocation.first, &bufferAllocation.second, nullptr))
 	return bufferAllocation;
 }
 
-ImageAllocation Allocator::createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+std::pair<VkImage, VmaAllocation> Allocator::createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;
 	allocationCreateInfo.flags = flags;
 
-	ImageAllocation imageAllocation;
-	CALL_VK(vmaCreateImage(handle_, &imageCreateInfo, &allocationCreateInfo, &imageAllocation.handle, &imageAllocation.allocation, nullptr))
+	std::pair<VkImage, VmaAllocation> imageAllocation;
+	CALL_VK(vmaCreateImage(handle_, &imageCreateInfo, &allocationCreateInfo, &imageAllocation.first, &imageAllocation.second, nullptr))
 	return imageAllocation;
 }
 
-void Allocator::free(BufferAllocation &obj) const
+void Allocator::free(VkBuffer buffer, VmaAllocation allocation) const
 {
-	vmaDestroyBuffer(handle_, obj.handle, obj.allocation);
+	vmaDestroyBuffer(handle_, buffer, allocation);
 }
 
-void Allocator::free(ImageAllocation &obj) const
+void Allocator::free(VkImage image, VmaAllocation allocation) const
 {
-	vmaDestroyImage(handle_, obj.handle, obj.allocation);
+	vmaDestroyImage(handle_, image, allocation);
+}
+
+
+void* Allocator::map(VmaAllocation allocation) const
+{
+	void* data;
+	CALL_VK(vmaMapMemory(handle_, allocation, &data))
+	return data;
+}
+
+void Allocator::unmap(VmaAllocation allocation) const
+{
+	vmaUnmapMemory(handle_, allocation);
 }

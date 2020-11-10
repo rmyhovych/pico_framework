@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 set(PICOFRAMEWORK_FILES
 	instance.h instance.cpp
 	surface.h surface.cpp
-	device.cpp device.h
-	physical_device.cpp physical_device.h
+		device/device.cpp device/device.h
+		device/physical_device.cpp device/physical_device.h
 
 	window/window_manager.h
 	window/window_manager.cpp
@@ -14,9 +14,8 @@ set(PICOFRAMEWORK_FILES
 	resources/resource_reader.cpp resources/resource_reader.h
 	resources/resource_factory.cpp resources/resource_factory.h
 	resources/allocator.cpp resources/allocator.h
-	resources/alloc_objects.h
 
-	swapchain/swapchain.cpp swapchain/swapchain.h
+		swapchain/swapchain.cpp swapchain/swapchain.h
 
 	pipeline/state/state_manager.cpp pipeline/state/state_manager.h
 
@@ -36,7 +35,7 @@ set(PICOFRAMEWORK_FILES
 	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
 	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
 	pipeline/pipeline.cpp pipeline/pipeline.h
-		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp)
+		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp resources/data_transfer_manager.cpp resources/data_transfer_manager.h device/device_queue.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

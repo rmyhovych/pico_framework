@@ -2,15 +2,15 @@
 
 
 DescriptorSetLayout::Builder::Builder() :
-	bindings_(0)
+		bindings_(0)
 {
 }
 
-DescriptorSetLayout::Builder& DescriptorSetLayout::Builder::pushBinding(VkDescriptorType type, VkShaderStageFlags stage)
+DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::pushBinding(VkDescriptorType type, VkShaderStageFlags stage)
 {
 	bindings_.push_back(VkDescriptorSetLayoutBinding{});
 
-	VkDescriptorSetLayoutBinding& binding = bindings_.back();
+	VkDescriptorSetLayoutBinding &binding = bindings_.back();
 	binding.binding = static_cast<uint32_t>(bindings_.size() - 1);
 	binding.descriptorType = type;
 	binding.descriptorCount = 1;
@@ -47,6 +47,6 @@ void DescriptorSetLayout::destroy(const Device &device)
 }
 
 DescriptorSetLayout::DescriptorSetLayout(VkDescriptorSetLayout handle) :
-	handle_(handle)
+		handle_(handle)
 {
 }

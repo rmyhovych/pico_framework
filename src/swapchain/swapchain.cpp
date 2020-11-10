@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <utility>
 
-Swapchain::Builder::Builder(const Surface &surface, const Device &device, const ResourceFactory &resourceFactory) :
+Swapchain::Builder::Builder(const Surface &surface, const Device &device, ResourceFactory &resourceFactory) :
 		surface_(surface),
 		device_(device),
 		resourceFactory_(resourceFactory)
@@ -32,13 +32,11 @@ Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configuration
 
 VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &configurations) const
 {
-	auto graphicsQueue = std::find_if(device_.deviceQueues_.begin(), device_.deviceQueues_.end(), [](const DeviceQueue &queue)
-	{ return queue.isType(VK_QUEUE_GRAPHICS_BIT); });
-
-	if (graphicsQueue == device_.deviceQueues_.end())
+	const DeviceQueue* graphicsQueue = device_.getQueue(VK_QUEUE_GRAPHICS_BIT);
+	if (graphicsQueue == nullptr)
 		throw std::runtime_error("Missing VK_QUEUE_GRAPHICS_BIT queue in device!");
 
-	if (!surface_.isQueueFamilySupported(*device_.pPhysicalDevice_, graphicsQueue->family))
+	if (!surface_.isQueueFamilySupported(graphicsQueue->family))
 		throw std::runtime_error("Graphics queue family swapchain not supported!");
 
 	uint32_t nImages = configurations.surfaceCapabilities.minImageCount + 1;
@@ -91,7 +89,7 @@ Swapchain::~Swapchain()
 	CHECK_NULL_HANDLE(handle_)
 }
 
-void Swapchain::destroy(const Device &device, const ResourceFactory &resourceFactory)
+void Swapchain::destroy(const Device &device, ResourceFactory &resourceFactory)
 {
 	for (VkImageView imageView : imageViews_)
 	{

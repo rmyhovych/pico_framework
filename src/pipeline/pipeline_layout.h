@@ -1,7 +1,7 @@
 #ifndef PIPELINELAYOUT_H
 #define PIPELINELAYOUT_H
 
-#include "device.h"
+#include "device/device.h"
 #include "descriptor_set_layout.h"
 
 

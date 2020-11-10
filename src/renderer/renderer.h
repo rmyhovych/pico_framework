@@ -10,13 +10,13 @@
 #include <primitive/object_descriptor.h>
 #include <renderpass/render_pass.h>
 #include <pipeline/pipeline.h>
-#include "device.h"
+#include "device/device.h"
 #include "frame_manager.h"
 
 class Renderer
 {
 public:
-	Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, const ResourceFactory* pResourceFactory, const SwapchainConfigurations &swapchainConfigurations);
+	Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, ResourceFactory* pResourceFactory, const SwapchainConfigurations &swapchainConfigurations);
 
 	~Renderer();
 
@@ -37,7 +37,7 @@ private:
 	const Swapchain* pSwapchain_;
 	const RenderPass* pRenderPass_;
 	const Pipeline* pPipeline_;
-	const ResourceFactory* pResourceFactory_;
+	ResourceFactory* pResourceFactory_;
 	const SwapchainConfigurations swapchainConfigurations_;
 
 	FrameManager frameManager_;

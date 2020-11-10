@@ -9,19 +9,14 @@
 #include <pfvk.h>
 
 #include "surface.h"
-#include "device.h"
-#include "window/window_manager.h"
+#include "device/physical_device.h"
 
 class Instance
 {
 public:
-	Instance(const VkApplicationInfo &applicationInfo, const WindowManager* pWindowManager);
+	Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions);
 
 	~Instance();
-
-	void destroy();
-
-	VkSurfaceKHR getSurfaceHandle() const;
 
 	std::vector<PhysicalDevice> getPhysicalDevices();
 
@@ -29,13 +24,9 @@ public:
 	VkInstance handle_;
 
 private:
-	const WindowManager* pWindowManager_;
-
 #ifndef NDEBUG
 	VkDebugUtilsMessengerEXT debugMessenger_ = VK_NULL_HANDLE;
 #endif // !NDEBUG
-
-	VkSurfaceKHR surface_;
 };
 
 

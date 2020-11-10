@@ -62,10 +62,10 @@ VkExtent2D GLFWWindowManager::getExtent() const
 	return VkExtent2D{static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
 }
 
-VkSurfaceKHR GLFWWindowManager::createSurfaceHandle(VkInstance instance) const
+Surface GLFWWindowManager::createSurface(VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) const
 {
 	VkSurfaceKHR surfaceHandle;
-	CALL_VK(glfwCreateWindowSurface(instance, pWindow_, nullptr, &surfaceHandle))
+	CALL_VK(glfwCreateWindowSurface(hInstance, pWindow_, nullptr, &surfaceHandle))
 
-	return surfaceHandle;
+	return Surface(surfaceHandle, hInstance, format, colorSpace, presentMode);
 }

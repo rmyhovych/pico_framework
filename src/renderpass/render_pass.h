@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <surface.h>
-#include <device.h>
+#include <device/device.h>
 #include <resources/resource_factory.h>
 #include "pfvk.h"
 

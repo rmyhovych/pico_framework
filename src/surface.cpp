@@ -6,10 +6,13 @@
 
 #include <algorithm>
 
-#include "physical_device.h"
+#include "device/physical_device.h"
 
-Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) :
+Surface::Surface(VkSurfaceKHR handle, VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) :
 		handle_(handle),
+
+		hInstance_(hInstance),
+		hPhysicalDevice_(VK_NULL_HANDLE),
 
 		format_(format),
 		colorSpace_(colorSpace),
@@ -19,48 +22,48 @@ Surface::Surface(VkSurfaceKHR handle, VkFormat format, VkColorSpaceKHR colorSpac
 
 Surface::~Surface()
 {
-	CHECK_NULL_HANDLE(handle_)
-}
-
-void Surface::destroy(VkInstance instance)
-{
-	vkDestroySurfaceKHR(instance, handle_, nullptr);
+	vkDestroySurfaceKHR(hInstance_, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
 
+void Surface::setPhysicalDevice(VkPhysicalDevice hPhysicalDevice)
+{
+	hPhysicalDevice_ = hPhysicalDevice;
+}
 
-bool Surface::isQueueFamilySupported(const PhysicalDevice &physicalDevice, uint32_t queueFamilyIndex) const
+
+bool Surface::isQueueFamilySupported(uint32_t queueFamilyIndex) const
 {
 	VkBool32 supported;
-	vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice.handle_, queueFamilyIndex, handle_, &supported);
+	vkGetPhysicalDeviceSurfaceSupportKHR(hPhysicalDevice_, queueFamilyIndex, handle_, &supported);
 
 	return supported == VK_TRUE;
 }
 
-SwapchainConfigurations Surface::getSwapchainConfigurations(VkPhysicalDevice physicalDevice, VkExtent2D windowExtent) const
+SwapchainConfigurations Surface::getSwapchainConfigurations(VkExtent2D windowExtent) const
 {
 	SwapchainConfigurations configurations{};
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, handle_, &configurations.surfaceCapabilities);
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(hPhysicalDevice_, handle_, &configurations.surfaceCapabilities);
 
 
 	std::vector<VkSurfaceFormatKHR> swapChainFormats;
 	uint32_t nSurfaceFormats = 0;
-	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, handle_, &nSurfaceFormats, nullptr);
+	vkGetPhysicalDeviceSurfaceFormatsKHR(hPhysicalDevice_, handle_, &nSurfaceFormats, nullptr);
 	if (nSurfaceFormats != 0)
 	{
 		swapChainFormats.resize(nSurfaceFormats);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, handle_, &nSurfaceFormats, swapChainFormats.data());
+		vkGetPhysicalDeviceSurfaceFormatsKHR(hPhysicalDevice_, handle_, &nSurfaceFormats, swapChainFormats.data());
 	}
 	configurations.surfaceFormat = chooseSurfaceFormat(swapChainFormats);
 
 
 	std::vector<VkPresentModeKHR> presentModes;
 	uint32_t nPresentModes = 0;
-	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, handle_, &nPresentModes, nullptr);
+	vkGetPhysicalDeviceSurfacePresentModesKHR(hPhysicalDevice_, handle_, &nPresentModes, nullptr);
 	if (nPresentModes != 0)
 	{
 		presentModes.resize(nPresentModes);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, handle_, &nPresentModes, presentModes.data());
+		vkGetPhysicalDeviceSurfacePresentModesKHR(hPhysicalDevice_, handle_, &nPresentModes, presentModes.data());
 	}
 	configurations.presentMode = choosePresentMode(presentModes);
 

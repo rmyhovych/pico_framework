@@ -13,25 +13,21 @@ class ObjectDescriptor
 {
 public:
 	template<typename T>
-	ObjectDescriptor(const ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes);
+	ObjectDescriptor(ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes);
 
 	ObjectDescriptor(ObjectDescriptor &&other) noexcept;
-
-	~ObjectDescriptor();
-
-	void destroy(const ResourceFactory &resourceFactory);
 
 	void recordCommands(VkCommandBuffer commandBuffer) const;
 
 private:
-	BufferAllocation vertexBuffer_;
-	BufferAllocation indexBuffer_;
+	VkBuffer vertexBuffer_;
+	VkBuffer indexBuffer_;
 
 	uint32_t nIndexes_;
 };
 
 template<typename T>
-ObjectDescriptor::ObjectDescriptor(const ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes):
+ObjectDescriptor::ObjectDescriptor(ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes):
 		vertexBuffer_{},
 		indexBuffer_{},
 

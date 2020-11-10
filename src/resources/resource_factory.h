@@ -5,69 +5,71 @@
 #ifndef PICOFRAMEWORK_RESOURCE_FACTORY_H
 #define PICOFRAMEWORK_RESOURCE_FACTORY_H
 
-#include <cstring>
-
 #include "pfvk.h"
-#include "device.h"
-
 #include "allocator.h"
+#include "data_transfer_manager.h"
+
+#include <cstring>
+#include <vector>
+#include <map>
+#include <set>
 
 class ResourceFactory
 {
 public:
-	explicit ResourceFactory(const Device* pDevice, const Allocator* pAllocator);
+	explicit ResourceFactory(VkInstance hInstance, VkDevice hDevice, VkPhysicalDevice hPhysicalDevice, const DeviceQueue* pTransferDeviceQueue);
 
 	~ResourceFactory();
 
 	void destroy();
 
-	BufferAllocation createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+
+	VkBuffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0);
 
 	template<typename T>
-	BufferAllocation createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags) const;
+	VkBuffer createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags);
 
-	void destroyBuffer(BufferAllocation &buffer) const;
+	void destroyBuffer(VkBuffer buffer);
 
-	ImageAllocation createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage) const;
 
-	void destroyImage(ImageAllocation &image) const;
+	VkImage createImage(VkExtent2D extent, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usageFlags, VmaMemoryUsage memoryUsage);
 
-	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) const;
+	void destroyImage(VkImage image);
 
-	void destroyImageView(VkImageView imageView) const;
+
+	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+
+	void destroyImageView(VkImageView imageView);
+
+
+	void* map(VkBuffer buffer) const;
+
+	void unmap(VkBuffer buffer) const;
 
 private:
-	VkCommandBuffer createTransferCommandBuffer() const;
+	VkDevice hDevice_;
 
-	void submitTransferCommandBuffer(VkCommandBuffer transferCommandBuffer) const;
+	Allocator allocator_;
+	DataTransferManager transferManager_;
 
-private:
-	const Device* pDevice_;
-	const Allocator* pAllocator_;
-	const DeviceQueue* pTransferQueue_;
-
-	VkCommandPool transferCommandPool_;
+	std::map<VkBuffer, VmaAllocation> createdBuffers_;
+	std::map<VkImage, VmaAllocation> createdImages_;
+	std::set<VkImageView> createdImageViews_;
 };
 
 template<typename T>
-BufferAllocation ResourceFactory::createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags) const
+VkBuffer ResourceFactory::createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags)
 {
 	VkDeviceSize bufferSize = sizeof(T) * data.size();
 
-	BufferAllocation stagingBuffer = createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
-	void* ptr = pAllocator_->map(stagingBuffer);
+	VkBuffer stagingBuffer = createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+	void* ptr = map(stagingBuffer);
 	memcpy(ptr, data.data(), bufferSize);
-	pAllocator_->unmap(stagingBuffer);
+	unmap(stagingBuffer);
 
-	BufferAllocation buffer = createBuffer(bufferSize, usageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
+	VkBuffer buffer = createBuffer(bufferSize, usageFlags | VK_BUFFER_USAGE_TRANSFER_DST_BIT, VMA_MEMORY_USAGE_GPU_ONLY);
 
-	VkCommandBuffer transferCommandBuffer = createTransferCommandBuffer();
-	VkBufferCopy bufferCopy{};
-	bufferCopy.size = bufferSize;
-	bufferCopy.srcOffset = 0;
-	bufferCopy.dstOffset = 0;
-	vkCmdCopyBuffer(transferCommandBuffer, stagingBuffer.handle, buffer.handle, 1, &bufferCopy);
-	submitTransferCommandBuffer(transferCommandBuffer);
+	transferManager_.begin().transfer(stagingBuffer, buffer, bufferSize).submit();
 
 	destroyBuffer(stagingBuffer);
 	return buffer;

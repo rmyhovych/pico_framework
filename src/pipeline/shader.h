@@ -2,7 +2,7 @@
 #define SHADER_H
 
 #include "pfvk.h"
-#include "device.h"
+#include "device/device.h"
 
 
 class Shader

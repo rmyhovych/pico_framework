@@ -7,7 +7,7 @@
 
 #include "swapchain/swapchain.h"
 #include "pfvk.h"
-#include "device.h"
+#include "device/device.h"
 
 class FrameManager
 {

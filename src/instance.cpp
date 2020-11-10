@@ -3,6 +3,7 @@
 //
 
 #include "instance.h"
+#include "device/physical_device.h"
 
 #include <vector>
 #include <cstring>
@@ -89,18 +90,11 @@ void vkDestroyDebugUtilsMessengerEXT_PROXY(VkInstance instance, VkDebugUtilsMess
 	}
 }
 
-const std::vector<const char*> VALIDATION_LAYERS = {
-		"VK_LAYER_KHRONOS_validation"
-};
-
 #endif // !NDEBUG
 
 
-Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager* pWindowManager) :
-		handle_(VK_NULL_HANDLE),
-		pWindowManager_(pWindowManager),
-
-		surface_(VK_NULL_HANDLE)
+Instance::Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions) :
+		handle_(VK_NULL_HANDLE)
 {
 #ifndef NDEBUG
 
@@ -148,10 +142,10 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager
 	instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instanceCreateInfo.pApplicationInfo = &applicationInfo;
 
-	std::vector<const char*> requiredExtensions = pWindowManager_->getInstanceExtensions();
+	std::vector<const char*> fullRequiredExtensions(requiredExtensions);
 
 #ifndef NDEBUG
-	requiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+	fullRequiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 
 	instanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(VALIDATION_LAYERS.size());
 	instanceCreateInfo.ppEnabledLayerNames = VALIDATION_LAYERS.data();
@@ -162,24 +156,17 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const WindowManager
 	instanceCreateInfo.ppEnabledLayerNames = nullptr;
 #endif // !NDEBUG
 
-	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(requiredExtensions.size());
-	instanceCreateInfo.ppEnabledExtensionNames = requiredExtensions.data();
+	instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(fullRequiredExtensions.size());
+	instanceCreateInfo.ppEnabledExtensionNames = fullRequiredExtensions.data();
 
 	CALL_VK(vkCreateInstance(&instanceCreateInfo, nullptr, &handle_))
 
 #ifndef NDEBUG
 	CALL_VK(vkCreateDebugUtilsMessengerEXT_PROXY(handle_, &debugMessengerCreateInfo, nullptr, &debugMessenger_))
 #endif // !NDEBUG
-
-	surface_ = pWindowManager_->createSurfaceHandle(handle_);
 }
 
 Instance::~Instance()
-{
-	CHECK_NULL_HANDLE(handle_)
-}
-
-void Instance::destroy()
 {
 #ifndef NDEBUG
 	vkDestroyDebugUtilsMessengerEXT_PROXY(handle_, debugMessenger_, nullptr);
@@ -189,11 +176,6 @@ void Instance::destroy()
 	handle_ = VK_NULL_HANDLE;
 }
 
-
-VkSurfaceKHR Instance::getSurfaceHandle() const
-{
-	return surface_;
-}
 
 std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 {
@@ -207,7 +189,7 @@ std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 
 	physicalDevices.reserve(deviceCount);
 	for (VkPhysicalDevice physicalDeviceHandle : physicalDeviceHandles)
-		physicalDevices.emplace_back(physicalDeviceHandle);
+		physicalDevices.emplace_back(handle_, physicalDeviceHandle);
 
 	return physicalDevices;
 }

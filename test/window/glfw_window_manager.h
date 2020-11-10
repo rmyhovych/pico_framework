@@ -24,7 +24,7 @@ public:
 
 	VkExtent2D getExtent() const override;
 
-	VkSurfaceKHR createSurfaceHandle(VkInstance instance) const override;
+	Surface createSurface(VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) const override;
 
 private:
 	GLFWwindow* pWindow_;

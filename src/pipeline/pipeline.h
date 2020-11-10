@@ -3,7 +3,7 @@
 
 #include <optional>
 
-#include "device.h"
+#include "device/device.h"
 #include "shader_stages.h"
 
 #include "state/state_manager.h"

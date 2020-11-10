@@ -182,7 +182,7 @@ VmaAllocation allocation;
 vmaCreateBuffer(resources, &bufferInfo, &allocInfo, &buffer, &allocation, nullptr);
 \endcode
 
-Don't forget to destroy your objects when no longer needed:
+Don't forget to destroyImage your objects when no longer needed:
 
 \code
 vmaDestroyBuffer(resources, buffer, allocation);
@@ -842,7 +842,7 @@ What it doesn't do, so you need to do it yourself:
   `vkCreateBuffer()`, `vkCreateImage()`, vmaBindBufferMemory(), vmaBindImageMemory()
   for that purpose and NOT vmaDestroyBuffer(),
   vmaDestroyImage(), vmaCreateBuffer(), vmaCreateImage(), because you don't need to
-  destroy or create allocation objects!
+  destroyImage or create allocation objects!
 - Recreate views and update descriptors that point to these buffers and images.
 
 \section defragmentation_cpu Defragmenting CPU memory
@@ -1046,7 +1046,7 @@ flag in VmaAllocationCreateInfo::flags. Before using a buffer or image bound to
 such allocation in every new frame, you need to query it if it's not lost.
 To check it, call vmaTouchAllocation().
 If the allocation is lost, you should not use it or buffer/image bound to it.
-You mustn't forget to destroy this allocation and this buffer/image.
+You mustn't forget to destroyImage this allocation and this buffer/image.
 vmaGetAllocationInfo() can also be used for checking status of the allocation.
 Allocation is lost when returned VmaAllocationInfo::deviceMemory == `VK_NULL_HANDLE`.
 
@@ -1107,7 +1107,7 @@ void MyBuffer::EnsureBuffer()
         }
     }
 
-    // BufferAllocation not yet exists or lost - destroy and recreate it.
+    // BufferAllocation not yet exists or lost - destroyImage and recreate it.
 
     vmaDestroyBuffer(resources, m_Buf, m_Alloc);
 
@@ -1463,7 +1463,7 @@ Create them in video memory that is fastest to access from GPU using
 
 Consider using [VK_KHR_dedicated_allocation](@ref vk_khr_dedicated_allocation) extension
 and/or manually creating them as dedicated allocations using #VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT,
-especially if they are large or if you plan to destroy and recreate them e.g. when
+especially if they are large or if you plan to destroyImage and recreate them e.g. when
 display resolution changes.
 Prefer to create such resources first and all other GPU resources (like textures and vertex buffers) later.
 
@@ -1482,7 +1482,7 @@ To initialize content of such resource, create a CPU-side (aka "staging") copy o
 in system memory - #VMA_MEMORY_USAGE_CPU_ONLY, map it, fill it,
 and submit a transfer from it to the GPU resource.
 You can keep the staging copy if you need it for another upload transfer in the future.
-If you don't, you can destroy it or reuse this buffer for uploading different resource
+If you don't, you can destroyImage it or reuse this buffer for uploading different resource
 after the transfer finishes.
 
 Prefer to create just buffers in system memory rather than images, even for uploading textures.
@@ -2063,7 +2063,7 @@ available through VmaAllocatorCreateInfo::pRecordSettings.
 \brief Represents main object of this library initialized.
 
 Fill structure #VmaAllocatorCreateInfo and call function vmaCreateAllocator() to create it.
-Call function vmaDestroyAllocator() to destroy it.
+Call function vmaDestroyAllocator() to destroyImage it.
 
 It is recommended to create just one object of this type per `VkDevice` object,
 right after Vulkan is initialized and keep it alive until before Vulkan device is destroyed.
@@ -2546,7 +2546,7 @@ VMA_CALL_PRE void VMA_CALL_POST vmaFreeStatsString(
 \brief Represents custom memory pool
 
 Fill structure VmaPoolCreateInfo and call function vmaCreatePool() to create it.
-Call function vmaDestroyPool() to destroy it.
+Call function vmaDestroyPool() to destroyImage it.
 
 For more information see [Custom memory pools](@ref choosing_memory_type_custom_memory_pools).
 */
@@ -3186,7 +3186,7 @@ VMA_CALL_PRE void VMA_CALL_POST vmaFreeMemory(
 /** \brief Frees memory and destroys multiple allocations.
 
 Word "pages" is just a suggestion to use this function to free pieces of memory used for sparse binding.
-It is just a general purpose function to free memory and destroy allocations made using e.g. vmaAllocateMemory(),
+It is just a general purpose function to free memory and destroyImage allocations made using e.g. vmaAllocateMemory(),
 vmaAllocateMemoryPages() and other functions.
 It may be internally optimized to be more efficient than calling vmaFreeMemory() `allocationCount` times.
 
@@ -3271,7 +3271,7 @@ VMA_CALL_PRE void VMA_CALL_POST vmaSetAllocationUserData(
 
 It can be useful if you need a dummy, non-null allocation.
 
-You still need to destroy created object using vmaFreeMemory().
+You still need to destroyImage created object using vmaFreeMemory().
 
 Returned allocation is not tied to any specific memory pool or memory type and
 not bound to any image or buffer. It has size = 0. It cannot be turned into
@@ -3454,7 +3454,7 @@ VMA_CALL_PRE VkResult VMA_CALL_POST vmaCheckCorruption(VmaAllocator VMA_NOT_NULL
 \brief Represents Opaque object that represents started defragmentation process.
 
 Fill structure #VmaDefragmentationInfo2 and call function vmaDefragmentationBegin() to create it.
-Call function vmaDefragmentationEnd() to destroy it.
+Call function vmaDefragmentationEnd() to destroyImage it.
 */
 VK_DEFINE_HANDLE(VmaDefragmentationContext)
 
@@ -3769,7 +3769,7 @@ This function automatically:
 If any of these operations fail, buffer and allocation are not created,
 returned value is negative error code, *pBuffer and *pAllocation are null.
 
-If the function succeeded, you must destroy both buffer and allocation when you
+If the function succeeded, you must destroyImage both buffer and allocation when you
 no longer need them using either convenience function vmaDestroyBuffer() or
 separately, using `vkDestroyBuffer()` and vmaFreeMemory().
 

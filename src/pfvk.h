@@ -28,4 +28,14 @@
             std::to_string(__LINE__).c_str()                                 \
         );
 
+
+#ifndef NDEBUG
+
+#include <vector>
+
+const std::vector<const char*> VALIDATION_LAYERS({"VK_LAYER_KHRONOS_validation"});
+
+#endif // !NDEBUG
+
+
 #endif // PFVK_H

@@ -5,52 +5,34 @@
 #ifndef PICOFRAMEWORK_ALLOCATOR_H
 #define PICOFRAMEWORK_ALLOCATOR_H
 
-#include "alloc_objects.h"
 
-class Instance;
+#include <utility>
+#include <vk_mem_alloc.h>
 
-class Device;
-
+#include "pfvk.h"
 
 class Allocator
 {
 public:
-	Allocator(const Instance &instance, const Device &device);
+	Allocator(VkInstance hInstance, VkDevice hDevice, VkPhysicalDevice hPhysicalDevice);
 
 	~Allocator();
 
-	void destroy();
+	std::pair<VkBuffer, VmaAllocation> createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
-	BufferAllocation createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	std::pair<VkImage, VmaAllocation> createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
-	ImageAllocation createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	void free(VkBuffer buffer, VmaAllocation allocation) const;
 
-	void free(BufferAllocation &obj) const;
+	void free(VkImage image, VmaAllocation allocation) const;
 
-	void free(ImageAllocation &obj) const;
+	void* map(VmaAllocation allocation) const;
 
-	template<typename T>
-	void* map(ObjectAllocation<T> &obj) const;
-
-	template<typename T>
-	void unmap(ObjectAllocation<T> &obj) const;
+	void unmap(VmaAllocation allocation) const;
 
 private:
 	VmaAllocator handle_;
 };
 
-template<typename T>
-void* Allocator::map(ObjectAllocation<T> &obj) const
-{
-	void* data;
-	CALL_VK(vmaMapMemory(handle_, obj.allocation, &data))
-	return data;
-}
-
-template<typename T>
-void Allocator::unmap(ObjectAllocation<T> &obj) const
-{
-	vmaUnmapMemory(handle_, obj.allocation);
-}
 
 #endif //PICOFRAMEWORK_ALLOCATOR_H
