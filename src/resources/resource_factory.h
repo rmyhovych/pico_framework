@@ -21,8 +21,6 @@ public:
 
 	~ResourceFactory();
 
-	void destroy();
-
 
 	VkBuffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0);
 

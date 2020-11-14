@@ -39,10 +39,6 @@ ResourceFactory::~ResourceFactory()
 	createdImageViews_.clear();
 }
 
-void ResourceFactory::destroy()
-{
-}
-
 
 VkBuffer ResourceFactory::createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags)
 {

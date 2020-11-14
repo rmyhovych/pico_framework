@@ -62,6 +62,8 @@ Renderer::~Renderer()
 
 void Renderer::destroy()
 {
+	vkDeviceWaitIdle(pDevice_->handle_);
+
 	for (VkFramebuffer framebuffer : framebuffers_)
 		vkDestroyFramebuffer(pDevice_->handle_, framebuffer, nullptr);
 	framebuffers_.clear();
