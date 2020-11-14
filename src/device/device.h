@@ -7,6 +7,7 @@
 
 #include <pfvk.h>
 #include <vector>
+#include <pipeline/shader_stages.h>
 
 #include "surface.h"
 #include "resources/resource_factory.h"
@@ -21,6 +22,8 @@ public:
 	VkCommandPool createCommandPool(VkCommandPoolCreateFlags flags, uint32_t queueFamilyIndex) const;
 
 	ResourceFactory createResourceFactory() const;
+
+	ShaderStages createShaderStages() const;
 
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 

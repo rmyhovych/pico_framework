@@ -78,10 +78,10 @@ int main()
 
 
 	// PIPELINE
-	ShaderStages shaders;
+	ShaderStages shaders = device.createShaderStages();
 	shaders
-			.addModule(device, "/home/ross/code/pico_framework/shaders/base.vert.spirv", VK_SHADER_STAGE_VERTEX_BIT)
-			.addModule(device, "/home/ross/code/pico_framework/shaders/base.frag.spirv", VK_SHADER_STAGE_FRAGMENT_BIT);
+			.addModule("/home/ross/code/pico_framework/shaders/base.vert.spirv", VK_SHADER_STAGE_VERTEX_BIT)
+			.addModule("/home/ross/code/pico_framework/shaders/base.frag.spirv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
 	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder()
 			.build(device);
@@ -120,7 +120,6 @@ int main()
 
 	resourceFactory.destroy();
 
-	shaders.destroy(device);
 	pipeline.destroy(device);
 	descriptorSetLayout.destroy(device);
 	renderPass.destroy(device.handle_);

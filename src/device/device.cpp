@@ -49,6 +49,12 @@ ResourceFactory Device::createResourceFactory() const
 }
 
 
+ShaderStages Device::createShaderStages() const
+{
+	return ShaderStages(handle_);
+}
+
+
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {
 	for (const DeviceQueue &deviceQueue : deviceQueues_)
