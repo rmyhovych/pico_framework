@@ -7,8 +7,8 @@
 
 #include <cstdint>
 #include <pfvk.h>
+#include "window/window_manager.h"
 
-#include "surface.h"
 #include "device/physical_device.h"
 
 class Instance
@@ -18,12 +18,13 @@ public:
 
 	~Instance();
 
+	Surface createSurface(const WindowManager* pWindowManager, const SurfaceProperties &surfaceProperties) const;
+
 	std::vector<PhysicalDevice> getPhysicalDevices();
 
-public:
+private:
 	VkInstance handle_;
 
-private:
 #ifndef NDEBUG
 	VkDebugUtilsMessengerEXT debugMessenger_ = VK_NULL_HANDLE;
 #endif // !NDEBUG

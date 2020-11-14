@@ -18,10 +18,17 @@ struct SwapchainConfigurations
 	VkSurfaceCapabilitiesKHR surfaceCapabilities;
 };
 
+struct SurfaceProperties
+{
+	VkFormat format;
+	VkColorSpaceKHR colorSpace;
+	VkPresentModeKHR presentMode;
+};
+
 class Surface
 {
 public:
-	explicit Surface(VkSurfaceKHR handle, VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode);
+	explicit Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties &surfaceProperties);
 
 	~Surface();
 
@@ -46,9 +53,7 @@ private:
 	VkInstance hInstance_;
 	VkPhysicalDevice hPhysicalDevice_;
 
-	VkFormat format_;
-	VkColorSpaceKHR colorSpace_;
-	VkPresentModeKHR presentMode_;
+	SurfaceProperties surfaceProperties_;
 };
 
 

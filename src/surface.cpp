@@ -8,15 +8,13 @@
 
 #include "device/physical_device.h"
 
-Surface::Surface(VkSurfaceKHR handle, VkInstance hInstance, VkFormat format, VkColorSpaceKHR colorSpace, VkPresentModeKHR presentMode) :
+Surface::Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties &surfaceProperties) :
 		handle_(handle),
 
 		hInstance_(hInstance),
 		hPhysicalDevice_(VK_NULL_HANDLE),
 
-		format_(format),
-		colorSpace_(colorSpace),
-		presentMode_(presentMode)
+		surfaceProperties_(surfaceProperties)
 {
 }
 
@@ -77,7 +75,7 @@ VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceForma
 {
 	for (const VkSurfaceFormatKHR &format : surfaceFormats)
 	{
-		if (format.format == format_ && format.colorSpace == colorSpace_)
+		if (format.format == surfaceProperties_.format && format.colorSpace == surfaceProperties_.colorSpace)
 		{
 			return format;
 		}
@@ -90,7 +88,7 @@ VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> 
 {
 	for (const VkPresentModeKHR &presentMode : presentModes)
 	{
-		if (presentMode == presentMode_)
+		if (presentMode == surfaceProperties_.presentMode)
 		{
 			return presentMode;
 		}

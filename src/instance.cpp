@@ -176,6 +176,11 @@ Instance::~Instance()
 	handle_ = VK_NULL_HANDLE;
 }
 
+Surface Instance::createSurface(const WindowManager* pWindowManager, const SurfaceProperties &surfaceProperties) const
+{
+	return pWindowManager->createSurface(handle_, surfaceProperties);
+}
+
 
 std::vector<PhysicalDevice> Instance::getPhysicalDevices()
 {

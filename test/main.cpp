@@ -57,11 +57,12 @@ int main()
 
 	// DEVICE
 	std::vector<PhysicalDevice> allPhysicalDevices = instance.getPhysicalDevices();
-	Surface surface = windowManager.createSurface(
-			instance.handle_,
-			VK_FORMAT_A8B8G8R8_UNORM_PACK32,
-			VK_COLORSPACE_SRGB_NONLINEAR_KHR,
-			VK_PRESENT_MODE_FIFO_KHR);
+	Surface surface = instance.createSurface(
+			&windowManager,
+			SurfaceProperties{
+					VK_FORMAT_A8B8G8R8_UNORM_PACK32,
+					VK_COLORSPACE_SRGB_NONLINEAR_KHR,
+					VK_PRESENT_MODE_FIFO_KHR});
 
 	PhysicalDevice physicalDevice = allPhysicalDevices[0];
 	Device device = physicalDevice.createDevice();
