@@ -91,8 +91,7 @@ int main()
 	// RESOURCES
 	ResourceFactory resourceFactory = device.createResourceFactory();
 
-	Swapchain swapchain = Swapchain::Builder(surface, device, resourceFactory).build(configurations);
-
+	Swapchain swapchain = device.createSwapchainBuilder(&surface, &resourceFactory).build(configurations);
 
 	std::vector<Vertex> vertices({{{-0.5f, 0.5f,  0.0f}},
 	                              {{0.5f,  0.5f,  0.0f}},
@@ -115,8 +114,6 @@ int main()
 
 	// CLEAN UP
 	renderer.destroy();
-
-	swapchain.destroy(device, resourceFactory);
 
 	resourceFactory.destroy();
 

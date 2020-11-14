@@ -64,6 +64,12 @@ DescriptorSetLayout::Builder Device::createDescriptorSetLayoutBuilder() const
 	return DescriptorSetLayout::Builder(handle_);
 }
 
+Swapchain::Builder Device::createSwapchainBuilder(const Surface* pSurface, ResourceFactory* pResourceFactory) const
+{
+	const DeviceQueue* pGraphicsQueue = getQueue(VK_QUEUE_GRAPHICS_BIT);
+	return Swapchain::Builder(handle_, pGraphicsQueue, pSurface, pResourceFactory);
+}
+
 
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {

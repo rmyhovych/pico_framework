@@ -7,12 +7,13 @@
 #include <algorithm>
 #include <utility>
 
-Swapchain::Builder::Builder(const Surface &surface, const Device &device, ResourceFactory &resourceFactory) :
-		surface_(surface),
-		device_(device),
-		resourceFactory_(resourceFactory)
+Swapchain::Builder::Builder(VkDevice hDevice, const DeviceQueue* pDeviceQueue, const Surface* pSurface, ResourceFactory* pResourceFactory) :
+		hDevice_(hDevice),
+		pSurface_(pSurface),
+		pResourceFactory_(pResourceFactory)
 {
-
+	if (!pSurface->isQueueFamilySupported(pDeviceQueue->family))
+		throw std::runtime_error("Graphics queue family swapchain not supported!");
 }
 
 Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configurations) const
@@ -24,28 +25,21 @@ Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configuration
 	std::vector<VkImageView> swapchainImageViews(swapchainImages.size());
 	for (uint32_t i = 0; i < swapchainImages.size(); ++i)
 	{
-		swapchainImageViews[i] = resourceFactory_.createImageView(swapchainImages[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		swapchainImageViews[i] = pResourceFactory_->createImageView(swapchainImages[i], imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
-	return Swapchain(handle, swapchainImageViews);
+	return Swapchain(hDevice_, pResourceFactory_, handle, swapchainImageViews);
 }
 
 VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &configurations) const
 {
-	const DeviceQueue* graphicsQueue = device_.getQueue(VK_QUEUE_GRAPHICS_BIT);
-	if (graphicsQueue == nullptr)
-		throw std::runtime_error("Missing VK_QUEUE_GRAPHICS_BIT queue in device!");
-
-	if (!surface_.isQueueFamilySupported(graphicsQueue->family))
-		throw std::runtime_error("Graphics queue family swapchain not supported!");
-
 	uint32_t nImages = configurations.surfaceCapabilities.minImageCount + 1;
 	if (configurations.surfaceCapabilities.maxImageCount > 0 && nImages > configurations.surfaceCapabilities.maxImageCount)
 		nImages = configurations.surfaceCapabilities.maxImageCount;
 
 	VkSwapchainCreateInfoKHR createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	createInfo.surface = surface_.handle_;
+	createInfo.surface = pSurface_->handle_;
 	createInfo.minImageCount = nImages;
 	createInfo.imageFormat = configurations.surfaceFormat.format;
 	createInfo.imageColorSpace = configurations.surfaceFormat.colorSpace;
@@ -62,7 +56,7 @@ VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &c
 	createInfo.oldSwapchain = nullptr;
 
 	VkSwapchainKHR swapchainHandle;
-	CALL_VK(vkCreateSwapchainKHR(device_.handle_, &createInfo, nullptr, &swapchainHandle))
+	CALL_VK(vkCreateSwapchainKHR(hDevice_, &createInfo, nullptr, &swapchainHandle))
 
 	return swapchainHandle;
 }
@@ -70,33 +64,33 @@ VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &c
 std::vector<VkImage> Swapchain::Builder::getImages(VkSwapchainKHR handle) const
 {
 	uint32_t nImages;
-	vkGetSwapchainImagesKHR(device_.handle_, handle, &nImages, nullptr);
+	vkGetSwapchainImagesKHR(hDevice_, handle, &nImages, nullptr);
 	std::vector<VkImage> images(nImages);
-	vkGetSwapchainImagesKHR(device_.handle_, handle, &nImages, images.data());
+	vkGetSwapchainImagesKHR(hDevice_, handle, &nImages, images.data());
 	return images;
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 
-Swapchain::Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews) :
+Swapchain::Swapchain(VkDevice hDevice, ResourceFactory* pResourceFactory, VkSwapchainKHR handle, std::vector<VkImageView> imageViews) :
+		hDevice_(hDevice),
+		pResourceFactory_(pResourceFactory),
+
 		handle_(handle),
-		imageViews_(std::move(imageViews))
+		imageViews_(std::move(imageViews)),
+
+		depthImage_(VK_NULL_HANDLE),
+		depthImageView_(VK_NULL_HANDLE)
 {
 }
 
 Swapchain::~Swapchain()
 {
-	CHECK_NULL_HANDLE(handle_)
-}
-
-void Swapchain::destroy(const Device &device, ResourceFactory &resourceFactory)
-{
 	for (VkImageView imageView : imageViews_)
-	{
-		resourceFactory.destroyImageView(imageView);
-	}
+		pResourceFactory_->destroyImageView(imageView);
+	imageViews_.clear();
 
-	vkDestroySwapchainKHR(device.handle_, handle_, nullptr);
+	vkDestroySwapchainKHR(hDevice_, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
 

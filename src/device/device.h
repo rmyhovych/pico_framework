@@ -10,6 +10,7 @@
 #include <pipeline/shader_stages.h>
 #include <renderpass/render_pass.h>
 #include <pipeline/descriptor_set_layout.h>
+#include <swapchain/swapchain.h>
 
 #include "surface.h"
 #include "resources/resource_factory.h"
@@ -30,6 +31,8 @@ public:
 	RenderPass::Builder createRenderPassBuilder() const;
 
 	DescriptorSetLayout::Builder createDescriptorSetLayoutBuilder() const;
+
+	Swapchain::Builder createSwapchainBuilder(const Surface* pSurface, ResourceFactory* pResourceFactory) const;
 
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 

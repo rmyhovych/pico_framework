@@ -7,7 +7,6 @@
 
 
 #include "resources/resource_factory.h"
-#include "device/device.h"
 #include "surface.h"
 
 class Swapchain
@@ -16,7 +15,7 @@ public:
 	class Builder
 	{
 	public:
-		Builder(const Surface &surface, const Device &device, ResourceFactory &resourceFactory);
+		Builder(VkDevice hDevice, const DeviceQueue* pDeviceQueue, const Surface* pSurface, ResourceFactory* pResourceFactory);
 
 		Swapchain build(const SwapchainConfigurations &configurations) const;
 
@@ -26,24 +25,27 @@ public:
 		std::vector<VkImage> getImages(VkSwapchainKHR handle) const;
 
 	private:
-		const Surface &surface_;
-		const Device &device_;
-		ResourceFactory &resourceFactory_;
+		VkDevice hDevice_;
+
+		const Surface* pSurface_;
+		ResourceFactory* pResourceFactory_;
 	};
 
 	~Swapchain();
 
-	void destroy(const Device &device, ResourceFactory &resourceFactory);
-
 	std::vector<std::vector<VkImageView>> getAttachments() const;
 
+
 private:
-	Swapchain(VkSwapchainKHR handle, std::vector<VkImageView> imageViews);
+	Swapchain(VkDevice hDevice, ResourceFactory* pResourceFactory, VkSwapchainKHR handle, std::vector<VkImageView> imageViews);
 
 public:
 	VkSwapchainKHR handle_;
 
 private:
+	VkDevice hDevice_;
+	ResourceFactory* pResourceFactory_;
+
 	std::vector<VkImageView> imageViews_;
 
 	VkImage depthImage_;

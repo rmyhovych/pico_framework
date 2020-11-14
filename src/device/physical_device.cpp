@@ -4,7 +4,6 @@
 
 #include "physical_device.h"
 
-
 PhysicalDevice::PhysicalDevice(VkInstance hInstance, VkPhysicalDevice handle) :
 		hInstance_(hInstance),
 		handle_(handle)
