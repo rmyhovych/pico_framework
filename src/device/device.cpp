@@ -54,6 +54,11 @@ ShaderStages Device::createShaderStages() const
 	return ShaderStages(handle_);
 }
 
+RenderPass::Builder Device::createRenderPassBuilder() const
+{
+	return RenderPass::Builder(handle_);
+}
+
 
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {
@@ -115,3 +120,4 @@ VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector
 
 	return device;
 }
+

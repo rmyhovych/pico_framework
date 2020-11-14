@@ -8,6 +8,7 @@
 #include <pfvk.h>
 #include <vector>
 #include <pipeline/shader_stages.h>
+#include <renderpass/render_pass.h>
 
 #include "surface.h"
 #include "resources/resource_factory.h"
@@ -24,6 +25,8 @@ public:
 	ResourceFactory createResourceFactory() const;
 
 	ShaderStages createShaderStages() const;
+
+	RenderPass::Builder createRenderPassBuilder() const;
 
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 

@@ -4,8 +4,8 @@
 
 #include "render_pass.h"
 
-RenderPass::Builder::Builder(const Device &device) :
-		deviceHandle_(device.handle_),
+RenderPass::Builder::Builder(VkDevice hDevice) :
+		hDevice_(hDevice),
 
 		attachmentDescriptions_(0),
 		colorAttachments_(0),
@@ -100,34 +100,29 @@ RenderPass RenderPass::Builder::build()
 	renderPassCreateInfo.pDependencies = &dependency;
 
 	VkRenderPass renderPassHandle;
-	CALL_VK(vkCreateRenderPass(deviceHandle_, &renderPassCreateInfo, nullptr, &renderPassHandle))
+	CALL_VK(vkCreateRenderPass(hDevice_, &renderPassCreateInfo, nullptr, &renderPassHandle))
 
-	return RenderPass(renderPassHandle);
+	return RenderPass(hDevice_, renderPassHandle);
 }
 
 
 /*------------------------------------------------------------------------------------------------------------------------------*/
 
 
-RenderPass::RenderPass(VkRenderPass handle) :
+RenderPass::RenderPass(VkDevice hDevice, VkRenderPass handle) :
+		hDevice_(hDevice),
 		handle_(handle)
 {
 }
 
 RenderPass::~RenderPass()
 {
-	CHECK_NULL_HANDLE(handle_)
-}
-
-
-void RenderPass::destroy(VkDevice device)
-{
-	vkDestroyRenderPass(device, handle_, nullptr);
+	vkDestroyRenderPass(hDevice_, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
 
 
-std::vector<VkFramebuffer> RenderPass::createFramebuffers(VkDevice deviceHandle, std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent)
+std::vector<VkFramebuffer> RenderPass::createFramebuffers(std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent)
 {
 	std::vector<VkFramebuffer> framebuffers(attachmentsList.size());
 
@@ -144,11 +139,12 @@ std::vector<VkFramebuffer> RenderPass::createFramebuffers(VkDevice deviceHandle,
 		createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		createInfo.pAttachments = attachments.data();
 
-		CALL_VK(vkCreateFramebuffer(deviceHandle, &createInfo, nullptr, &framebuffers[i]))
+		CALL_VK(vkCreateFramebuffer(hDevice_, &createInfo, nullptr, &framebuffers[i]))
 
 		++i;
 	}
 
 	return framebuffers;
 }
+
 

@@ -71,7 +71,7 @@ int main()
 
 
 	// RENDER PASS
-	RenderPass renderPass = RenderPass::Builder(device)
+	RenderPass renderPass = device.createRenderPassBuilder()
 			.pushBackColor(configurations.surfaceFormat.format)
 					//.pushBackDepth(physicalDevices[0].pickSupportedDepthFormat())
 			.build();
@@ -122,7 +122,6 @@ int main()
 
 	pipeline.destroy(device);
 	descriptorSetLayout.destroy(device);
-	renderPass.destroy(device.handle_);
 
 	return 0;
 }
