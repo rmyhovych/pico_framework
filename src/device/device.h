@@ -9,6 +9,7 @@
 #include <vector>
 #include <pipeline/shader_stages.h>
 #include <renderpass/render_pass.h>
+#include <pipeline/descriptor_set_layout.h>
 
 #include "surface.h"
 #include "resources/resource_factory.h"
@@ -27,6 +28,8 @@ public:
 	ShaderStages createShaderStages() const;
 
 	RenderPass::Builder createRenderPassBuilder() const;
+
+	DescriptorSetLayout::Builder createDescriptorSetLayoutBuilder() const;
 
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 

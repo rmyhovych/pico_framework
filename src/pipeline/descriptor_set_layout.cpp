@@ -1,7 +1,8 @@
 #include "descriptor_set_layout.h"
 
 
-DescriptorSetLayout::Builder::Builder() :
+DescriptorSetLayout::Builder::Builder(VkDevice hDevice) :
+		hDevice_(hDevice),
 		bindings_(0)
 {
 }
@@ -20,7 +21,7 @@ DescriptorSetLayout::Builder &DescriptorSetLayout::Builder::pushBinding(VkDescri
 	return *this;
 }
 
-DescriptorSetLayout DescriptorSetLayout::Builder::build(const Device &device)
+DescriptorSetLayout DescriptorSetLayout::Builder::build() const
 {
 	VkDescriptorSetLayoutCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -28,25 +29,21 @@ DescriptorSetLayout DescriptorSetLayout::Builder::build(const Device &device)
 	createInfo.pBindings = bindings_.data();
 
 	VkDescriptorSetLayout handle;
-	CALL_VK(vkCreateDescriptorSetLayout(device.handle_, &createInfo, nullptr, &handle))
+	CALL_VK(vkCreateDescriptorSetLayout(hDevice_, &createInfo, nullptr, &handle))
 
-	return DescriptorSetLayout(handle);
+	return DescriptorSetLayout(hDevice_, handle);
 }
 
 /*---------------------------------------------------------------------------------------------*/
 
 DescriptorSetLayout::~DescriptorSetLayout()
 {
-	CHECK_NULL_HANDLE(handle_)
-}
-
-void DescriptorSetLayout::destroy(const Device &device)
-{
-	vkDestroyDescriptorSetLayout(device.handle_, handle_, nullptr);
+	vkDestroyDescriptorSetLayout(hDevice_, handle_, nullptr);
 	handle_ = VK_NULL_HANDLE;
 }
 
-DescriptorSetLayout::DescriptorSetLayout(VkDescriptorSetLayout handle) :
+DescriptorSetLayout::DescriptorSetLayout(VkDevice hDevice, VkDescriptorSetLayout handle) :
+		hDevice_(hDevice),
 		handle_(handle)
 {
 }

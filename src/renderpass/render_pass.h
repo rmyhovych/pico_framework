@@ -41,9 +41,10 @@ public:
 	std::vector<VkFramebuffer> createFramebuffers(std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent);
 
 public:
-	VkDevice hDevice_;
-
 	VkRenderPass handle_;
+
+private:
+	VkDevice hDevice_;
 };
 
 

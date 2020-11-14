@@ -83,8 +83,8 @@ int main()
 			.addModule("/home/ross/code/pico_framework/shaders/base.vert.spirv", VK_SHADER_STAGE_VERTEX_BIT)
 			.addModule("/home/ross/code/pico_framework/shaders/base.frag.spirv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
-	DescriptorSetLayout descriptorSetLayout = DescriptorSetLayout::Builder()
-			.build(device);
+	DescriptorSetLayout descriptorSetLayout = device.createDescriptorSetLayoutBuilder()
+			.build();
 
 	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
 
@@ -121,7 +121,6 @@ int main()
 	resourceFactory.destroy();
 
 	pipeline.destroy(device);
-	descriptorSetLayout.destroy(device);
 
 	return 0;
 }

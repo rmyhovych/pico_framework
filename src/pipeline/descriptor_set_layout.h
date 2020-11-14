@@ -3,21 +3,24 @@
 
 #include <vector>
 
-#include "device/device.h"
+#include "pfvk.h"
 
 
 class DescriptorSetLayout
 {
 public:
-	class Builder {
+	class Builder
+	{
 	public:
-		Builder();
+		Builder(VkDevice hDevice);
 
-		Builder& pushBinding(VkDescriptorType type, VkShaderStageFlags stage);
+		Builder &pushBinding(VkDescriptorType type, VkShaderStageFlags stage);
 
-		DescriptorSetLayout build(const Device& device);
+		DescriptorSetLayout build() const;
 
 	private:
+		VkDevice hDevice_;
+
 		std::vector<VkDescriptorSetLayoutBinding> bindings_;
 	};
 
@@ -25,13 +28,14 @@ public:
 public:
 	~DescriptorSetLayout();
 
-	void destroy(const Device& device);
-
 private:
-	DescriptorSetLayout(VkDescriptorSetLayout handle);
+	explicit DescriptorSetLayout(VkDevice hDevice, VkDescriptorSetLayout handle);
 
 public:
 	VkDescriptorSetLayout handle_;
+
+private:
+	VkDevice hDevice_;
 };
 
 #endif // DESCRIPTORSETLAYOUT_H

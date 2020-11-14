@@ -59,6 +59,11 @@ RenderPass::Builder Device::createRenderPassBuilder() const
 	return RenderPass::Builder(handle_);
 }
 
+DescriptorSetLayout::Builder Device::createDescriptorSetLayoutBuilder() const
+{
+	return DescriptorSetLayout::Builder(handle_);
+}
+
 
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {
