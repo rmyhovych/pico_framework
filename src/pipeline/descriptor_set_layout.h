@@ -12,7 +12,7 @@ public:
 	class Builder
 	{
 	public:
-		Builder(VkDevice hDevice);
+		explicit Builder(VkDevice hDevice);
 
 		Builder &pushBinding(VkDescriptorType type, VkShaderStageFlags stage);
 

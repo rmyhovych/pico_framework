@@ -116,8 +116,6 @@ int main()
 	// CLEAN UP
 	renderer.destroy();
 
-	pipeline.destroy(device);
-
 	return 0;
 }
 
@@ -156,14 +154,13 @@ Pipeline createPipeline(
 	stateManager.setColorBlend()->addAttachment(colorBlendAttachment);
 	stateManager.setDynamic();
 
-	PipelineLayout pipelineLayout(device, descriptorSetLayout);
-	Pipeline pipeline = Pipeline::Builder()
+	PipelineLayout pipelineLayout(device.handle_, descriptorSetLayout);
+	Pipeline pipeline = device.createPipelineBuilder()
 			.linkShaders(&shaderStages)
 			.linkStates(&stateManager)
 			.linkLayout(&pipelineLayout)
 			.linkRenderPass(&renderPass)
-			.build(device);
-	pipelineLayout.destroy(device);
+			.build();
 
 	return pipeline;
 }

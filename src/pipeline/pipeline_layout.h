@@ -1,20 +1,21 @@
 #ifndef PIPELINELAYOUT_H
 #define PIPELINELAYOUT_H
 
-#include "device/device.h"
 #include "descriptor_set_layout.h"
 
 
 class PipelineLayout
 {
 public:
-	PipelineLayout(const Device& device, const DescriptorSetLayout& descriptorSetLayout);
-	~PipelineLayout();
+	PipelineLayout(VkDevice hDevice, const DescriptorSetLayout &descriptorSetLayout);
 
-	void destroy(const Device& device);
+	~PipelineLayout();
 
 public:
 	VkPipelineLayout handle_;
+
+private:
+	VkDevice hDevice_;
 };
 
 #endif // PIPELINELAYOUT_H

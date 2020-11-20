@@ -1,7 +1,8 @@
 #include "pipeline.h"
 
 
-Pipeline::Builder::Builder() :
+Pipeline::Builder::Builder(VkDevice hDevice) :
+		hDevice_(hDevice),
 		createInfo_({})
 {
 	createInfo_.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -54,33 +55,33 @@ Pipeline::Builder &Pipeline::Builder::linkRenderPass(const RenderPass* renderPas
 	return *this;
 }
 
-Pipeline Pipeline::Builder::build(const Device &device)
+Pipeline Pipeline::Builder::build()
 {
 	VkPipeline handle;
-	CALL_VK(vkCreateGraphicsPipelines(device.handle_, VK_NULL_HANDLE, 1, &createInfo_, nullptr, &handle))
-	return Pipeline(handle, VK_NULL_HANDLE);
+	CALL_VK(vkCreateGraphicsPipelines(hDevice_, VK_NULL_HANDLE, 1, &createInfo_, nullptr, &handle))
+	return Pipeline(hDevice_, handle, VK_NULL_HANDLE);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------*/
 
-Pipeline::Pipeline(VkPipeline handle, VkPipelineLayout layout) :
-		handle_(handle)
+Pipeline::Pipeline(VkDevice hDevice, VkPipeline handle, VkPipelineLayout layout) :
+		hDevice_(hDevice),
+		handle_(handle),
+		layout_(layout)
 {
 }
 
 Pipeline::~Pipeline()
 {
-	CHECK_NULL_HANDLE(handle_)
+	vkDestroyPipeline(hDevice_, handle_, nullptr);
+	handle_ = VK_NULL_HANDLE;
 }
 
-Pipeline::Pipeline(Pipeline &&p) :
-		handle_(p.handle_)
+Pipeline::Pipeline(Pipeline &&p) noexcept:
+		hDevice_(p.hDevice_),
+		handle_(p.handle_),
+		layout_(p.layout_)
 {
 	p.handle_ = VK_NULL_HANDLE;
-}
-
-void Pipeline::destroy(const Device &device)
-{
-	vkDestroyPipeline(device.handle_, handle_, nullptr);
-	handle_ = VK_NULL_HANDLE;
+	p.layout_ = VK_NULL_HANDLE;
 }

@@ -70,6 +70,11 @@ Swapchain::Builder Device::createSwapchainBuilder(const Surface* pSurface, Resou
 	return Swapchain::Builder(handle_, pGraphicsQueue, pSurface, pResourceFactory);
 }
 
+Pipeline::Builder Device::createPipelineBuilder() const
+{
+	return Pipeline::Builder(handle_);
+}
+
 
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {

@@ -11,6 +11,7 @@
 #include <renderpass/render_pass.h>
 #include <pipeline/descriptor_set_layout.h>
 #include <swapchain/swapchain.h>
+#include <pipeline/pipeline.h>
 
 #include "surface.h"
 #include "resources/resource_factory.h"
@@ -33,6 +34,8 @@ public:
 	DescriptorSetLayout::Builder createDescriptorSetLayoutBuilder() const;
 
 	Swapchain::Builder createSwapchainBuilder(const Surface* pSurface, ResourceFactory* pResourceFactory) const;
+
+	Pipeline::Builder createPipelineBuilder() const;
 
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 

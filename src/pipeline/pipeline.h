@@ -3,7 +3,6 @@
 
 #include <optional>
 
-#include "device/device.h"
 #include "shader_stages.h"
 
 #include "state/state_manager.h"
@@ -18,7 +17,7 @@ public:
 	class Builder
 	{
 	public:
-		Builder();
+		explicit Builder(VkDevice hDevice);
 
 		Builder &linkShaders(const ShaderStages* shaders);
 
@@ -28,23 +27,25 @@ public:
 
 		Builder &linkRenderPass(const RenderPass* renderPass);
 
-		Pipeline build(const Device &device);
+		Pipeline build();
 
 	private:
+		VkDevice hDevice_;
+
 		VkGraphicsPipelineCreateInfo createInfo_;
 	};
 
 public:
 	~Pipeline();
 
-	Pipeline(Pipeline &&p);
-
-	void destroy(const Device &device);
+	Pipeline(Pipeline &&p) noexcept;
 
 private:
-	Pipeline(VkPipeline handle, VkPipelineLayout layout);
+	Pipeline(VkDevice hDevice, VkPipeline handle, VkPipelineLayout layout);
 
 public:
+	VkDevice hDevice_;
+
 	VkPipeline handle_;
 	VkPipelineLayout layout_;
 };
