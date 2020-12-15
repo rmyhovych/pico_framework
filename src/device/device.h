@@ -9,7 +9,7 @@
 #include <vector>
 #include <pipeline/shader_stages.h>
 #include <renderpass/render_pass.h>
-#include <pipeline/descriptor_set_layout.h>
+#include <pipeline/layout/layout.h>
 #include <swapchain/swapchain.h>
 #include <pipeline/pipeline.h>
 
@@ -31,7 +31,7 @@ public:
 
 	RenderPass::Builder createRenderPassBuilder() const;
 
-	DescriptorSetLayout::Builder createDescriptorSetLayoutBuilder() const;
+	Layout::Builder createDescriptorSetLayoutBuilder() const;
 
 	Swapchain::Builder createSwapchainBuilder(const Surface* pSurface, ResourceFactory* pResourceFactory) const;
 

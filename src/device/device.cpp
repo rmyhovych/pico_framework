@@ -59,9 +59,9 @@ RenderPass::Builder Device::createRenderPassBuilder() const
 	return RenderPass::Builder(handle_);
 }
 
-DescriptorSetLayout::Builder Device::createDescriptorSetLayoutBuilder() const
+Layout::Builder Device::createDescriptorSetLayoutBuilder() const
 {
-	return DescriptorSetLayout::Builder(handle_);
+	return Layout::Builder(handle_);
 }
 
 Swapchain::Builder Device::createSwapchainBuilder(const Surface* pSurface, ResourceFactory* pResourceFactory) const

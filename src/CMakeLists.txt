@@ -31,10 +31,9 @@ set(PICOFRAMEWORK_FILES
 	pipeline/state/depth_stencil_state.cpp pipeline/state/depth_stencil_state.h
 
 		pipeline/shader_stages.cpp pipeline/shader_stages.h
-	pipeline/descriptor_set_layout.cpp pipeline/descriptor_set_layout.h
-	pipeline/pipeline_layout.cpp pipeline/pipeline_layout.h
-	pipeline/pipeline.cpp pipeline/pipeline.h
-		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp resources/data_transfer_manager.cpp resources/data_transfer_manager.h device/device_queue.h)
+		pipeline/layout/layout.cpp pipeline/layout/layout.h
+		pipeline/pipeline.cpp pipeline/pipeline.h
+		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp resources/data_transfer_manager.cpp resources/data_transfer_manager.h device/device_queue.h pipeline/layout/binding/binding_layout.cpp pipeline/layout/binding/binding_layout.h pipeline/layout/binding/binding.cpp pipeline/layout/binding/binding.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

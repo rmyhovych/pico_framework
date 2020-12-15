@@ -7,9 +7,9 @@
 
 #include "state/state_manager.h"
 
-#include "pipeline_layout.h"
 #include "renderpass/render_pass.h"
 
+#include "layout/layout.h"
 
 class Pipeline
 {
@@ -23,7 +23,7 @@ public:
 
 		Builder &linkStates(const StateManager* stateManager);
 
-		Builder &linkLayout(const PipelineLayout* layout);
+		Builder &linkLayout(const Layout* layout);
 
 		Builder &linkRenderPass(const RenderPass* renderPass);
 

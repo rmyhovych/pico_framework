@@ -30,7 +30,7 @@ Pipeline createPipeline(
 		const Device &device,
 		const SwapchainConfigurations &configurations,
 		const ShaderStages &shaderStages,
-		const DescriptorSetLayout &descriptorSetLayout,
+		const Layout &descriptorSetLayout,
 		const RenderPass &renderPass
 );
 
@@ -84,10 +84,10 @@ int main()
 			.addModule("/home/ross/code/pico_framework/shaders/base.vert.spv", VK_SHADER_STAGE_VERTEX_BIT)
 			.addModule("/home/ross/code/pico_framework/shaders/base.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
-	DescriptorSetLayout descriptorSetLayout = device.createDescriptorSetLayoutBuilder()
+	Layout layout = device.createDescriptorSetLayoutBuilder()
 			.build();
 
-	Pipeline pipeline = createPipeline(device, configurations, shaders, descriptorSetLayout, renderPass);
+	Pipeline pipeline = createPipeline(device, configurations, shaders, layout, renderPass);
 
 	// RESOURCES
 	ResourceFactory resourceFactory = device.createResourceFactory();
@@ -124,7 +124,7 @@ Pipeline createPipeline(
 		const Device &device,
 		const SwapchainConfigurations &configurations,
 		const ShaderStages &shaderStages,
-		const DescriptorSetLayout &descriptorSetLayout,
+		const Layout &layout,
 		const RenderPass &renderPass
 )
 {
@@ -154,11 +154,10 @@ Pipeline createPipeline(
 	stateManager.setColorBlend()->addAttachment(colorBlendAttachment);
 	stateManager.setDynamic();
 
-	PipelineLayout pipelineLayout(device.handle_, descriptorSetLayout);
 	Pipeline pipeline = device.createPipelineBuilder()
 			.linkShaders(&shaderStages)
 			.linkStates(&stateManager)
-			.linkLayout(&pipelineLayout)
+			.linkLayout(&layout)
 			.linkRenderPass(&renderPass)
 			.build();
 

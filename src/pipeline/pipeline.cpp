@@ -43,9 +43,9 @@ Pipeline::Builder &Pipeline::Builder::linkStates(const StateManager* stateManage
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkLayout(const PipelineLayout* layout)
+Pipeline::Builder &Pipeline::Builder::linkLayout(const Layout* layout)
 {
-	createInfo_.layout = layout->handle_;
+	createInfo_.layout = layout->getPipelineLayout();
 	return *this;
 }
 
