@@ -31,13 +31,15 @@ public:
 		writeOnto.descriptorCount = 1;
 		writeOnto.pBufferInfo = nullptr;
 
-		return UniqueFunction<void(VkWriteDescriptorSet&)>([descriptorBufferInfo, bindingIndex = this->bindingIndex_](VkWriteDescriptorSet& writeOnto)
-		                                                   {
-			                                                   writeOnto.dstBinding = bindingIndex;
-			                                                   writeOnto.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			                                                   writeOnto.descriptorCount = 1;
-			                                                   writeOnto.pBufferInfo = &descriptorBufferInfo;
-		                                                   });
+		return UniqueFunction<void(VkWriteDescriptorSet&)>(
+				[descriptorBufferInfo, bindingIndex = this->bindingIndex_](VkWriteDescriptorSet& writeOnto)
+				{
+					writeOnto.dstBinding = bindingIndex;
+					writeOnto.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+					writeOnto.descriptorCount = 1;
+					writeOnto.pBufferInfo = &descriptorBufferInfo;
+				}
+		);
 	}
 
 	void allocateResource(ResourceFactory& resourceFactory, uint32_t nFrames) override
