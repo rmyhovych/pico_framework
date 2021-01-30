@@ -8,6 +8,7 @@ class VertexInputState : public PipelineState<VkPipelineVertexInputStateCreateIn
 {
 public:
 	VertexInputState(uint32_t stride, VkVertexInputRate inputRate);
+
 	VertexInputState& pushAttribute(VkFormat format, uint32_t offset);
 
 private:

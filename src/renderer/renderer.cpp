@@ -4,7 +4,7 @@
 
 #include "renderer.h"
 
-Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, ResourceFactory* pResourceFactory, const SwapchainConfigurations &swapchainConfigurations) :
+Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const RenderPass* pRenderPass, const Pipeline* pPipeline, ResourceFactory* pResourceFactory, const SwapchainConfigurations& swapchainConfigurations) :
 		pDevice_(pDevice),
 		pSwapchain_(pSwapchain),
 		pRenderPass_(pRenderPass),
@@ -36,7 +36,7 @@ Renderer::Renderer(const Device* pDevice, const Swapchain* pSwapchain, const Ren
 
 	for (uint32_t i = 0; i < nImages; ++i)
 	{
-		const std::vector<VkImageView> &attachments = attachmentList[i];
+		const std::vector<VkImageView>& attachments = attachmentList[i];
 		framebufferCreateInfo.attachmentCount = attachments.size();
 		framebufferCreateInfo.pAttachments = attachments.data();
 		CALL_VK(vkCreateFramebuffer(pDevice_->handle_, &framebufferCreateInfo, nullptr, &framebuffers_[i]))
@@ -97,7 +97,7 @@ void Renderer::recordCommands()
 
 	for (int32_t i = commandBuffers_.size() - 1; i >= 0; --i)
 	{
-		const VkCommandBuffer &commandBuffer = commandBuffers_[i];
+		const VkCommandBuffer& commandBuffer = commandBuffers_[i];
 		renderPassBeginInfo.framebuffer = framebuffers_[i];
 
 		CALL_VK(vkBeginCommandBuffer(commandBuffer, &commandBufferBeginInfo))
@@ -105,7 +105,7 @@ void Renderer::recordCommands()
 
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pPipeline_->handle_);
 
-		for (auto &objectDescriptor : objectDescriptors_)
+		for (auto& objectDescriptor : objectDescriptors_)
 			objectDescriptor.recordCommands(commandBuffer);
 
 		vkCmdEndRenderPass(commandBuffer);

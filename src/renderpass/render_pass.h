@@ -16,11 +16,11 @@ public:
 	public:
 		explicit Builder(VkDevice hDevice);
 
-		Builder &pushBackColor(VkFormat format);
+		Builder& pushBackColor(VkFormat format);
 
-		Builder &pushBackDepth(VkFormat format);
+		Builder& pushBackDepth(VkFormat format);
 
-		Builder &setPipelineBindPoint(VkPipelineBindPoint pipelineBindPoint);
+		Builder& setPipelineBindPoint(VkPipelineBindPoint pipelineBindPoint);
 
 		RenderPass build();
 
@@ -38,7 +38,7 @@ public:
 
 	~RenderPass();
 
-	std::vector<VkFramebuffer> createFramebuffers(std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent);
+	std::vector<VkFramebuffer> createFramebuffers(std::vector<std::vector<VkImageView>>& attachmentsList, VkExtent2D extent);
 
 public:
 	VkRenderPass handle_;

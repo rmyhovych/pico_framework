@@ -11,7 +11,7 @@ public:
 
 	~ShaderStages();
 
-	ShaderStages &addModule(const char* path, VkShaderStageFlagBits stage);
+	ShaderStages& addModule(const char* path, VkShaderStageFlagBits stage);
 
 	uint32_t size() const;
 

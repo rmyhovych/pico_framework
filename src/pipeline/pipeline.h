@@ -19,13 +19,13 @@ public:
 	public:
 		explicit Builder(VkDevice hDevice);
 
-		Builder &linkShaders(const ShaderStages* shaders);
+		Builder& linkShaders(const ShaderStages* shaders);
 
-		Builder &linkStates(const StateManager* stateManager);
+		Builder& linkStates(const StateManager* stateManager);
 
-		Builder &linkLayout(const Layout* layout);
+		Builder& linkLayout(const Layout* layout);
 
-		Builder &linkRenderPass(const RenderPass* renderPass);
+		Builder& linkRenderPass(const RenderPass* renderPass);
 
 		Pipeline build();
 
@@ -38,7 +38,7 @@ public:
 public:
 	~Pipeline();
 
-	Pipeline(Pipeline &&p) noexcept;
+	Pipeline(Pipeline&& p) noexcept;
 
 private:
 	Pipeline(VkDevice hDevice, VkPipeline handle, VkPipelineLayout layout);

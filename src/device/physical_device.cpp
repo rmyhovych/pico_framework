@@ -21,7 +21,7 @@ Device PhysicalDevice::createDevice() const
 	return Device(hInstance_, handle_, deviceQueues, {VK_KHR_SWAPCHAIN_EXTENSION_NAME});
 }
 
-VkFormat PhysicalDevice::pickSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const
+VkFormat PhysicalDevice::pickSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const
 {
 	for (VkFormat format : candidates)
 	{
@@ -82,10 +82,10 @@ std::vector<uint32_t> PhysicalDevice::getQueueFamilyIndexes(VkQueueFlags flags) 
 	return indexes;
 }
 
-void PhysicalDevice::pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) const
+void PhysicalDevice::pickQueueFamilies(std::vector<DeviceQueue>& queueInfos) const
 {
 	VkQueueFlags commonType = 0;
-	for (DeviceQueue &queue : queueInfos)
+	for (DeviceQueue& queue : queueInfos)
 	{
 		commonType |= queue.type;
 	}
@@ -93,14 +93,14 @@ void PhysicalDevice::pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) con
 	std::vector<uint32_t> commonFamilies = getQueueFamilyIndexes(commonType);
 	if (!commonFamilies.empty())
 	{
-		for (DeviceQueue &queue : queueInfos)
+		for (DeviceQueue& queue : queueInfos)
 		{
 			queue.family = commonFamilies[0];
 		}
 	}
 	else
 	{
-		for (DeviceQueue &queue : queueInfos)
+		for (DeviceQueue& queue : queueInfos)
 		{
 			std::vector<uint32_t> families = getQueueFamilyIndexes(queue.type);
 			queue.family = families[0];

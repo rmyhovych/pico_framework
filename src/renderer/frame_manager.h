@@ -12,17 +12,17 @@
 class FrameManager
 {
 public:
-	FrameManager(const Device &device, uint32_t nImages);
+	FrameManager(const Device& device, uint32_t nImages);
 
 	~FrameManager();
 
 	void destroy();
 
-	void waitForImage(const Swapchain &swapchain);
+	void waitForImage(const Swapchain& swapchain);
 
-	void submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer> &commandBuffers);
+	void submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer>& commandBuffers);
 
-	void present(VkQueue presentQueue, const Swapchain &swapchain);
+	void present(VkQueue presentQueue, const Swapchain& swapchain);
 
 private:
 	VkDevice deviceHandle_;

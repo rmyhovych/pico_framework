@@ -25,7 +25,7 @@ public:
 	VkBuffer createBuffer(VkDeviceSize size, VkBufferUsageFlags usageFlags, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0);
 
 	template<typename T>
-	VkBuffer createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags);
+	VkBuffer createDeviceBuffer(const std::vector<T>& data, VkBufferUsageFlags usageFlags);
 
 	void destroyBuffer(VkBuffer buffer);
 
@@ -56,7 +56,7 @@ private:
 };
 
 template<typename T>
-VkBuffer ResourceFactory::createDeviceBuffer(const std::vector<T> &data, VkBufferUsageFlags usageFlags)
+VkBuffer ResourceFactory::createDeviceBuffer(const std::vector<T>& data, VkBufferUsageFlags usageFlags)
 {
 	VkDeviceSize bufferSize = sizeof(T) * data.size();
 

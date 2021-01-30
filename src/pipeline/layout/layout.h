@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "pfvk.h"
-
+#include "binding/binding_layout.h"
 
 class Layout
 {
@@ -14,7 +14,8 @@ public:
 	public:
 		explicit Builder(VkDevice hDevice);
 
-		Builder &pushBinding(VkDescriptorType type, VkShaderStageFlags stage);
+		template<typename BindingType>
+		Builder& addBinding(const BindingLayout<BindingType>& bindingLayout);
 
 		Layout build() const;
 
@@ -23,7 +24,6 @@ public:
 
 		std::vector<VkDescriptorSetLayoutBinding> bindings_;
 	};
-
 
 public:
 	explicit Layout(VkDevice hDevice, VkDescriptorSetLayout handle);
@@ -38,5 +38,20 @@ private:
 	VkDescriptorSetLayout descriptorSetLayout_;
 	VkPipelineLayout pipelineLayout_;
 };
+
+template<typename BindingType>
+Layout::Builder& Layout::Builder::addBinding(const BindingLayout<BindingType>& bindingLayout)
+{
+	bindings_.push_back(VkDescriptorSetLayoutBinding{});
+
+	VkDescriptorSetLayoutBinding& binding = bindings_.back();
+	binding.binding = bindingLayout.getBindingIndex();
+	binding.descriptorType = bindingLayout.getDescriptorType();
+	binding.descriptorCount = 1;
+	binding.stageFlags = bindingLayout.getStageFlags();
+	binding.pImmutableSamplers = nullptr;
+
+	return *this;
+}
 
 #endif // DESCRIPTORSETLAYOUT_H

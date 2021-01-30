@@ -8,7 +8,7 @@ DynamicState::DynamicState()
 	createInfo_.pDynamicStates = nullptr;
 }
 
-DynamicState &DynamicState::addState(VkDynamicState state)
+DynamicState& DynamicState::addState(VkDynamicState state)
 {
 	states_.push_back(state);
 

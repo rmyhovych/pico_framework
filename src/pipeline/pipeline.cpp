@@ -29,7 +29,7 @@ Pipeline::Builder::Builder(VkDevice hDevice) :
 	createInfo_.basePipelineIndex = -1;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkShaders(const ShaderStages* shaders)
+Pipeline::Builder& Pipeline::Builder::linkShaders(const ShaderStages* shaders)
 {
 	createInfo_.stageCount = shaders->size();
 	createInfo_.pStages = shaders->data();
@@ -37,19 +37,19 @@ Pipeline::Builder &Pipeline::Builder::linkShaders(const ShaderStages* shaders)
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkStates(const StateManager* stateManager)
+Pipeline::Builder& Pipeline::Builder::linkStates(const StateManager* stateManager)
 {
 	stateManager->applyOn(&createInfo_);
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkLayout(const Layout* layout)
+Pipeline::Builder& Pipeline::Builder::linkLayout(const Layout* layout)
 {
 	createInfo_.layout = layout->getPipelineLayout();
 	return *this;
 }
 
-Pipeline::Builder &Pipeline::Builder::linkRenderPass(const RenderPass* renderPass)
+Pipeline::Builder& Pipeline::Builder::linkRenderPass(const RenderPass* renderPass)
 {
 	createInfo_.renderPass = renderPass->handle_;
 	return *this;
@@ -77,7 +77,7 @@ Pipeline::~Pipeline()
 	handle_ = VK_NULL_HANDLE;
 }
 
-Pipeline::Pipeline(Pipeline &&p) noexcept:
+Pipeline::Pipeline(Pipeline&& p) noexcept:
 		hDevice_(p.hDevice_),
 		handle_(p.handle_),
 		layout_(p.layout_)

@@ -38,7 +38,7 @@ DataTransferManager::~DataTransferManager()
 }
 
 
-DataTransferManager &DataTransferManager::begin()
+DataTransferManager& DataTransferManager::begin()
 {
 	VkCommandBufferAllocateInfo cmdBufferAllocateInfo{};
 	cmdBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -71,7 +71,7 @@ void DataTransferManager::submit()
 	transferCmdBuffer_ = VK_NULL_HANDLE;
 }
 
-DataTransferManager &DataTransferManager::transfer(VkBuffer src, VkBuffer dst, VkDeviceSize size)
+DataTransferManager& DataTransferManager::transfer(VkBuffer src, VkBuffer dst, VkDeviceSize size)
 {
 	VkBufferCopy bufferCopy{};
 	bufferCopy.size = size;

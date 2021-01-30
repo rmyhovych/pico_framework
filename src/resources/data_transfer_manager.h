@@ -16,11 +16,11 @@ public:
 
 	~DataTransferManager();
 
-	DataTransferManager &begin();
+	DataTransferManager& begin();
 
 	void submit();
 
-	DataTransferManager &transfer(VkBuffer src, VkBuffer dst, VkDeviceSize size);
+	DataTransferManager& transfer(VkBuffer src, VkBuffer dst, VkDeviceSize size);
 
 private:
 	VkDevice hDevice_;

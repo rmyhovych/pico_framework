@@ -16,7 +16,7 @@ Swapchain::Builder::Builder(VkDevice hDevice, const DeviceQueue* pDeviceQueue, c
 		throw std::runtime_error("Graphics queue family swapchain not supported!");
 }
 
-Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configurations) const
+Swapchain Swapchain::Builder::build(const SwapchainConfigurations& configurations) const
 {
 	VkSwapchainKHR handle = createHandle(configurations);
 	std::vector<VkImage> swapchainImages = getImages(handle);
@@ -31,7 +31,7 @@ Swapchain Swapchain::Builder::build(const SwapchainConfigurations &configuration
 	return Swapchain(hDevice_, pResourceFactory_, handle, swapchainImageViews);
 }
 
-VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations &configurations) const
+VkSwapchainKHR Swapchain::Builder::createHandle(const SwapchainConfigurations& configurations) const
 {
 	uint32_t nImages = configurations.surfaceCapabilities.minImageCount + 1;
 	if (configurations.surfaceCapabilities.maxImageCount > 0 && nImages > configurations.surfaceCapabilities.maxImageCount)

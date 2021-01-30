@@ -8,7 +8,7 @@
 
 #include "device/physical_device.h"
 
-Surface::Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties &surfaceProperties) :
+Surface::Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties& surfaceProperties) :
 		handle_(handle),
 
 		hInstance_(hInstance),
@@ -71,9 +71,9 @@ SwapchainConfigurations Surface::getSwapchainConfigurations(VkExtent2D windowExt
 }
 
 
-VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const
+VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats) const
 {
-	for (const VkSurfaceFormatKHR &format : surfaceFormats)
+	for (const VkSurfaceFormatKHR& format : surfaceFormats)
 	{
 		if (format.format == surfaceProperties_.format && format.colorSpace == surfaceProperties_.colorSpace)
 		{
@@ -84,9 +84,9 @@ VkSurfaceFormatKHR Surface::chooseSurfaceFormat(const std::vector<VkSurfaceForma
 	return surfaceFormats[0];
 }
 
-VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes) const
+VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes) const
 {
-	for (const VkPresentModeKHR &presentMode : presentModes)
+	for (const VkPresentModeKHR& presentMode : presentModes)
 	{
 		if (presentMode == surfaceProperties_.presentMode)
 		{
@@ -98,7 +98,7 @@ VkPresentModeKHR Surface::choosePresentMode(const std::vector<VkPresentModeKHR> 
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
-VkExtent2D Surface::chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabilities, VkExtent2D windowExtent)
+VkExtent2D Surface::chooseExtent(const VkSurfaceCapabilitiesKHR& swapChainCapabilities, VkExtent2D windowExtent)
 {
 	if (swapChainCapabilities.currentExtent.width != UINT32_MAX)
 	{

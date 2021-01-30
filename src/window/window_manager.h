@@ -19,9 +19,9 @@ public:
 
 	virtual VkExtent2D getExtent() const = 0;
 
-	virtual Surface createSurface(VkInstance hInstance, const SurfaceProperties &surfaceProperties) const = 0;
+	virtual Surface createSurface(VkInstance hInstance, const SurfaceProperties& surfaceProperties) const = 0;
 
-	void setResizeCallback(std::function<void(VkExtent2D)> &resizeCallback);
+	void setResizeCallback(std::function<void(VkExtent2D)>& resizeCallback);
 
 	void resize(VkExtent2D newExtent);
 

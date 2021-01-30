@@ -13,9 +13,9 @@ class ObjectDescriptor
 {
 public:
 	template<typename T>
-	ObjectDescriptor(ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes);
+	ObjectDescriptor(ResourceFactory& resourceFactory, const std::vector<T>& vertices, const std::vector<uint16_t>& indexes);
 
-	ObjectDescriptor(ObjectDescriptor &&other) noexcept;
+	ObjectDescriptor(ObjectDescriptor&& other) noexcept;
 
 	void recordCommands(VkCommandBuffer commandBuffer) const;
 
@@ -27,7 +27,7 @@ private:
 };
 
 template<typename T>
-ObjectDescriptor::ObjectDescriptor(ResourceFactory &resourceFactory, const std::vector<T> &vertices, const std::vector<uint16_t> &indexes):
+ObjectDescriptor::ObjectDescriptor(ResourceFactory& resourceFactory, const std::vector<T>& vertices, const std::vector<uint16_t>& indexes):
 		vertexBuffer_{},
 		indexBuffer_{},
 

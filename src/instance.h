@@ -14,11 +14,11 @@
 class Instance
 {
 public:
-	Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions);
+	Instance(const VkApplicationInfo& applicationInfo, const std::vector<const char*>& requiredExtensions);
 
 	~Instance();
 
-	Surface createSurface(const WindowManager* pWindowManager, const SurfaceProperties &surfaceProperties) const;
+	Surface createSurface(const WindowManager* pWindowManager, const SurfaceProperties& surfaceProperties) const;
 
 	std::vector<PhysicalDevice> getPhysicalDevices();
 

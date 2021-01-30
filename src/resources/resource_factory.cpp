@@ -100,7 +100,7 @@ VkImageView ResourceFactory::createImageView(VkImage image, VkFormat format, VkI
 	viewCreateInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 	viewCreateInfo.format = format;
 
-	VkImageSubresourceRange &subresourceRange = viewCreateInfo.subresourceRange;
+	VkImageSubresourceRange& subresourceRange = viewCreateInfo.subresourceRange;
 	subresourceRange.aspectMask = aspectFlags;
 	subresourceRange.baseMipLevel = 0;
 	subresourceRange.levelCount = 1;

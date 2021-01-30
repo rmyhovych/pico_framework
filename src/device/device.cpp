@@ -7,7 +7,7 @@
 #include <utility>
 
 
-Device::Device(VkInstance hInstance, VkPhysicalDevice hPhysicalDevice, std::vector<DeviceQueue> &deviceQueues, const std::vector<const char*> &deviceExtensions) :
+Device::Device(VkInstance hInstance, VkPhysicalDevice hPhysicalDevice, std::vector<DeviceQueue>& deviceQueues, const std::vector<const char*>& deviceExtensions) :
 		handle_(VK_NULL_HANDLE),
 
 		hInstance_(hInstance),
@@ -17,7 +17,7 @@ Device::Device(VkInstance hInstance, VkPhysicalDevice hPhysicalDevice, std::vect
 
 	handle_ = createHandle(hPhysicalDevice, deviceQueues_, deviceExtensions);
 
-	for (DeviceQueue &deviceQueue : deviceQueues_)
+	for (DeviceQueue& deviceQueue : deviceQueues_)
 		vkGetDeviceQueue(handle_, deviceQueue.family, 0, &deviceQueue.queue);
 }
 
@@ -78,7 +78,7 @@ Pipeline::Builder Device::createPipelineBuilder() const
 
 const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 {
-	for (const DeviceQueue &deviceQueue : deviceQueues_)
+	for (const DeviceQueue& deviceQueue : deviceQueues_)
 	{
 		if ((deviceQueue.type | type) == type)
 			return &deviceQueue;
@@ -87,10 +87,10 @@ const DeviceQueue* Device::getQueue(VkQueueFlags type) const
 	return nullptr;
 }
 
-VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions)
+VkDevice Device::createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue>& queues, const std::vector<const char*>& deviceExtensions)
 {
 	std::set<uint32_t> uniqueQueueFamilies;
-	for (const DeviceQueue &q : queues)
+	for (const DeviceQueue& q : queues)
 		uniqueQueueFamilies.insert(q.family);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;

@@ -18,9 +18,9 @@ public:
 
 	~Allocator();
 
-	std::pair<VkBuffer, VmaAllocation> createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	std::pair<VkBuffer, VmaAllocation> createBuffer(VkBufferCreateInfo& bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
-	std::pair<VkImage, VmaAllocation> createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
+	std::pair<VkImage, VmaAllocation> createImage(VkImageCreateInfo& imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags = 0) const;
 
 	void free(VkBuffer buffer, VmaAllocation allocation) const;
 

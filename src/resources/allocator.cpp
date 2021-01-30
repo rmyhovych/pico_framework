@@ -33,7 +33,7 @@ Allocator::~Allocator()
 	handle_ = VK_NULL_HANDLE;
 }
 
-std::pair<VkBuffer, VmaAllocation> Allocator::createBuffer(VkBufferCreateInfo &bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+std::pair<VkBuffer, VmaAllocation> Allocator::createBuffer(VkBufferCreateInfo& bufferCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;
@@ -44,7 +44,7 @@ std::pair<VkBuffer, VmaAllocation> Allocator::createBuffer(VkBufferCreateInfo &b
 	return bufferAllocation;
 }
 
-std::pair<VkImage, VmaAllocation> Allocator::createImage(VkImageCreateInfo &imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
+std::pair<VkImage, VmaAllocation> Allocator::createImage(VkImageCreateInfo& imageCreateInfo, VmaMemoryUsage memoryUsage, VmaAllocationCreateFlags flags) const
 {
 	VmaAllocationCreateInfo allocationCreateInfo{};
 	allocationCreateInfo.usage = memoryUsage;

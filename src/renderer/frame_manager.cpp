@@ -4,7 +4,7 @@
 
 #include "frame_manager.h"
 
-FrameManager::FrameManager(const Device &device, uint32_t nImages) :
+FrameManager::FrameManager(const Device& device, uint32_t nImages) :
 		deviceHandle_(device.handle_),
 
 		imageIndex_(0),
@@ -39,7 +39,7 @@ FrameManager::~FrameManager()
 
 void FrameManager::destroy()
 {
-	for (auto &fence : fencesWait_)
+	for (auto& fence : fencesWait_)
 	{
 		vkDestroyFence(deviceHandle_, fence, nullptr);
 	}
@@ -53,12 +53,12 @@ void FrameManager::destroy()
 	semaphoreRenderFinished_ = VK_NULL_HANDLE;
 }
 
-void FrameManager::waitForImage(const Swapchain &swapchain)
+void FrameManager::waitForImage(const Swapchain& swapchain)
 {
 	CALL_VK(vkAcquireNextImageKHR(deviceHandle_, swapchain.handle_, UINT64_MAX, semaphorePresentComplete_, VK_NULL_HANDLE, &imageIndex_))
 }
 
-void FrameManager::submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer> &commandBuffers)
+void FrameManager::submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer>& commandBuffers)
 {
 	CALL_VK(vkWaitForFences(deviceHandle_, 1, &fencesWait_[imageIndex_], VK_TRUE, UINT64_MAX));
 	CALL_VK(vkResetFences(deviceHandle_, 1, &fencesWait_[imageIndex_]));
@@ -79,7 +79,7 @@ void FrameManager::submit(VkQueue graphicsQueue, const std::vector<VkCommandBuff
 	CALL_VK(vkQueueSubmit(graphicsQueue, 1, &submitInfo, fencesWait_[imageIndex_]))
 }
 
-void FrameManager::present(VkQueue presentQueue, const Swapchain &swapchain)
+void FrameManager::present(VkQueue presentQueue, const Swapchain& swapchain)
 {
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;

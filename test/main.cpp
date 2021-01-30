@@ -12,7 +12,6 @@
 #include "instance.h"
 
 #include <window/glfw_window_manager.h>
-#include <resources/allocator.h>
 #include <resources/resource_factory.h>
 #include <renderer/renderer.h>
 
@@ -20,6 +19,7 @@
 #include "pipeline/pipeline.h"
 
 #include <thread>
+#include "pipeline/layout/binding/uniform_binding.h"
 
 struct Vertex
 {
@@ -27,11 +27,11 @@ struct Vertex
 };
 
 Pipeline createPipeline(
-		const Device &device,
-		const SwapchainConfigurations &configurations,
-		const ShaderStages &shaderStages,
-		const Layout &descriptorSetLayout,
-		const RenderPass &renderPass
+		const Device& device,
+		const SwapchainConfigurations& configurations,
+		const ShaderStages& shaderStages,
+		const Layout& descriptorSetLayout,
+		const RenderPass& renderPass
 );
 
 
@@ -84,6 +84,7 @@ int main()
 			.addModule("/home/ross/code/pico_framework/shaders/base.vert.spv", VK_SHADER_STAGE_VERTEX_BIT)
 			.addModule("/home/ross/code/pico_framework/shaders/base.frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT);
 
+	UniformBinding<uint32_t> uniformBinding(0);
 	Layout layout = device.createDescriptorSetLayoutBuilder()
 			.build();
 
@@ -121,11 +122,11 @@ int main()
 
 
 Pipeline createPipeline(
-		const Device &device,
-		const SwapchainConfigurations &configurations,
-		const ShaderStages &shaderStages,
-		const Layout &layout,
-		const RenderPass &renderPass
+		const Device& device,
+		const SwapchainConfigurations& configurations,
+		const ShaderStages& shaderStages,
+		const Layout& layout,
+		const RenderPass& renderPass
 )
 {
 	StateManager stateManager;

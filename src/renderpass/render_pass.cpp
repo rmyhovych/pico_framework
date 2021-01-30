@@ -20,10 +20,10 @@ RenderPass::Builder::Builder(VkDevice hDevice) :
 	subpass_.pDepthStencilAttachment = nullptr;
 }
 
-RenderPass::Builder &RenderPass::Builder::pushBackColor(VkFormat format)
+RenderPass::Builder& RenderPass::Builder::pushBackColor(VkFormat format)
 {
 	attachmentDescriptions_.push_back({});
-	VkAttachmentDescription &attachmentDescription = attachmentDescriptions_.back();
+	VkAttachmentDescription& attachmentDescription = attachmentDescriptions_.back();
 
 	attachmentDescription.format = format;
 	attachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -35,7 +35,7 @@ RenderPass::Builder &RenderPass::Builder::pushBackColor(VkFormat format)
 	attachmentDescription.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 	colorAttachments_.push_back({});
-	VkAttachmentReference &attachmentReference = colorAttachments_.back();
+	VkAttachmentReference& attachmentReference = colorAttachments_.back();
 	attachmentReference.attachment = attachmentDescriptions_.size() - 1;
 	attachmentReference.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
@@ -45,7 +45,7 @@ RenderPass::Builder &RenderPass::Builder::pushBackColor(VkFormat format)
 	return *this;
 }
 
-RenderPass::Builder &RenderPass::Builder::pushBackDepth(VkFormat format)
+RenderPass::Builder& RenderPass::Builder::pushBackDepth(VkFormat format)
 {
 	if (subpass_.pDepthStencilAttachment != nullptr)
 	{
@@ -53,7 +53,7 @@ RenderPass::Builder &RenderPass::Builder::pushBackDepth(VkFormat format)
 	}
 
 	attachmentDescriptions_.push_back({});
-	VkAttachmentDescription &attachmentDescription = attachmentDescriptions_.back();
+	VkAttachmentDescription& attachmentDescription = attachmentDescriptions_.back();
 
 	attachmentDescription.format = format;
 	attachmentDescription.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -72,7 +72,7 @@ RenderPass::Builder &RenderPass::Builder::pushBackDepth(VkFormat format)
 	return *this;
 }
 
-RenderPass::Builder &RenderPass::Builder::setPipelineBindPoint(VkPipelineBindPoint pipelineBindPoint)
+RenderPass::Builder& RenderPass::Builder::setPipelineBindPoint(VkPipelineBindPoint pipelineBindPoint)
 {
 	subpass_.pipelineBindPoint = pipelineBindPoint;
 	return *this;
@@ -122,7 +122,7 @@ RenderPass::~RenderPass()
 }
 
 
-std::vector<VkFramebuffer> RenderPass::createFramebuffers(std::vector<std::vector<VkImageView>> &attachmentsList, VkExtent2D extent)
+std::vector<VkFramebuffer> RenderPass::createFramebuffers(std::vector<std::vector<VkImageView>>& attachmentsList, VkExtent2D extent)
 {
 	std::vector<VkFramebuffer> framebuffers(attachmentsList.size());
 
@@ -134,7 +134,7 @@ std::vector<VkFramebuffer> RenderPass::createFramebuffers(std::vector<std::vecto
 	createInfo.layers = 1;
 
 	int i = 0;
-	for (std::vector<VkImageView> &attachments : attachmentsList)
+	for (std::vector<VkImageView>& attachments : attachmentsList)
 	{
 		createInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
 		createInfo.pAttachments = attachments.data();

@@ -28,7 +28,7 @@ struct SurfaceProperties
 class Surface
 {
 public:
-	explicit Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties &surfaceProperties);
+	explicit Surface(VkSurfaceKHR handle, VkInstance hInstance, const SurfaceProperties& surfaceProperties);
 
 	~Surface();
 
@@ -39,11 +39,11 @@ public:
 	SwapchainConfigurations getSwapchainConfigurations(VkExtent2D windowExtent) const;
 
 private:
-	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &surfaceFormats) const;
+	VkSurfaceFormatKHR chooseSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& surfaceFormats) const;
 
-	VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR> &presentModes) const;
+	VkPresentModeKHR choosePresentMode(const std::vector<VkPresentModeKHR>& presentModes) const;
 
-	static VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR &swapChainCapabilities, VkExtent2D windowExtent);
+	static VkExtent2D chooseExtent(const VkSurfaceCapabilitiesKHR& swapChainCapabilities, VkExtent2D windowExtent);
 
 
 public:

@@ -7,20 +7,6 @@ Layout::Builder::Builder(VkDevice hDevice) :
 {
 }
 
-Layout::Builder &Layout::Builder::pushBinding(VkDescriptorType type, VkShaderStageFlags stage)
-{
-	bindings_.push_back(VkDescriptorSetLayoutBinding{});
-
-	VkDescriptorSetLayoutBinding &binding = bindings_.back();
-	binding.binding = static_cast<uint32_t>(bindings_.size() - 1);
-	binding.descriptorType = type;
-	binding.descriptorCount = 1;
-	binding.stageFlags = stage;
-	binding.pImmutableSamplers = nullptr;
-
-	return *this;
-}
-
 Layout Layout::Builder::build() const
 {
 	VkDescriptorSetLayoutCreateInfo createInfo{};

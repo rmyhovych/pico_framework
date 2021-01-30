@@ -1,8 +1,8 @@
 #include "vertex_input_state.h"
 
 VertexInputState::VertexInputState(uint32_t stride, VkVertexInputRate inputRate) :
-	bindingDescription_({}),
-	attributeDescriptions_(0)
+		bindingDescription_({}),
+		attributeDescriptions_(0)
 {
 	bindingDescription_.binding = 0;
 	bindingDescription_.stride = stride;
@@ -13,7 +13,7 @@ VertexInputState::VertexInputState(uint32_t stride, VkVertexInputRate inputRate)
 	createInfo_.pVertexBindingDescriptions = &bindingDescription_;
 }
 
-VertexInputState &VertexInputState::pushAttribute(VkFormat format, uint32_t offset)
+VertexInputState& VertexInputState::pushAttribute(VkFormat format, uint32_t offset)
 {
 	attributeDescriptions_.push_back(VkVertexInputAttributeDescription{});
 

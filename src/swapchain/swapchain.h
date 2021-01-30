@@ -17,10 +17,10 @@ public:
 	public:
 		Builder(VkDevice hDevice, const DeviceQueue* pDeviceQueue, const Surface* pSurface, ResourceFactory* pResourceFactory);
 
-		Swapchain build(const SwapchainConfigurations &configurations) const;
+		Swapchain build(const SwapchainConfigurations& configurations) const;
 
 	private:
-		VkSwapchainKHR createHandle(const SwapchainConfigurations &configurations) const;
+		VkSwapchainKHR createHandle(const SwapchainConfigurations& configurations) const;
 
 		std::vector<VkImage> getImages(VkSwapchainKHR handle) const;
 

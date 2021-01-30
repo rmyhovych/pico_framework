@@ -16,7 +16,7 @@ WindowManager::WindowManager() :
 {
 }
 
-void WindowManager::setResizeCallback(std::function<void(VkExtent2D)> &resizeCallback)
+void WindowManager::setResizeCallback(std::function<void(VkExtent2D)>& resizeCallback)
 {
 	resizeCallback_ = std::move(resizeCallback);
 }

@@ -19,13 +19,13 @@ public:
 
 	Device createDevice() const;
 
-	VkFormat pickSupportedFormat(const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
+	VkFormat pickSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags featureFlags) const;
 
 	VkFormat pickSupportedDepthFormat() const;
 
 	std::vector<uint32_t> getQueueFamilyIndexes(VkQueueFlags flags) const;
 
-	void pickQueueFamilies(std::vector<DeviceQueue> &queueInfos) const;
+	void pickQueueFamilies(std::vector<DeviceQueue>& queueInfos) const;
 
 public:
 	VkPhysicalDevice handle_;

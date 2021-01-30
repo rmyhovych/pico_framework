@@ -93,7 +93,7 @@ void vkDestroyDebugUtilsMessengerEXT_PROXY(VkInstance instance, VkDebugUtilsMess
 #endif // !NDEBUG
 
 
-Instance::Instance(const VkApplicationInfo &applicationInfo, const std::vector<const char*> &requiredExtensions) :
+Instance::Instance(const VkApplicationInfo& applicationInfo, const std::vector<const char*>& requiredExtensions) :
 		handle_(VK_NULL_HANDLE)
 {
 #ifndef NDEBUG
@@ -106,7 +106,7 @@ Instance::Instance(const VkApplicationInfo &applicationInfo, const std::vector<c
 	for (const char* layerName : VALIDATION_LAYERS)
 	{
 		bool isLayerFound = false;
-		for (VkLayerProperties &layerProperty : avalibleLayers)
+		for (VkLayerProperties& layerProperty : avalibleLayers)
 		{
 			if (strcmp(layerName, layerProperty.layerName) == 0)
 			{
@@ -176,7 +176,7 @@ Instance::~Instance()
 	handle_ = VK_NULL_HANDLE;
 }
 
-Surface Instance::createSurface(const WindowManager* pWindowManager, const SurfaceProperties &surfaceProperties) const
+Surface Instance::createSurface(const WindowManager* pWindowManager, const SurfaceProperties& surfaceProperties) const
 {
 	return pWindowManager->createSurface(handle_, surfaceProperties);
 }

@@ -4,7 +4,7 @@
 
 #include "object_descriptor.h"
 
-ObjectDescriptor::ObjectDescriptor(ObjectDescriptor &&other) noexcept:
+ObjectDescriptor::ObjectDescriptor(ObjectDescriptor&& other) noexcept:
 		vertexBuffer_(other.vertexBuffer_),
 		indexBuffer_(other.indexBuffer_),
 		nIndexes_(other.nIndexes_)

@@ -5,6 +5,9 @@
 #include <stdexcept>
 #include <string>
 
+#include <memory>
+#include <functional>
+
 #define CALL_VK(result)                                         \
     if (VK_SUCCESS != (result))                                 \
     {                                                           \
@@ -37,5 +40,22 @@ const std::vector<const char*> VALIDATION_LAYERS({"VK_LAYER_KHRONOS_validation"}
 
 #endif // !NDEBUG
 
+template<typename T>
+class UniqueFunction;
+
+template<typename R, typename... AA>
+class UniqueFunction<R(AA...)> : public std::unique_ptr<std::function<R(AA...)>>
+{
+public:
+	template<typename F>
+	explicit UniqueFunction(F functor) : std::unique_ptr<F>(functor)
+	{
+	}
+
+	R operator()(AA... args) const
+	{
+		return (*this)(args...);
+	}
+};
 
 #endif // PFVK_H

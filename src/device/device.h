@@ -19,7 +19,7 @@
 class Device
 {
 public:
-	Device(VkInstance hInstance, VkPhysicalDevice hPhysicalDevice, std::vector<DeviceQueue> &deviceQueues, const std::vector<const char*> &deviceExtensions);
+	Device(VkInstance hInstance, VkPhysicalDevice hPhysicalDevice, std::vector<DeviceQueue>& deviceQueues, const std::vector<const char*>& deviceExtensions);
 
 	~Device();
 
@@ -40,7 +40,7 @@ public:
 	const DeviceQueue* getQueue(VkQueueFlags type) const;
 
 private:
-	static VkDevice createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue> &queues, const std::vector<const char*> &deviceExtensions);
+	static VkDevice createHandle(VkPhysicalDevice physicalDevice, const std::vector<DeviceQueue>& queues, const std::vector<const char*>& deviceExtensions);
 
 public:
 	VkDevice handle_;

@@ -1,4 +1,4 @@
-#include <resources/resource_reader.h>
+#include <resources/asset_reader.h>
 #include "shader_stages.h"
 
 ShaderStages::ShaderStages(VkDevice hDevice) :
@@ -9,15 +9,15 @@ ShaderStages::ShaderStages(VkDevice hDevice) :
 
 ShaderStages::~ShaderStages()
 {
-	for (const VkPipelineShaderStageCreateInfo &stageInfo : stageInfos_)
+	for (const VkPipelineShaderStageCreateInfo& stageInfo : stageInfos_)
 		vkDestroyShaderModule(hDevice_, stageInfo.module, nullptr);
 	stageInfos_.clear();
 }
 
-ShaderStages &ShaderStages::addModule(const char* path, VkShaderStageFlagBits stage)
+ShaderStages& ShaderStages::addModule(const char* path, VkShaderStageFlagBits stage)
 {
 	stageInfos_.push_back({});
-	VkPipelineShaderStageCreateInfo &createInfo = stageInfos_.back();
+	VkPipelineShaderStageCreateInfo& createInfo = stageInfos_.back();
 	createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 	createInfo.module = createModule(path);
 	createInfo.stage = stage;
@@ -38,7 +38,7 @@ const VkPipelineShaderStageCreateInfo* ShaderStages::data() const
 
 VkShaderModule ShaderStages::createModule(const char* path) const
 {
-	std::vector<char> shaderData = ResourceReader::readData(path);
+	std::vector<char> shaderData = AssetReader::readData(path);
 
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

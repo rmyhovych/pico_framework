@@ -14,7 +14,7 @@ ColorBlendState::ColorBlendState()
 	createInfo_.pAttachments = nullptr;
 }
 
-ColorBlendState &ColorBlendState::addAttachment(const VkPipelineColorBlendAttachmentState &attachment)
+ColorBlendState& ColorBlendState::addAttachment(const VkPipelineColorBlendAttachmentState& attachment)
 {
 	attachments_.push_back(attachment);
 
