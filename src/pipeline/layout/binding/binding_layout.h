@@ -7,11 +7,11 @@
 
 #include "pfvk.h"
 
-template<typename BindingType>
+template<typename B>
 class BindingLayout
 {
 public:
-	virtual BindingType createBinding() const = 0;
+	virtual B createBinding() const = 0;
 
 	VkDescriptorType getDescriptorType() const
 	{

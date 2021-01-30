@@ -18,7 +18,7 @@ public:
 
 	void destroy();
 
-	void waitForImage(const Swapchain& swapchain);
+	uint32_t waitForImage(const Swapchain& swapchain);
 
 	void submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer>& commandBuffers);
 

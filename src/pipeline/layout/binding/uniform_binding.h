@@ -24,13 +24,6 @@ public:
 		descriptorBufferInfo.offset = frameIndex * sizeof(T);
 		descriptorBufferInfo.range = sizeof(T);
 
-		VkWriteDescriptorSet writeOnto{};
-		writeOnto.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-		writeOnto.dstBinding = this->bindingIndex_;
-		writeOnto.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		writeOnto.descriptorCount = 1;
-		writeOnto.pBufferInfo = nullptr;
-
 		return UniqueFunction<void(VkWriteDescriptorSet&)>(
 				[descriptorBufferInfo, bindingIndex = this->bindingIndex_](VkWriteDescriptorSet& writeOnto)
 				{

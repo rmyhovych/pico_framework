@@ -12,6 +12,8 @@
 #include <pipeline/pipeline.h>
 #include "device/device.h"
 #include "frame_manager.h"
+#include "pipeline/layout/binding/binding.h"
+#include "pipeline/layout/binding/binding_resource.h"
 
 class Renderer
 {
@@ -24,6 +26,9 @@ public:
 
 	template<typename T>
 	ObjectDescriptor* createObjectDescriptor(const std::vector<T>& vertices, const std::vector<uint16_t>& indexes);
+
+	template<typename R>
+	void allocateAndTrackBindingResource(Binding<R> binding);
 
 	void recordCommands();
 
@@ -46,6 +51,8 @@ private:
 
 	std::vector<ObjectDescriptor> objectDescriptors_;
 
+	std::vector<BindingResource*> bindingResources_;
+
 	std::vector<VkFramebuffer> framebuffers_;
 	VkCommandPool commandPool_;
 	std::vector<VkCommandBuffer> commandBuffers_;
@@ -58,5 +65,11 @@ ObjectDescriptor* Renderer::createObjectDescriptor(const std::vector<T>& vertice
 	return &objectDescriptors_.back();
 }
 
+template<typename R>
+void Renderer::allocateAndTrackBindingResource(Binding<R> binding)
+{
+	binding.allocateResource(*pResourceFactory_, static_cast<uint32_t>(framebuffers_.size()));
+	bindingResources_.push_back(binding.getResourcePtr());
+}
 
 #endif //PICOFRAMEWORK_RENDERER_H

@@ -115,7 +115,12 @@ void Renderer::recordCommands()
 
 void Renderer::render()
 {
-	frameManager_.waitForImage(*pSwapchain_);
+	uint32_t imageIndex = frameManager_.waitForImage(*pSwapchain_);
+	for (BindingResource* resourcePtr : bindingResources_)
+	{
+		resourcePtr->update(*pResourceFactory_, imageIndex);
+	}
+
 	frameManager_.submit(graphicsQueue_, commandBuffers_);
 	frameManager_.present(graphicsQueue_, *pSwapchain_);
 }

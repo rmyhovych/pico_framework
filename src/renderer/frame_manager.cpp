@@ -53,9 +53,10 @@ void FrameManager::destroy()
 	semaphoreRenderFinished_ = VK_NULL_HANDLE;
 }
 
-void FrameManager::waitForImage(const Swapchain& swapchain)
+uint32_t FrameManager::waitForImage(const Swapchain& swapchain)
 {
 	CALL_VK(vkAcquireNextImageKHR(deviceHandle_, swapchain.handle_, UINT64_MAX, semaphorePresentComplete_, VK_NULL_HANDLE, &imageIndex_))
+	return imageIndex_;
 }
 
 void FrameManager::submit(VkQueue graphicsQueue, const std::vector<VkCommandBuffer>& commandBuffers)

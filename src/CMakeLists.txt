@@ -33,7 +33,7 @@ set(PICOFRAMEWORK_FILES
 		pipeline/shader_stages.cpp pipeline/shader_stages.h
 		pipeline/layout/layout.cpp pipeline/layout/layout.h
 		pipeline/pipeline.cpp pipeline/pipeline.h
-		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp resources/data_transfer_manager.cpp resources/data_transfer_manager.h device/device_queue.h pipeline/layout/binding/binding_layout.h pipeline/layout/binding/binding.h pipeline/layout/binding/binding_resource.h pipeline/layout/binding/buffer_binding_resource.h pipeline/layout/binding/uniform_binding.h)
+		renderer/renderer.cpp renderer/renderer.h renderer/frame_manager.cpp renderer/frame_manager.h primitive/object_descriptor.h primitive/object_descriptor.cpp resources/data_transfer_manager.cpp resources/data_transfer_manager.h device/device_queue.h pipeline/layout/binding/binding_layout.h pipeline/layout/binding/binding.h pipeline/layout/binding/binding_resource.h pipeline/layout/binding/buffer_binding_resource.h pipeline/layout/binding/uniform_binding.h pipeline/layout/binding/uniform_binding_layout.h)
 
 add_library(PICOFRAMEWORK ${PICOFRAMEWORK_FILES})
 

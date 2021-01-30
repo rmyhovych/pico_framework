@@ -31,7 +31,6 @@
             std::to_string(__LINE__).c_str()                                 \
         );
 
-
 #ifndef NDEBUG
 
 #include <vector>
@@ -40,15 +39,27 @@ const std::vector<const char*> VALIDATION_LAYERS({"VK_LAYER_KHRONOS_validation"}
 
 #endif // !NDEBUG
 
+
+#define NO_COPY_MOVE_ONLY(Type)                     \
+    Type(Type&&) noexcept = default;                \
+    Type(const Type&) noexcept = delete;            \
+    Type operator=(Type) noexcept = delete;         \
+    Type operator=(const Type&) noexcept = delete;  \
+    Type& operator=(Type&&) noexcept = default;
+
+
+///////////////// UNIQUE FUNCTION /////////////////
 template<typename T>
 class UniqueFunction;
 
 template<typename R, typename... AA>
-class UniqueFunction<R(AA...)> : public std::unique_ptr<std::function<R(AA...)>>
+class UniqueFunction<R(AA...)> : private std::unique_ptr<std::function<R(AA...)>>
 {
 public:
-	template<typename F>
-	explicit UniqueFunction(F functor) : std::unique_ptr<F>(functor)
+	NO_COPY_MOVE_ONLY(UniqueFunction);
+
+	explicit UniqueFunction(std::function<R(AA...)>&& func) :
+			std::unique_ptr<std::function<R(AA...)>>(std::make_unique<std::function<R(AA...)>>(func))
 	{
 	}
 
@@ -57,5 +68,7 @@ public:
 		return (*this)(args...);
 	}
 };
+///////////////////////////////////////////////////
+
 
 #endif // PFVK_H

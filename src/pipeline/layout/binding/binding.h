@@ -36,6 +36,11 @@ public:
 
 	virtual void updateResource(const ResourceFactory& resourceFactory, uint32_t frameIndex) = 0;
 
+	T* getResourcePtr()
+	{
+		return resource_;
+	}
+
 protected:
 	uint32_t bindingIndex_;
 	T resource_;

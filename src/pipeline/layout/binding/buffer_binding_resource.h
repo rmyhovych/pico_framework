@@ -30,7 +30,7 @@ public:
 		resourceFactory.unmap(buffer_);
 	}
 
-	VkBuffer getBuffer()
+	VkBuffer getBuffer() const
 	{
 		return buffer_;
 	}
